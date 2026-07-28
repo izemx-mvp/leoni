@@ -16,6 +16,7 @@ import { Route as RecrutementCandidaturesRouteImport } from './routes/recrutemen
 import { Route as RecrutementCampagnesRouteImport } from './routes/recrutement.campagnes'
 import { Route as PilotageAlertesRouteImport } from './routes/pilotage.alertes'
 import { Route as OuvriersIdRouteImport } from './routes/ouvriers.$id'
+import { Route as FormationParcoursRouteImport } from './routes/formation.parcours'
 import { Route as RecrutementCandidatIdRouteImport } from './routes/recrutement.candidat.$id'
 
 const IndexRoute = IndexRouteImport.update({
@@ -53,6 +54,11 @@ const OuvriersIdRoute = OuvriersIdRouteImport.update({
   path: '/ouvriers/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const FormationParcoursRoute = FormationParcoursRouteImport.update({
+  id: '/formation/parcours',
+  path: '/formation/parcours',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RecrutementCandidatIdRoute = RecrutementCandidatIdRouteImport.update({
   id: '/recrutement/candidat/$id',
   path: '/recrutement/candidat/$id',
@@ -61,6 +67,7 @@ const RecrutementCandidatIdRoute = RecrutementCandidatIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/formation/parcours': typeof FormationParcoursRoute
   '/ouvriers/$id': typeof OuvriersIdRoute
   '/pilotage/alertes': typeof PilotageAlertesRoute
   '/recrutement/campagnes': typeof RecrutementCampagnesRoute
@@ -71,6 +78,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/formation/parcours': typeof FormationParcoursRoute
   '/ouvriers/$id': typeof OuvriersIdRoute
   '/pilotage/alertes': typeof PilotageAlertesRoute
   '/recrutement/campagnes': typeof RecrutementCampagnesRoute
@@ -82,6 +90,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/formation/parcours': typeof FormationParcoursRoute
   '/ouvriers/$id': typeof OuvriersIdRoute
   '/pilotage/alertes': typeof PilotageAlertesRoute
   '/recrutement/campagnes': typeof RecrutementCampagnesRoute
@@ -94,6 +103,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/formation/parcours'
     | '/ouvriers/$id'
     | '/pilotage/alertes'
     | '/recrutement/campagnes'
@@ -104,6 +114,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/formation/parcours'
     | '/ouvriers/$id'
     | '/pilotage/alertes'
     | '/recrutement/campagnes'
@@ -114,6 +125,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/formation/parcours'
     | '/ouvriers/$id'
     | '/pilotage/alertes'
     | '/recrutement/campagnes'
@@ -125,6 +137,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  FormationParcoursRoute: typeof FormationParcoursRoute
   OuvriersIdRoute: typeof OuvriersIdRoute
   PilotageAlertesRoute: typeof PilotageAlertesRoute
   RecrutementCampagnesRoute: typeof RecrutementCampagnesRoute
@@ -185,6 +198,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OuvriersIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/formation/parcours': {
+      id: '/formation/parcours'
+      path: '/formation/parcours'
+      fullPath: '/formation/parcours'
+      preLoaderRoute: typeof FormationParcoursRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/recrutement/candidat/$id': {
       id: '/recrutement/candidat/$id'
       path: '/recrutement/candidat/$id'
@@ -197,6 +217,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  FormationParcoursRoute: FormationParcoursRoute,
   OuvriersIdRoute: OuvriersIdRoute,
   PilotageAlertesRoute: PilotageAlertesRoute,
   RecrutementCampagnesRoute: RecrutementCampagnesRoute,
