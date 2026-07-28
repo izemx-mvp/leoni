@@ -123,7 +123,12 @@ function Ouvriers() {
             </thead>
             <tbody>
               {liste.map((o) => (
-                <Tr key={o.id}>
+                <Tr
+                  key={o.id}
+                  className="cursor-pointer select-none"
+                  title="Double-cliquer pour ouvrir la fiche ouvrier"
+                  onDoubleClick={() => navigate({ to: "/ouvriers/$id", params: { id: o.id } })}
+                >
                   <Td>
                     <Link to="/ouvriers/$id" params={{ id: o.id }} className="flex items-center gap-2">
                       <Avatar nom={o.nom} size={28} />
