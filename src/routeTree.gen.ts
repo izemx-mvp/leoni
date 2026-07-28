@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as ReportingRouteImport } from './routes/reporting'
 import { Route as PresencesRouteImport } from './routes/presences'
 import { Route as CommunicationRouteImport } from './routes/communication'
+import { Route as AdministrationRouteImport } from './routes/administration'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as OuvriersIndexRouteImport } from './routes/ouvriers.index'
 import { Route as SuiviReclamationsRouteImport } from './routes/suivi.reclamations'
@@ -40,6 +41,11 @@ const PresencesRoute = PresencesRouteImport.update({
 const CommunicationRoute = CommunicationRouteImport.update({
   id: '/communication',
   path: '/communication',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdministrationRoute = AdministrationRouteImport.update({
+  id: '/administration',
+  path: '/administration',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -115,6 +121,7 @@ const RecrutementCandidatIdRoute = RecrutementCandidatIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/administration': typeof AdministrationRoute
   '/communication': typeof CommunicationRoute
   '/presences': typeof PresencesRoute
   '/reporting': typeof ReportingRoute
@@ -134,6 +141,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/administration': typeof AdministrationRoute
   '/communication': typeof CommunicationRoute
   '/presences': typeof PresencesRoute
   '/reporting': typeof ReportingRoute
@@ -154,6 +162,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/administration': typeof AdministrationRoute
   '/communication': typeof CommunicationRoute
   '/presences': typeof PresencesRoute
   '/reporting': typeof ReportingRoute
@@ -175,6 +184,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/administration'
     | '/communication'
     | '/presences'
     | '/reporting'
@@ -194,6 +204,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/administration'
     | '/communication'
     | '/presences'
     | '/reporting'
@@ -213,6 +224,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/administration'
     | '/communication'
     | '/presences'
     | '/reporting'
@@ -233,6 +245,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdministrationRoute: typeof AdministrationRoute
   CommunicationRoute: typeof CommunicationRoute
   PresencesRoute: typeof PresencesRoute
   ReportingRoute: typeof ReportingRoute
@@ -272,6 +285,13 @@ declare module '@tanstack/react-router' {
       path: '/communication'
       fullPath: '/communication'
       preLoaderRoute: typeof CommunicationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/administration': {
+      id: '/administration'
+      path: '/administration'
+      fullPath: '/administration'
+      preLoaderRoute: typeof AdministrationRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -377,6 +397,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdministrationRoute: AdministrationRoute,
   CommunicationRoute: CommunicationRoute,
   PresencesRoute: PresencesRoute,
   ReportingRoute: ReportingRoute,
