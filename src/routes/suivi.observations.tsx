@@ -29,7 +29,7 @@ function ObservationsPage() {
     [ouvriers, tonalite],
   );
 
-  const ton = (t: string) => (t === "Positive" ? "success" : t === "Critique" ? "critical" : t === "Négative" ? "warning" : "neutral") as const;
+  const ton = (t: string) => (t === "Positive" ? "success" : t === "Critique" ? "critical" : t === "Négative" ? "warning" : "neutral");
 
   return (
     <>

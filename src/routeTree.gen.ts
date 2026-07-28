@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as PresencesRouteImport } from './routes/presences'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as OuvriersIndexRouteImport } from './routes/ouvriers.index'
+import { Route as SuiviObservationsRouteImport } from './routes/suivi.observations'
 import { Route as RecrutementEntretiensRouteImport } from './routes/recrutement.entretiens'
 import { Route as RecrutementCandidaturesRouteImport } from './routes/recrutement.candidatures'
 import { Route as RecrutementCampagnesRouteImport } from './routes/recrutement.campagnes'
@@ -36,6 +37,11 @@ const IndexRoute = IndexRouteImport.update({
 const OuvriersIndexRoute = OuvriersIndexRouteImport.update({
   id: '/ouvriers/',
   path: '/ouvriers/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SuiviObservationsRoute = SuiviObservationsRouteImport.update({
+  id: '/suivi/observations',
+  path: '/suivi/observations',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RecrutementEntretiensRoute = RecrutementEntretiensRouteImport.update({
@@ -101,6 +107,7 @@ export interface FileRoutesByFullPath {
   '/recrutement/campagnes': typeof RecrutementCampagnesRoute
   '/recrutement/candidatures': typeof RecrutementCandidaturesRoute
   '/recrutement/entretiens': typeof RecrutementEntretiensRoute
+  '/suivi/observations': typeof SuiviObservationsRoute
   '/ouvriers/': typeof OuvriersIndexRoute
   '/recrutement/candidat/$id': typeof RecrutementCandidatIdRoute
 }
@@ -116,6 +123,7 @@ export interface FileRoutesByTo {
   '/recrutement/campagnes': typeof RecrutementCampagnesRoute
   '/recrutement/candidatures': typeof RecrutementCandidaturesRoute
   '/recrutement/entretiens': typeof RecrutementEntretiensRoute
+  '/suivi/observations': typeof SuiviObservationsRoute
   '/ouvriers': typeof OuvriersIndexRoute
   '/recrutement/candidat/$id': typeof RecrutementCandidatIdRoute
 }
@@ -132,6 +140,7 @@ export interface FileRoutesById {
   '/recrutement/campagnes': typeof RecrutementCampagnesRoute
   '/recrutement/candidatures': typeof RecrutementCandidaturesRoute
   '/recrutement/entretiens': typeof RecrutementEntretiensRoute
+  '/suivi/observations': typeof SuiviObservationsRoute
   '/ouvriers/': typeof OuvriersIndexRoute
   '/recrutement/candidat/$id': typeof RecrutementCandidatIdRoute
 }
@@ -149,6 +158,7 @@ export interface FileRouteTypes {
     | '/recrutement/campagnes'
     | '/recrutement/candidatures'
     | '/recrutement/entretiens'
+    | '/suivi/observations'
     | '/ouvriers/'
     | '/recrutement/candidat/$id'
   fileRoutesByTo: FileRoutesByTo
@@ -164,6 +174,7 @@ export interface FileRouteTypes {
     | '/recrutement/campagnes'
     | '/recrutement/candidatures'
     | '/recrutement/entretiens'
+    | '/suivi/observations'
     | '/ouvriers'
     | '/recrutement/candidat/$id'
   id:
@@ -179,6 +190,7 @@ export interface FileRouteTypes {
     | '/recrutement/campagnes'
     | '/recrutement/candidatures'
     | '/recrutement/entretiens'
+    | '/suivi/observations'
     | '/ouvriers/'
     | '/recrutement/candidat/$id'
   fileRoutesById: FileRoutesById
@@ -195,6 +207,7 @@ export interface RootRouteChildren {
   RecrutementCampagnesRoute: typeof RecrutementCampagnesRoute
   RecrutementCandidaturesRoute: typeof RecrutementCandidaturesRoute
   RecrutementEntretiensRoute: typeof RecrutementEntretiensRoute
+  SuiviObservationsRoute: typeof SuiviObservationsRoute
   OuvriersIndexRoute: typeof OuvriersIndexRoute
   RecrutementCandidatIdRoute: typeof RecrutementCandidatIdRoute
 }
@@ -220,6 +233,13 @@ declare module '@tanstack/react-router' {
       path: '/ouvriers'
       fullPath: '/ouvriers/'
       preLoaderRoute: typeof OuvriersIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/suivi/observations': {
+      id: '/suivi/observations'
+      path: '/suivi/observations'
+      fullPath: '/suivi/observations'
+      preLoaderRoute: typeof SuiviObservationsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/recrutement/entretiens': {
@@ -307,6 +327,7 @@ const rootRouteChildren: RootRouteChildren = {
   RecrutementCampagnesRoute: RecrutementCampagnesRoute,
   RecrutementCandidaturesRoute: RecrutementCandidaturesRoute,
   RecrutementEntretiensRoute: RecrutementEntretiensRoute,
+  SuiviObservationsRoute: SuiviObservationsRoute,
   OuvriersIndexRoute: OuvriersIndexRoute,
   RecrutementCandidatIdRoute: RecrutementCandidatIdRoute,
 }
