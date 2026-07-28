@@ -17,6 +17,7 @@ import { Route as RecrutementCampagnesRouteImport } from './routes/recrutement.c
 import { Route as PilotageAlertesRouteImport } from './routes/pilotage.alertes'
 import { Route as OuvriersIdRouteImport } from './routes/ouvriers.$id'
 import { Route as FormationSessionsRouteImport } from './routes/formation.sessions'
+import { Route as FormationQcmRouteImport } from './routes/formation.qcm'
 import { Route as FormationPlanningRouteImport } from './routes/formation.planning'
 import { Route as FormationParcoursRouteImport } from './routes/formation.parcours'
 import { Route as RecrutementCandidatIdRouteImport } from './routes/recrutement.candidat.$id'
@@ -61,6 +62,11 @@ const FormationSessionsRoute = FormationSessionsRouteImport.update({
   path: '/formation/sessions',
   getParentRoute: () => rootRouteImport,
 } as any)
+const FormationQcmRoute = FormationQcmRouteImport.update({
+  id: '/formation/qcm',
+  path: '/formation/qcm',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const FormationPlanningRoute = FormationPlanningRouteImport.update({
   id: '/formation/planning',
   path: '/formation/planning',
@@ -81,6 +87,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/formation/parcours': typeof FormationParcoursRoute
   '/formation/planning': typeof FormationPlanningRoute
+  '/formation/qcm': typeof FormationQcmRoute
   '/formation/sessions': typeof FormationSessionsRoute
   '/ouvriers/$id': typeof OuvriersIdRoute
   '/pilotage/alertes': typeof PilotageAlertesRoute
@@ -94,6 +101,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/formation/parcours': typeof FormationParcoursRoute
   '/formation/planning': typeof FormationPlanningRoute
+  '/formation/qcm': typeof FormationQcmRoute
   '/formation/sessions': typeof FormationSessionsRoute
   '/ouvriers/$id': typeof OuvriersIdRoute
   '/pilotage/alertes': typeof PilotageAlertesRoute
@@ -108,6 +116,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/formation/parcours': typeof FormationParcoursRoute
   '/formation/planning': typeof FormationPlanningRoute
+  '/formation/qcm': typeof FormationQcmRoute
   '/formation/sessions': typeof FormationSessionsRoute
   '/ouvriers/$id': typeof OuvriersIdRoute
   '/pilotage/alertes': typeof PilotageAlertesRoute
@@ -123,6 +132,7 @@ export interface FileRouteTypes {
     | '/'
     | '/formation/parcours'
     | '/formation/planning'
+    | '/formation/qcm'
     | '/formation/sessions'
     | '/ouvriers/$id'
     | '/pilotage/alertes'
@@ -136,6 +146,7 @@ export interface FileRouteTypes {
     | '/'
     | '/formation/parcours'
     | '/formation/planning'
+    | '/formation/qcm'
     | '/formation/sessions'
     | '/ouvriers/$id'
     | '/pilotage/alertes'
@@ -149,6 +160,7 @@ export interface FileRouteTypes {
     | '/'
     | '/formation/parcours'
     | '/formation/planning'
+    | '/formation/qcm'
     | '/formation/sessions'
     | '/ouvriers/$id'
     | '/pilotage/alertes'
@@ -163,6 +175,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   FormationParcoursRoute: typeof FormationParcoursRoute
   FormationPlanningRoute: typeof FormationPlanningRoute
+  FormationQcmRoute: typeof FormationQcmRoute
   FormationSessionsRoute: typeof FormationSessionsRoute
   OuvriersIdRoute: typeof OuvriersIdRoute
   PilotageAlertesRoute: typeof PilotageAlertesRoute
@@ -231,6 +244,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FormationSessionsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/formation/qcm': {
+      id: '/formation/qcm'
+      path: '/formation/qcm'
+      fullPath: '/formation/qcm'
+      preLoaderRoute: typeof FormationQcmRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/formation/planning': {
       id: '/formation/planning'
       path: '/formation/planning'
@@ -259,6 +279,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   FormationParcoursRoute: FormationParcoursRoute,
   FormationPlanningRoute: FormationPlanningRoute,
+  FormationQcmRoute: FormationQcmRoute,
   FormationSessionsRoute: FormationSessionsRoute,
   OuvriersIdRoute: OuvriersIdRoute,
   PilotageAlertesRoute: PilotageAlertesRoute,
