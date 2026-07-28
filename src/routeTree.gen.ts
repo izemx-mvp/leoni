@@ -10,33 +10,128 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as OuvriersIndexRouteImport } from './routes/ouvriers.index'
+import { Route as RecrutementEntretiensRouteImport } from './routes/recrutement.entretiens'
+import { Route as RecrutementCandidaturesRouteImport } from './routes/recrutement.candidatures'
+import { Route as RecrutementCampagnesRouteImport } from './routes/recrutement.campagnes'
+import { Route as PilotageAlertesRouteImport } from './routes/pilotage.alertes'
+import { Route as OuvriersIdRouteImport } from './routes/ouvriers.$id'
+import { Route as RecrutementCandidatIdRouteImport } from './routes/recrutement.candidat.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const OuvriersIndexRoute = OuvriersIndexRouteImport.update({
+  id: '/ouvriers/',
+  path: '/ouvriers/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RecrutementEntretiensRoute = RecrutementEntretiensRouteImport.update({
+  id: '/recrutement/entretiens',
+  path: '/recrutement/entretiens',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RecrutementCandidaturesRoute = RecrutementCandidaturesRouteImport.update({
+  id: '/recrutement/candidatures',
+  path: '/recrutement/candidatures',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RecrutementCampagnesRoute = RecrutementCampagnesRouteImport.update({
+  id: '/recrutement/campagnes',
+  path: '/recrutement/campagnes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PilotageAlertesRoute = PilotageAlertesRouteImport.update({
+  id: '/pilotage/alertes',
+  path: '/pilotage/alertes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OuvriersIdRoute = OuvriersIdRouteImport.update({
+  id: '/ouvriers/$id',
+  path: '/ouvriers/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RecrutementCandidatIdRoute = RecrutementCandidatIdRouteImport.update({
+  id: '/recrutement/candidat/$id',
+  path: '/recrutement/candidat/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/ouvriers/$id': typeof OuvriersIdRoute
+  '/pilotage/alertes': typeof PilotageAlertesRoute
+  '/recrutement/campagnes': typeof RecrutementCampagnesRoute
+  '/recrutement/candidatures': typeof RecrutementCandidaturesRoute
+  '/recrutement/entretiens': typeof RecrutementEntretiensRoute
+  '/ouvriers/': typeof OuvriersIndexRoute
+  '/recrutement/candidat/$id': typeof RecrutementCandidatIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/ouvriers/$id': typeof OuvriersIdRoute
+  '/pilotage/alertes': typeof PilotageAlertesRoute
+  '/recrutement/campagnes': typeof RecrutementCampagnesRoute
+  '/recrutement/candidatures': typeof RecrutementCandidaturesRoute
+  '/recrutement/entretiens': typeof RecrutementEntretiensRoute
+  '/ouvriers': typeof OuvriersIndexRoute
+  '/recrutement/candidat/$id': typeof RecrutementCandidatIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/ouvriers/$id': typeof OuvriersIdRoute
+  '/pilotage/alertes': typeof PilotageAlertesRoute
+  '/recrutement/campagnes': typeof RecrutementCampagnesRoute
+  '/recrutement/candidatures': typeof RecrutementCandidaturesRoute
+  '/recrutement/entretiens': typeof RecrutementEntretiensRoute
+  '/ouvriers/': typeof OuvriersIndexRoute
+  '/recrutement/candidat/$id': typeof RecrutementCandidatIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/ouvriers/$id'
+    | '/pilotage/alertes'
+    | '/recrutement/campagnes'
+    | '/recrutement/candidatures'
+    | '/recrutement/entretiens'
+    | '/ouvriers/'
+    | '/recrutement/candidat/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/ouvriers/$id'
+    | '/pilotage/alertes'
+    | '/recrutement/campagnes'
+    | '/recrutement/candidatures'
+    | '/recrutement/entretiens'
+    | '/ouvriers'
+    | '/recrutement/candidat/$id'
+  id:
+    | '__root__'
+    | '/'
+    | '/ouvriers/$id'
+    | '/pilotage/alertes'
+    | '/recrutement/campagnes'
+    | '/recrutement/candidatures'
+    | '/recrutement/entretiens'
+    | '/ouvriers/'
+    | '/recrutement/candidat/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  OuvriersIdRoute: typeof OuvriersIdRoute
+  PilotageAlertesRoute: typeof PilotageAlertesRoute
+  RecrutementCampagnesRoute: typeof RecrutementCampagnesRoute
+  RecrutementCandidaturesRoute: typeof RecrutementCandidaturesRoute
+  RecrutementEntretiensRoute: typeof RecrutementEntretiensRoute
+  OuvriersIndexRoute: typeof OuvriersIndexRoute
+  RecrutementCandidatIdRoute: typeof RecrutementCandidatIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,22 +143,68 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/ouvriers/': {
+      id: '/ouvriers/'
+      path: '/ouvriers'
+      fullPath: '/ouvriers/'
+      preLoaderRoute: typeof OuvriersIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/recrutement/entretiens': {
+      id: '/recrutement/entretiens'
+      path: '/recrutement/entretiens'
+      fullPath: '/recrutement/entretiens'
+      preLoaderRoute: typeof RecrutementEntretiensRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/recrutement/candidatures': {
+      id: '/recrutement/candidatures'
+      path: '/recrutement/candidatures'
+      fullPath: '/recrutement/candidatures'
+      preLoaderRoute: typeof RecrutementCandidaturesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/recrutement/campagnes': {
+      id: '/recrutement/campagnes'
+      path: '/recrutement/campagnes'
+      fullPath: '/recrutement/campagnes'
+      preLoaderRoute: typeof RecrutementCampagnesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pilotage/alertes': {
+      id: '/pilotage/alertes'
+      path: '/pilotage/alertes'
+      fullPath: '/pilotage/alertes'
+      preLoaderRoute: typeof PilotageAlertesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ouvriers/$id': {
+      id: '/ouvriers/$id'
+      path: '/ouvriers/$id'
+      fullPath: '/ouvriers/$id'
+      preLoaderRoute: typeof OuvriersIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/recrutement/candidat/$id': {
+      id: '/recrutement/candidat/$id'
+      path: '/recrutement/candidat/$id'
+      fullPath: '/recrutement/candidat/$id'
+      preLoaderRoute: typeof RecrutementCandidatIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  OuvriersIdRoute: OuvriersIdRoute,
+  PilotageAlertesRoute: PilotageAlertesRoute,
+  RecrutementCampagnesRoute: RecrutementCampagnesRoute,
+  RecrutementCandidaturesRoute: RecrutementCandidaturesRoute,
+  RecrutementEntretiensRoute: RecrutementEntretiensRoute,
+  OuvriersIndexRoute: OuvriersIndexRoute,
+  RecrutementCandidatIdRoute: RecrutementCandidatIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
