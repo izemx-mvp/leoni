@@ -206,11 +206,25 @@ export function Td({ children, className }: { children?: ReactNode; className?: 
   return <td className={cn("border-b border-border px-3 py-2.5 align-middle", className)}>{children}</td>;
 }
 
-export function Tr({ children, onClick, className }: { children: ReactNode; onClick?: () => void; className?: string }) {
+export function Tr({
+  children,
+  onClick,
+  onDoubleClick,
+  title,
+  className,
+}: {
+  children: ReactNode;
+  onClick?: () => void;
+  onDoubleClick?: () => void;
+  title?: string;
+  className?: string;
+}) {
   return (
     <tr
       onClick={onClick}
-      className={cn("transition-colors hover:bg-[var(--hover)]", onClick && "cursor-pointer", className)}
+      onDoubleClick={onDoubleClick}
+      title={title}
+      className={cn("transition-colors hover:bg-[var(--hover)]", (onClick || onDoubleClick) && "cursor-pointer", className)}
     >
       {children}
     </tr>

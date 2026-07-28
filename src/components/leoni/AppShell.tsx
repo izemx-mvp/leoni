@@ -66,14 +66,6 @@ const NAV: { code: string; titre: string; icone: typeof LayoutGrid; items: NavIt
     icone: Users,
     items: [
       { label: "Tous les ouvriers", to: "/ouvriers", search: { statut: "Tous" } },
-      { label: "À intégrer", to: "/ouvriers", search: { statut: "À intégrer" } },
-      { label: "En formation", to: "/ouvriers", search: { statut: "En formation" } },
-      { label: "À évaluer", to: "/ouvriers", search: { statut: "À évaluer" } },
-      { label: "À confirmer", to: "/ouvriers", search: { statut: "À confirmer" } },
-      { label: "Confirmés", to: "/ouvriers", search: { statut: "Confirmé" } },
-      { label: "À risque", to: "/ouvriers", search: { statut: "À risque" } },
-      { label: "Suspendus", to: "/ouvriers", search: { statut: "Suspendu" } },
-      { label: "Parcours arrêtés", to: "/ouvriers", search: { statut: "Parcours arrêté" } },
     ],
   },
   {
