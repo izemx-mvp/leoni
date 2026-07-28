@@ -16,8 +16,6 @@ export const Route = createFileRoute("/formation/planning")({
   component: PlanningPage,
 });
 
-export default undefined as never;
-
 function PlanningPage() {
   const { pousserNotification } = useLeoni();
   const [creneaux, setCreneaux] = useState(SESSIONS.map((s) => ({ ...s })));

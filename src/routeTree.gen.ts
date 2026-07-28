@@ -17,6 +17,7 @@ import { Route as RecrutementCampagnesRouteImport } from './routes/recrutement.c
 import { Route as PilotageAlertesRouteImport } from './routes/pilotage.alertes'
 import { Route as OuvriersIdRouteImport } from './routes/ouvriers.$id'
 import { Route as FormationSessionsRouteImport } from './routes/formation.sessions'
+import { Route as FormationPlanningRouteImport } from './routes/formation.planning'
 import { Route as FormationParcoursRouteImport } from './routes/formation.parcours'
 import { Route as RecrutementCandidatIdRouteImport } from './routes/recrutement.candidat.$id'
 
@@ -60,6 +61,11 @@ const FormationSessionsRoute = FormationSessionsRouteImport.update({
   path: '/formation/sessions',
   getParentRoute: () => rootRouteImport,
 } as any)
+const FormationPlanningRoute = FormationPlanningRouteImport.update({
+  id: '/formation/planning',
+  path: '/formation/planning',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const FormationParcoursRoute = FormationParcoursRouteImport.update({
   id: '/formation/parcours',
   path: '/formation/parcours',
@@ -74,6 +80,7 @@ const RecrutementCandidatIdRoute = RecrutementCandidatIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/formation/parcours': typeof FormationParcoursRoute
+  '/formation/planning': typeof FormationPlanningRoute
   '/formation/sessions': typeof FormationSessionsRoute
   '/ouvriers/$id': typeof OuvriersIdRoute
   '/pilotage/alertes': typeof PilotageAlertesRoute
@@ -86,6 +93,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/formation/parcours': typeof FormationParcoursRoute
+  '/formation/planning': typeof FormationPlanningRoute
   '/formation/sessions': typeof FormationSessionsRoute
   '/ouvriers/$id': typeof OuvriersIdRoute
   '/pilotage/alertes': typeof PilotageAlertesRoute
@@ -99,6 +107,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/formation/parcours': typeof FormationParcoursRoute
+  '/formation/planning': typeof FormationPlanningRoute
   '/formation/sessions': typeof FormationSessionsRoute
   '/ouvriers/$id': typeof OuvriersIdRoute
   '/pilotage/alertes': typeof PilotageAlertesRoute
@@ -113,6 +122,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/formation/parcours'
+    | '/formation/planning'
     | '/formation/sessions'
     | '/ouvriers/$id'
     | '/pilotage/alertes'
@@ -125,6 +135,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/formation/parcours'
+    | '/formation/planning'
     | '/formation/sessions'
     | '/ouvriers/$id'
     | '/pilotage/alertes'
@@ -137,6 +148,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/formation/parcours'
+    | '/formation/planning'
     | '/formation/sessions'
     | '/ouvriers/$id'
     | '/pilotage/alertes'
@@ -150,6 +162,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   FormationParcoursRoute: typeof FormationParcoursRoute
+  FormationPlanningRoute: typeof FormationPlanningRoute
   FormationSessionsRoute: typeof FormationSessionsRoute
   OuvriersIdRoute: typeof OuvriersIdRoute
   PilotageAlertesRoute: typeof PilotageAlertesRoute
@@ -218,6 +231,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FormationSessionsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/formation/planning': {
+      id: '/formation/planning'
+      path: '/formation/planning'
+      fullPath: '/formation/planning'
+      preLoaderRoute: typeof FormationPlanningRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/formation/parcours': {
       id: '/formation/parcours'
       path: '/formation/parcours'
@@ -238,6 +258,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   FormationParcoursRoute: FormationParcoursRoute,
+  FormationPlanningRoute: FormationPlanningRoute,
   FormationSessionsRoute: FormationSessionsRoute,
   OuvriersIdRoute: OuvriersIdRoute,
   PilotageAlertesRoute: PilotageAlertesRoute,
