@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as PresencesRouteImport } from './routes/presences'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as OuvriersIndexRouteImport } from './routes/ouvriers.index'
 import { Route as RecrutementEntretiensRouteImport } from './routes/recrutement.entretiens'
@@ -22,6 +23,11 @@ import { Route as FormationPlanningRouteImport } from './routes/formation.planni
 import { Route as FormationParcoursRouteImport } from './routes/formation.parcours'
 import { Route as RecrutementCandidatIdRouteImport } from './routes/recrutement.candidat.$id'
 
+const PresencesRoute = PresencesRouteImport.update({
+  id: '/presences',
+  path: '/presences',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -85,6 +91,7 @@ const RecrutementCandidatIdRoute = RecrutementCandidatIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/presences': typeof PresencesRoute
   '/formation/parcours': typeof FormationParcoursRoute
   '/formation/planning': typeof FormationPlanningRoute
   '/formation/qcm': typeof FormationQcmRoute
@@ -99,6 +106,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/presences': typeof PresencesRoute
   '/formation/parcours': typeof FormationParcoursRoute
   '/formation/planning': typeof FormationPlanningRoute
   '/formation/qcm': typeof FormationQcmRoute
@@ -114,6 +122,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/presences': typeof PresencesRoute
   '/formation/parcours': typeof FormationParcoursRoute
   '/formation/planning': typeof FormationPlanningRoute
   '/formation/qcm': typeof FormationQcmRoute
@@ -130,6 +139,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/presences'
     | '/formation/parcours'
     | '/formation/planning'
     | '/formation/qcm'
@@ -144,6 +154,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/presences'
     | '/formation/parcours'
     | '/formation/planning'
     | '/formation/qcm'
@@ -158,6 +169,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/presences'
     | '/formation/parcours'
     | '/formation/planning'
     | '/formation/qcm'
@@ -173,6 +185,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  PresencesRoute: typeof PresencesRoute
   FormationParcoursRoute: typeof FormationParcoursRoute
   FormationPlanningRoute: typeof FormationPlanningRoute
   FormationQcmRoute: typeof FormationQcmRoute
@@ -188,6 +201,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/presences': {
+      id: '/presences'
+      path: '/presences'
+      fullPath: '/presences'
+      preLoaderRoute: typeof PresencesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -277,6 +297,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  PresencesRoute: PresencesRoute,
   FormationParcoursRoute: FormationParcoursRoute,
   FormationPlanningRoute: FormationPlanningRoute,
   FormationQcmRoute: FormationQcmRoute,
