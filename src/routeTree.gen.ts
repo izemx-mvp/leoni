@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as PresencesRouteImport } from './routes/presences'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as OuvriersIndexRouteImport } from './routes/ouvriers.index'
+import { Route as SuiviReclamationsRouteImport } from './routes/suivi.reclamations'
 import { Route as SuiviObservationsRouteImport } from './routes/suivi.observations'
 import { Route as RecrutementEntretiensRouteImport } from './routes/recrutement.entretiens'
 import { Route as RecrutementCandidaturesRouteImport } from './routes/recrutement.candidatures'
@@ -37,6 +38,11 @@ const IndexRoute = IndexRouteImport.update({
 const OuvriersIndexRoute = OuvriersIndexRouteImport.update({
   id: '/ouvriers/',
   path: '/ouvriers/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SuiviReclamationsRoute = SuiviReclamationsRouteImport.update({
+  id: '/suivi/reclamations',
+  path: '/suivi/reclamations',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SuiviObservationsRoute = SuiviObservationsRouteImport.update({
@@ -108,6 +114,7 @@ export interface FileRoutesByFullPath {
   '/recrutement/candidatures': typeof RecrutementCandidaturesRoute
   '/recrutement/entretiens': typeof RecrutementEntretiensRoute
   '/suivi/observations': typeof SuiviObservationsRoute
+  '/suivi/reclamations': typeof SuiviReclamationsRoute
   '/ouvriers/': typeof OuvriersIndexRoute
   '/recrutement/candidat/$id': typeof RecrutementCandidatIdRoute
 }
@@ -124,6 +131,7 @@ export interface FileRoutesByTo {
   '/recrutement/candidatures': typeof RecrutementCandidaturesRoute
   '/recrutement/entretiens': typeof RecrutementEntretiensRoute
   '/suivi/observations': typeof SuiviObservationsRoute
+  '/suivi/reclamations': typeof SuiviReclamationsRoute
   '/ouvriers': typeof OuvriersIndexRoute
   '/recrutement/candidat/$id': typeof RecrutementCandidatIdRoute
 }
@@ -141,6 +149,7 @@ export interface FileRoutesById {
   '/recrutement/candidatures': typeof RecrutementCandidaturesRoute
   '/recrutement/entretiens': typeof RecrutementEntretiensRoute
   '/suivi/observations': typeof SuiviObservationsRoute
+  '/suivi/reclamations': typeof SuiviReclamationsRoute
   '/ouvriers/': typeof OuvriersIndexRoute
   '/recrutement/candidat/$id': typeof RecrutementCandidatIdRoute
 }
@@ -159,6 +168,7 @@ export interface FileRouteTypes {
     | '/recrutement/candidatures'
     | '/recrutement/entretiens'
     | '/suivi/observations'
+    | '/suivi/reclamations'
     | '/ouvriers/'
     | '/recrutement/candidat/$id'
   fileRoutesByTo: FileRoutesByTo
@@ -175,6 +185,7 @@ export interface FileRouteTypes {
     | '/recrutement/candidatures'
     | '/recrutement/entretiens'
     | '/suivi/observations'
+    | '/suivi/reclamations'
     | '/ouvriers'
     | '/recrutement/candidat/$id'
   id:
@@ -191,6 +202,7 @@ export interface FileRouteTypes {
     | '/recrutement/candidatures'
     | '/recrutement/entretiens'
     | '/suivi/observations'
+    | '/suivi/reclamations'
     | '/ouvriers/'
     | '/recrutement/candidat/$id'
   fileRoutesById: FileRoutesById
@@ -208,6 +220,7 @@ export interface RootRouteChildren {
   RecrutementCandidaturesRoute: typeof RecrutementCandidaturesRoute
   RecrutementEntretiensRoute: typeof RecrutementEntretiensRoute
   SuiviObservationsRoute: typeof SuiviObservationsRoute
+  SuiviReclamationsRoute: typeof SuiviReclamationsRoute
   OuvriersIndexRoute: typeof OuvriersIndexRoute
   RecrutementCandidatIdRoute: typeof RecrutementCandidatIdRoute
 }
@@ -233,6 +246,13 @@ declare module '@tanstack/react-router' {
       path: '/ouvriers'
       fullPath: '/ouvriers/'
       preLoaderRoute: typeof OuvriersIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/suivi/reclamations': {
+      id: '/suivi/reclamations'
+      path: '/suivi/reclamations'
+      fullPath: '/suivi/reclamations'
+      preLoaderRoute: typeof SuiviReclamationsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/suivi/observations': {
@@ -328,6 +348,7 @@ const rootRouteChildren: RootRouteChildren = {
   RecrutementCandidaturesRoute: RecrutementCandidaturesRoute,
   RecrutementEntretiensRoute: RecrutementEntretiensRoute,
   SuiviObservationsRoute: SuiviObservationsRoute,
+  SuiviReclamationsRoute: SuiviReclamationsRoute,
   OuvriersIndexRoute: OuvriersIndexRoute,
   RecrutementCandidatIdRoute: RecrutementCandidatIdRoute,
 }
