@@ -16,6 +16,7 @@ import { Route as RecrutementCandidaturesRouteImport } from './routes/recrutemen
 import { Route as RecrutementCampagnesRouteImport } from './routes/recrutement.campagnes'
 import { Route as PilotageAlertesRouteImport } from './routes/pilotage.alertes'
 import { Route as OuvriersIdRouteImport } from './routes/ouvriers.$id'
+import { Route as FormationSessionsRouteImport } from './routes/formation.sessions'
 import { Route as FormationParcoursRouteImport } from './routes/formation.parcours'
 import { Route as RecrutementCandidatIdRouteImport } from './routes/recrutement.candidat.$id'
 
@@ -54,6 +55,11 @@ const OuvriersIdRoute = OuvriersIdRouteImport.update({
   path: '/ouvriers/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const FormationSessionsRoute = FormationSessionsRouteImport.update({
+  id: '/formation/sessions',
+  path: '/formation/sessions',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const FormationParcoursRoute = FormationParcoursRouteImport.update({
   id: '/formation/parcours',
   path: '/formation/parcours',
@@ -68,6 +74,7 @@ const RecrutementCandidatIdRoute = RecrutementCandidatIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/formation/parcours': typeof FormationParcoursRoute
+  '/formation/sessions': typeof FormationSessionsRoute
   '/ouvriers/$id': typeof OuvriersIdRoute
   '/pilotage/alertes': typeof PilotageAlertesRoute
   '/recrutement/campagnes': typeof RecrutementCampagnesRoute
@@ -79,6 +86,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/formation/parcours': typeof FormationParcoursRoute
+  '/formation/sessions': typeof FormationSessionsRoute
   '/ouvriers/$id': typeof OuvriersIdRoute
   '/pilotage/alertes': typeof PilotageAlertesRoute
   '/recrutement/campagnes': typeof RecrutementCampagnesRoute
@@ -91,6 +99,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/formation/parcours': typeof FormationParcoursRoute
+  '/formation/sessions': typeof FormationSessionsRoute
   '/ouvriers/$id': typeof OuvriersIdRoute
   '/pilotage/alertes': typeof PilotageAlertesRoute
   '/recrutement/campagnes': typeof RecrutementCampagnesRoute
@@ -104,6 +113,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/formation/parcours'
+    | '/formation/sessions'
     | '/ouvriers/$id'
     | '/pilotage/alertes'
     | '/recrutement/campagnes'
@@ -115,6 +125,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/formation/parcours'
+    | '/formation/sessions'
     | '/ouvriers/$id'
     | '/pilotage/alertes'
     | '/recrutement/campagnes'
@@ -126,6 +137,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/formation/parcours'
+    | '/formation/sessions'
     | '/ouvriers/$id'
     | '/pilotage/alertes'
     | '/recrutement/campagnes'
@@ -138,6 +150,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   FormationParcoursRoute: typeof FormationParcoursRoute
+  FormationSessionsRoute: typeof FormationSessionsRoute
   OuvriersIdRoute: typeof OuvriersIdRoute
   PilotageAlertesRoute: typeof PilotageAlertesRoute
   RecrutementCampagnesRoute: typeof RecrutementCampagnesRoute
@@ -198,6 +211,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OuvriersIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/formation/sessions': {
+      id: '/formation/sessions'
+      path: '/formation/sessions'
+      fullPath: '/formation/sessions'
+      preLoaderRoute: typeof FormationSessionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/formation/parcours': {
       id: '/formation/parcours'
       path: '/formation/parcours'
@@ -218,6 +238,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   FormationParcoursRoute: FormationParcoursRoute,
+  FormationSessionsRoute: FormationSessionsRoute,
   OuvriersIdRoute: OuvriersIdRoute,
   PilotageAlertesRoute: PilotageAlertesRoute,
   RecrutementCampagnesRoute: RecrutementCampagnesRoute,
