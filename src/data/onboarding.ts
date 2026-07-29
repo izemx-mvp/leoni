@@ -538,8 +538,8 @@ Nous avons le plaisir de vous informer que votre candidature au poste de ${d.arr
 
 Votre intégration est prévue le ${dateLongue(d.arrivee.date)} à ${d.arrivee.heure.replace(":", "h")}.
 
-📍 Lieu : ${d.arrivee.site}
-📌 Point d'accueil : ${d.arrivee.pointAccueil}
+Lieu : ${d.arrivee.site}
+Point d'accueil : ${d.arrivee.pointAccueil}
 
 Afin de préparer votre intégration, merci de nous fournir les documents suivants :
 ${listeDocs}
