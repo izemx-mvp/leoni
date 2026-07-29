@@ -111,7 +111,7 @@ function ColonneJour({
               conflit={conflits.has(s.id)}
               compacte={!large && hauteurDe(s) < 80}
               onClick={() => onOuvrir(s.id)}
-              onDragStart={() => undefined}
+              onDragStart={(e) => e.dataTransfer.setData("text/session", s.id)}
               className="absolute px-0.5"
               style={{
                 top: topDe(s),
@@ -133,31 +133,14 @@ export function VueSemaine({ debutSemaine, nbJours = 6, ...props }: VueProps & {
   const jours = Array.from({ length: nbJours }, (_, i) => ajouterJours(debutSemaine, i));
   return (
     <div className="overflow-x-auto rounded-md border border-border bg-card">
-      <div className="flex min-w-[880px]" onDragStart={(e) => {
-        const el = (e.target as HTMLElement).closest("article");
-        const carte = el?.parentElement as HTMLElement | null;
-        const id = carte?.dataset.sessionId;
-        if (id) e.dataTransfer.setData("text/session", id);
-      }}>
+      <div className="flex min-w-[880px]">
         <ColonneHeures />
         {jours.map((j) => (
-          <ColonneJourWrapper key={j} date={j} {...props} />
+          <ColonneJour key={j} date={j} {...props} />
         ))}
       </div>
     </div>
   );
-}
-
-function ColonneJourWrapper(props: VueProps & { date: string; large?: boolean }) {
-  return (
-    <div className="min-w-0 flex-1" onDragStart={() => undefined}>
-      <ColonneJourAvecId {...props} />
-    </div>
-  );
-}
-
-function ColonneJourAvecId(props: VueProps & { date: string; large?: boolean }) {
-  return <ColonneJour {...props} />;
 }
 
 /* ---------------------------------- Jour --------------------------------- */
@@ -167,10 +150,7 @@ export function VueJour({ date, ...props }: VueProps & { date: string }) {
   return (
     <div className="grid gap-3 lg:grid-cols-[1fr_320px]">
       <div className="overflow-hidden rounded-md border border-border bg-card">
-        <div className="flex" onDragStart={(e) => {
-          const carte = (e.target as HTMLElement).closest("[data-session-id]") as HTMLElement | null;
-          if (carte?.dataset.sessionId) e.dataTransfer.setData("text/session", carte.dataset.sessionId);
-        }}>
+        <div className="flex">
           <ColonneHeures />
           <ColonneJour date={date} large {...props} />
         </div>
@@ -245,7 +225,7 @@ export function VueMois({ mois, sessions, conflits, onOuvrir, onDeplacer }: VueP
                     conflit={conflits.has(s.id)}
                     compacte
                     onClick={() => onOuvrir(s.id)}
-                    onDragStart={() => undefined}
+                    onDragStart={(e) => e.dataTransfer.setData("text/session", s.id)}
                   />
                 ))}
                 {dujour.length > 3 && (

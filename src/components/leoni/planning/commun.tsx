@@ -124,7 +124,7 @@ export function SessionCarte({
   conflit?: boolean;
   compacte?: boolean;
   onClick?: () => void;
-  onDragStart?: () => void;
+  onDragStart?: (e: React.DragEvent) => void;
   style?: React.CSSProperties;
   className?: string;
 }) {
