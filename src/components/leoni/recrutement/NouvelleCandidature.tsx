@@ -763,6 +763,8 @@ export function NouvelleCandidature({ modeInitial = "choix", onClose }: { modeIn
               scoringAuto={scoringAuto}
               setScoringAuto={setScoringAuto}
               doublons={doublons.length}
+              doublonIgnore={doublonIgnore}
+              setDoublonIgnore={setDoublonIgnore}
               origine="IA"
             />
           )}
@@ -846,6 +848,8 @@ export function NouvelleCandidature({ modeInitial = "choix", onClose }: { modeIn
               scoringAuto={scoringAuto}
               setScoringAuto={setScoringAuto}
               doublons={doublons.length}
+              doublonIgnore={doublonIgnore}
+              setDoublonIgnore={setDoublonIgnore}
               origine="Manuelle"
             />
           )}
@@ -953,6 +957,8 @@ function Resume({
   scoringAuto,
   setScoringAuto,
   doublons,
+  doublonIgnore,
+  setDoublonIgnore,
   origine,
 }: {
   identite: { prenom: string; nom: string; ville: string; telephone: string; email: string };
@@ -963,11 +969,19 @@ function Resume({
   scoringAuto: boolean;
   setScoringAuto: (v: boolean) => void;
   doublons: number;
+  doublonIgnore: boolean;
+  setDoublonIgnore: (v: boolean) => void;
   origine: string;
 }) {
   const aType = (t: TypeDocument) => documents.some((d) => d.type === t);
   return (
     <div className="space-y-3">
+      {doublons > 0 && !doublonIgnore && (
+        <div className="flex flex-wrap items-center gap-3 rounded-sm border border-[var(--warning)] px-3 py-2 text-xs">
+          <span>Candidat potentiellement déjà existant — confirmez la création pour continuer.</span>
+          <Btn size="sm" variant="secondary" onClick={() => setDoublonIgnore(true)}>Créer quand même</Btn>
+        </div>
+      )}
       <Panel title="Résumé de la candidature">
         <div className="grid gap-3 md:grid-cols-3">
           <Recap label="Candidat" valeur={`${identite.prenom} ${identite.nom}`.trim() || "—"} />
