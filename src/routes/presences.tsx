@@ -155,7 +155,7 @@ function PresencesPage() {
         <Panel title={vue} bodyClassName="p-0">
           <Table>
             <thead>
-              <tr><Th>Référence</Th><Th>Opérateur</Th><Th>Site</Th><Th>Date</Th><Th>Type</Th><Th>Durée</Th><Th>Statut</Th><Th>Action</Th></tr>
+              <tr><Th>Référence</Th><Th>Opérateur</Th><Th>Site</Th><Th>Date</Th><Th>Type</Th><Th>Durée</Th><Th>Statut</Th><Th>Avertissement</Th><Th>Actions</Th></tr>
             </thead>
             <tbody>
               {(vue === "Retards" ? retards : absences.filter((a) => a.type !== "Retard")).map((a) => (
@@ -168,9 +168,17 @@ function PresencesPage() {
                   <Td className="num text-muted-foreground">{a.duree}</Td>
                   <Td><Tag ton={/valid|reçu/i.test(a.statut) ? "success" : /rattrapage/i.test(a.statut) ? "critical" : "warning"}>{a.statut}</Tag></Td>
                   <Td>
-                    <Btn size="sm" onClick={() => pousserNotification({ titre: "Absence traitée", detail: `${a.id} — ${a.ouvrier}`, ton: "info" })}>
-                      Traiter
-                    </Btn>
+                    {envoyes[a.id] ? <Tag ton="critical">{envoyes[a.id]}</Tag> : <span className="text-xs text-muted-foreground">—</span>}
+                  </Td>
+                  <Td>
+                    <div className="flex gap-1.5">
+                      <Btn size="sm" variant="secondary" onClick={() => pousserNotification({ titre: "Absence traitée", detail: `${a.id} — ${a.ouvrier}`, ton: "info" })}>
+                        Traiter
+                      </Btn>
+                      <Btn size="sm" onClick={() => ouvrirAvertissement(a)}>
+                        <AlertTriangle className="size-3.5" /> Avertissement
+                      </Btn>
+                    </div>
                   </Td>
                 </Tr>
               ))}
@@ -196,6 +204,60 @@ function PresencesPage() {
           </div>
         </Panel>
       )}
+
+      {cible && (
+        <Modale
+          titre={`Avertissement — ${cible.ouvrier}`}
+          sousTitre={`${cible.id} · ${cible.type} du ${cible.date} (${cible.duree}) · ${cible.site}`}
+          onClose={() => setCible(null)}
+          large
+          footer={
+            <>
+              <Btn variant="ghost" onClick={() => setCible(null)}>Annuler</Btn>
+              <Btn variant="primary" onClick={envoyer}>
+                <Send className="size-3.5" /> Envoyer l'avertissement
+              </Btn>
+            </>
+          }
+        >
+          <div className="grid gap-4 md:grid-cols-[220px_1fr]">
+            <div className="grid content-start gap-3">
+              <label className="block">
+                <span className="label-xs">Niveau</span>
+                <div className="mt-1">
+                  <Select
+                    value={niveau}
+                    onChange={(v) => {
+                      setNiveau(v);
+                      setMessage(modeleAvertissement(v, cible));
+                    }}
+                    options={NIVEAUX}
+                  />
+                </div>
+              </label>
+              <label className="block">
+                <span className="label-xs">Canal</span>
+                <div className="mt-1">
+                  <Select value={canal} onChange={setCanal} options={["WhatsApp", "Email", "Courrier remis en main propre"]} />
+                </div>
+              </label>
+              <div className="rounded-sm border border-border bg-[var(--hover)] p-2 text-[11px] text-muted-foreground">
+                L'avertissement est archivé dans la fiche ouvrier (Suivi & événements) et compte dans le score de risque.
+              </div>
+            </div>
+            <label className="block">
+              <span className="label-xs">Message</span>
+              <textarea
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                rows={16}
+                className="mt-1 w-full rounded-sm border border-border bg-card p-3 font-mono text-xs outline-none focus:ring-2 focus:ring-[var(--ring)]"
+              />
+            </label>
+          </div>
+        </Modale>
+      )}
     </>
+
   );
 }
