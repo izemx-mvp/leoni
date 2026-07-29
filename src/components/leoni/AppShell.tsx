@@ -73,12 +73,10 @@ const NAV: { code: string; titre: string; icone: typeof LayoutGrid; items: NavIt
     icone: GraduationCap,
     items: [
       { label: "Parcours", to: "/formation/parcours" },
-      { label: "Sessions", to: "/formation/sessions" },
-      { label: "Groupes", to: "/formation/sessions" },
+      { label: "Sessions & suivi", to: "/formation/sessions", search: { onglet: "Vue d'ensemble" } },
       { label: "Planning", to: "/formation/planning" },
-      { label: "Suivi quotidien", to: "/formation/sessions" },
-      { label: "QCM & tests", to: "/formation/qcm" },
-      { label: "Rattrapages", to: "/formation/qcm" },
+      { label: "QCM & tests", to: "/formation/qcm", search: { onglet: "Vue d'ensemble" } },
+      { label: "Suivi & qualité", to: "/formation/qualite", search: { onglet: "Vue d'ensemble" } },
     ],
   },
   {
@@ -94,14 +92,9 @@ const NAV: { code: string; titre: string; icone: typeof LayoutGrid; items: NavIt
   },
   {
     code: "06",
-    titre: "Suivi & qualité",
+    titre: "Réclamations",
     icone: AlertTriangle,
-    items: [
-      { label: "Observations", to: "/suivi/observations" },
-      { label: "Feedbacks", to: "/suivi/observations" },
-      { label: "Alertes", to: "/pilotage/alertes" },
-      { label: "Réclamations", to: "/suivi/reclamations" },
-    ],
+    items: [{ label: "Réclamations", to: "/suivi/reclamations" }],
   },
   {
     code: "07",

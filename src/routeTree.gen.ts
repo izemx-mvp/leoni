@@ -16,13 +16,13 @@ import { Route as AdministrationRouteImport } from './routes/administration'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as OuvriersIndexRouteImport } from './routes/ouvriers.index'
 import { Route as SuiviReclamationsRouteImport } from './routes/suivi.reclamations'
-import { Route as SuiviObservationsRouteImport } from './routes/suivi.observations'
 import { Route as RecrutementEntretiensRouteImport } from './routes/recrutement.entretiens'
 import { Route as RecrutementCandidaturesRouteImport } from './routes/recrutement.candidatures'
 import { Route as RecrutementCampagnesRouteImport } from './routes/recrutement.campagnes'
 import { Route as PilotageAlertesRouteImport } from './routes/pilotage.alertes'
 import { Route as OuvriersIdRouteImport } from './routes/ouvriers.$id'
 import { Route as FormationSessionsRouteImport } from './routes/formation.sessions'
+import { Route as FormationQualiteRouteImport } from './routes/formation.qualite'
 import { Route as FormationQcmRouteImport } from './routes/formation.qcm'
 import { Route as FormationPlanningRouteImport } from './routes/formation.planning'
 import { Route as FormationParcoursRouteImport } from './routes/formation.parcours'
@@ -66,11 +66,6 @@ const SuiviReclamationsRoute = SuiviReclamationsRouteImport.update({
   path: '/suivi/reclamations',
   getParentRoute: () => rootRouteImport,
 } as any)
-const SuiviObservationsRoute = SuiviObservationsRouteImport.update({
-  id: '/suivi/observations',
-  path: '/suivi/observations',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const RecrutementEntretiensRoute = RecrutementEntretiensRouteImport.update({
   id: '/recrutement/entretiens',
   path: '/recrutement/entretiens',
@@ -99,6 +94,11 @@ const OuvriersIdRoute = OuvriersIdRouteImport.update({
 const FormationSessionsRoute = FormationSessionsRouteImport.update({
   id: '/formation/sessions',
   path: '/formation/sessions',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FormationQualiteRoute = FormationQualiteRouteImport.update({
+  id: '/formation/qualite',
+  path: '/formation/qualite',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FormationQcmRoute = FormationQcmRouteImport.update({
@@ -146,13 +146,13 @@ export interface FileRoutesByFullPath {
   '/formation/parcours': typeof FormationParcoursRoute
   '/formation/planning': typeof FormationPlanningRoute
   '/formation/qcm': typeof FormationQcmRouteWithChildren
+  '/formation/qualite': typeof FormationQualiteRoute
   '/formation/sessions': typeof FormationSessionsRoute
   '/ouvriers/$id': typeof OuvriersIdRoute
   '/pilotage/alertes': typeof PilotageAlertesRoute
   '/recrutement/campagnes': typeof RecrutementCampagnesRoute
   '/recrutement/candidatures': typeof RecrutementCandidaturesRoute
   '/recrutement/entretiens': typeof RecrutementEntretiensRoute
-  '/suivi/observations': typeof SuiviObservationsRoute
   '/suivi/reclamations': typeof SuiviReclamationsRoute
   '/ouvriers/': typeof OuvriersIndexRoute
   '/formation/qcm/$id': typeof FormationQcmIdRoute
@@ -168,13 +168,13 @@ export interface FileRoutesByTo {
   '/reporting': typeof ReportingRoute
   '/formation/parcours': typeof FormationParcoursRoute
   '/formation/planning': typeof FormationPlanningRoute
+  '/formation/qualite': typeof FormationQualiteRoute
   '/formation/sessions': typeof FormationSessionsRoute
   '/ouvriers/$id': typeof OuvriersIdRoute
   '/pilotage/alertes': typeof PilotageAlertesRoute
   '/recrutement/campagnes': typeof RecrutementCampagnesRoute
   '/recrutement/candidatures': typeof RecrutementCandidaturesRoute
   '/recrutement/entretiens': typeof RecrutementEntretiensRoute
-  '/suivi/observations': typeof SuiviObservationsRoute
   '/suivi/reclamations': typeof SuiviReclamationsRoute
   '/ouvriers': typeof OuvriersIndexRoute
   '/formation/qcm/$id': typeof FormationQcmIdRoute
@@ -192,13 +192,13 @@ export interface FileRoutesById {
   '/formation/parcours': typeof FormationParcoursRoute
   '/formation/planning': typeof FormationPlanningRoute
   '/formation/qcm': typeof FormationQcmRouteWithChildren
+  '/formation/qualite': typeof FormationQualiteRoute
   '/formation/sessions': typeof FormationSessionsRoute
   '/ouvriers/$id': typeof OuvriersIdRoute
   '/pilotage/alertes': typeof PilotageAlertesRoute
   '/recrutement/campagnes': typeof RecrutementCampagnesRoute
   '/recrutement/candidatures': typeof RecrutementCandidaturesRoute
   '/recrutement/entretiens': typeof RecrutementEntretiensRoute
-  '/suivi/observations': typeof SuiviObservationsRoute
   '/suivi/reclamations': typeof SuiviReclamationsRoute
   '/ouvriers/': typeof OuvriersIndexRoute
   '/formation/qcm/$id': typeof FormationQcmIdRoute
@@ -217,13 +217,13 @@ export interface FileRouteTypes {
     | '/formation/parcours'
     | '/formation/planning'
     | '/formation/qcm'
+    | '/formation/qualite'
     | '/formation/sessions'
     | '/ouvriers/$id'
     | '/pilotage/alertes'
     | '/recrutement/campagnes'
     | '/recrutement/candidatures'
     | '/recrutement/entretiens'
-    | '/suivi/observations'
     | '/suivi/reclamations'
     | '/ouvriers/'
     | '/formation/qcm/$id'
@@ -239,13 +239,13 @@ export interface FileRouteTypes {
     | '/reporting'
     | '/formation/parcours'
     | '/formation/planning'
+    | '/formation/qualite'
     | '/formation/sessions'
     | '/ouvriers/$id'
     | '/pilotage/alertes'
     | '/recrutement/campagnes'
     | '/recrutement/candidatures'
     | '/recrutement/entretiens'
-    | '/suivi/observations'
     | '/suivi/reclamations'
     | '/ouvriers'
     | '/formation/qcm/$id'
@@ -262,13 +262,13 @@ export interface FileRouteTypes {
     | '/formation/parcours'
     | '/formation/planning'
     | '/formation/qcm'
+    | '/formation/qualite'
     | '/formation/sessions'
     | '/ouvriers/$id'
     | '/pilotage/alertes'
     | '/recrutement/campagnes'
     | '/recrutement/candidatures'
     | '/recrutement/entretiens'
-    | '/suivi/observations'
     | '/suivi/reclamations'
     | '/ouvriers/'
     | '/formation/qcm/$id'
@@ -286,13 +286,13 @@ export interface RootRouteChildren {
   FormationParcoursRoute: typeof FormationParcoursRoute
   FormationPlanningRoute: typeof FormationPlanningRoute
   FormationQcmRoute: typeof FormationQcmRouteWithChildren
+  FormationQualiteRoute: typeof FormationQualiteRoute
   FormationSessionsRoute: typeof FormationSessionsRoute
   OuvriersIdRoute: typeof OuvriersIdRoute
   PilotageAlertesRoute: typeof PilotageAlertesRoute
   RecrutementCampagnesRoute: typeof RecrutementCampagnesRoute
   RecrutementCandidaturesRoute: typeof RecrutementCandidaturesRoute
   RecrutementEntretiensRoute: typeof RecrutementEntretiensRoute
-  SuiviObservationsRoute: typeof SuiviObservationsRoute
   SuiviReclamationsRoute: typeof SuiviReclamationsRoute
   OuvriersIndexRoute: typeof OuvriersIndexRoute
   RecrutementCandidatIdRoute: typeof RecrutementCandidatIdRoute
@@ -349,13 +349,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SuiviReclamationsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/suivi/observations': {
-      id: '/suivi/observations'
-      path: '/suivi/observations'
-      fullPath: '/suivi/observations'
-      preLoaderRoute: typeof SuiviObservationsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/recrutement/entretiens': {
       id: '/recrutement/entretiens'
       path: '/recrutement/entretiens'
@@ -396,6 +389,13 @@ declare module '@tanstack/react-router' {
       path: '/formation/sessions'
       fullPath: '/formation/sessions'
       preLoaderRoute: typeof FormationSessionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/formation/qualite': {
+      id: '/formation/qualite'
+      path: '/formation/qualite'
+      fullPath: '/formation/qualite'
+      preLoaderRoute: typeof FormationQualiteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/formation/qcm': {
@@ -475,13 +475,13 @@ const rootRouteChildren: RootRouteChildren = {
   FormationParcoursRoute: FormationParcoursRoute,
   FormationPlanningRoute: FormationPlanningRoute,
   FormationQcmRoute: FormationQcmRouteWithChildren,
+  FormationQualiteRoute: FormationQualiteRoute,
   FormationSessionsRoute: FormationSessionsRoute,
   OuvriersIdRoute: OuvriersIdRoute,
   PilotageAlertesRoute: PilotageAlertesRoute,
   RecrutementCampagnesRoute: RecrutementCampagnesRoute,
   RecrutementCandidaturesRoute: RecrutementCandidaturesRoute,
   RecrutementEntretiensRoute: RecrutementEntretiensRoute,
-  SuiviObservationsRoute: SuiviObservationsRoute,
   SuiviReclamationsRoute: SuiviReclamationsRoute,
   OuvriersIndexRoute: OuvriersIndexRoute,
   RecrutementCandidatIdRoute: RecrutementCandidatIdRoute,
@@ -489,3 +489,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
