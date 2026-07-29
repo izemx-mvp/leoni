@@ -385,6 +385,93 @@ export interface DossierOnboarding {
   accueilFinalise: boolean;
 }
 
+/* ---------------- Formation d'intégration ---------------- */
+
+export const PARCOURS_FORMATION = [
+  "Parcours câblage niveau 1",
+  "Parcours câblage niveau 2",
+  "Parcours coupe & sertissage",
+  "Parcours contrôle qualité",
+  "Parcours polyvalence ligne",
+];
+
+export const LIEUX_FORMATION = [
+  "Centre de formation — Salle A",
+  "Centre de formation — Salle B",
+  "Atelier école câblage",
+  "Ligne de production (formation terrain)",
+];
+
+export const HORAIRES_FORMATION = ["08:00 – 12:00", "08:00 – 16:00", "13:00 – 17:00", "06:00 – 14:00"];
+
+export const DUREES_PAR_POSTE: Record<string, number> = {
+  "Opératrice câblage": 15,
+  "Opérateur câblage": 15,
+  "Opérateur coupe": 12,
+  "Technicien de ligne": 20,
+  "Contrôleuse qualité": 18,
+};
+
+export interface FormationOnboarding {
+  parcours: string;
+  dateDebut: string; // JJ/MM/AAAA
+  dureeJours: number;
+  horaire: string;
+  lieu: string;
+  formateur: string;
+  groupe: string;
+  instructions: string;
+}
+
+/** Ajoute n jours ouvrés à une date JJ/MM/AAAA et renvoie le même format. */
+export function ajouterJoursOuvres(dateFr: string, n: number): string {
+  const [j, m, a] = dateFr.split("/").map(Number);
+  const d = new Date(a, (m || 1) - 1, j || 1);
+  if (Number.isNaN(d.getTime())) return dateFr;
+  let restants = Math.max(0, n - 1);
+  while (restants > 0) {
+    d.setDate(d.getDate() + 1);
+    if (d.getDay() !== 0 && d.getDay() !== 6) restants--;
+  }
+  const p = (x: number) => String(x).padStart(2, "0");
+  return `${p(d.getDate())}/${p(d.getMonth() + 1)}/${d.getFullYear()}`;
+}
+
+export function dateFinFormation(f: FormationOnboarding) {
+  return ajouterJoursOuvres(f.dateDebut, f.dureeJours);
+}
+
+/** Valeurs par défaut générées automatiquement lors de l'affectation — restent modifiables. */
+export function formationParDefaut(opts: {
+  dateArrivee: string;
+  poste: string;
+  atelier?: string;
+  formateur?: string;
+  groupe?: string;
+}): FormationOnboarding {
+  const duree = DUREES_PAR_POSTE[opts.poste] ?? 15;
+  const parcours =
+    opts.poste.toLowerCase().includes("coupe")
+      ? PARCOURS_FORMATION[2]
+      : opts.poste.toLowerCase().includes("qualité")
+        ? PARCOURS_FORMATION[3]
+        : PARCOURS_FORMATION[0];
+  return {
+    parcours,
+    dateDebut: ajouterJoursOuvres(opts.dateArrivee, 2),
+    dureeJours: duree,
+    horaire: HORAIRES_FORMATION[1],
+    lieu: LIEUX_FORMATION[0],
+    formateur: opts.formateur || "À affecter",
+    groupe: opts.groupe || "À constituer",
+    instructions:
+      "Se présenter 15 minutes avant le début de la session, en tenue de travail avec les EPI remis. " +
+      "Présence obligatoire à toutes les journées ; toute absence doit être signalée au formateur et au service RH. " +
+      "Une évaluation QCM est prévue en fin de parcours.",
+  };
+}
+
+
 /* ---------------- Fabrique ---------------- */
 
 export function documentDepuisModele(m: ModeleDocument, dateLimite: string): DocumentOnboarding {
