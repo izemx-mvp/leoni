@@ -14,7 +14,7 @@ import {
 /** Paramétrage des valeurs par défaut de la pré-intégration (par site et par poste). */
 export function ParametresOnboarding() {
   const { pousserNotification } = useLeoni();
-  const [site, setSite] = useState(SITES[1]);
+  const [site, setSite] = useState<string>(SITES[1]);
   const [poste, setPoste] = useState(Object.keys(EQUIPEMENTS_PAR_POSTE)[0]);
   const [heure, setHeure] = useState("08:00");
   const [point, setPoint] = useState(POINTS_ACCUEIL[0]);

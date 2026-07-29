@@ -13,8 +13,9 @@ import {
 } from "@/data/leoni";
 import { Barre, Btn, IAWarning, Kpi, PageHeader, Panel, Table, Tag, Td, Th, Tr } from "@/components/leoni/kit";
 import { useLeoni } from "@/lib/leoni-store";
+import { ParametresOnboarding } from "@/components/leoni/administration/ParametresOnboarding";
 
-const VUES = ["Utilisateurs", "Sites", "Postes", "IA", "Automatisations", "Audit"];
+const VUES = ["Utilisateurs", "Sites", "Postes", "Onboarding", "IA", "Automatisations", "Audit"];
 
 export const Route = createFileRoute("/administration")({
   validateSearch: (s: Record<string, unknown>) => ({
@@ -148,6 +149,8 @@ function AdministrationPage() {
           </Panel>
         </div>
       )}
+
+      {vue === "Onboarding" && <ParametresOnboarding />}
 
       {vue === "IA" && (
         <Panel
