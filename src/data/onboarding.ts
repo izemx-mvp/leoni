@@ -893,7 +893,12 @@ export function dossierPourOuvrier(o: {
     })),
     equipements: equipementsPourPoste(o.poste).map((e, i) => ({
       ...e,
-      taille: e.tailleType === "Pointure" ? pointure : e.tailleType === "Aucune" ? "" : taille,
+      taille:
+        CATALOGUE_EPI.find((c) => c.id === e.id)?.tailleType === "Pointure"
+          ? pointure
+          : CATALOGUE_EPI.find((c) => c.id === e.id)?.tailleType === "Aucune"
+            ? ""
+            : taille,
       statut: (integre ? "Remis" : i % 3 === 2 ? "À commander" : "Disponible") as StatutEquipement,
     })),
     tailles: { blouse: taille, gilet: taille, chaussures: pointure, gants: taille },
