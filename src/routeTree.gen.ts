@@ -11,10 +11,12 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ReportingRouteImport } from './routes/reporting'
 import { Route as PresencesRouteImport } from './routes/presences'
+import { Route as EspaceRouteImport } from './routes/espace'
 import { Route as CommunicationRouteImport } from './routes/communication'
 import { Route as AdministrationRouteImport } from './routes/administration'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as OuvriersIndexRouteImport } from './routes/ouvriers.index'
+import { Route as EspaceIndexRouteImport } from './routes/espace.index'
 import { Route as SuiviReclamationsRouteImport } from './routes/suivi.reclamations'
 import { Route as RecrutementEntretiensRouteImport } from './routes/recrutement.entretiens'
 import { Route as RecrutementCandidaturesRouteImport } from './routes/recrutement.candidatures'
@@ -26,10 +28,20 @@ import { Route as FormationQualiteRouteImport } from './routes/formation.qualite
 import { Route as FormationQcmRouteImport } from './routes/formation.qcm'
 import { Route as FormationPlanningRouteImport } from './routes/formation.planning'
 import { Route as FormationParcoursRouteImport } from './routes/formation.parcours'
+import { Route as EspaceReclamationsRouteImport } from './routes/espace.reclamations'
+import { Route as EspaceProfilRouteImport } from './routes/espace.profil'
+import { Route as EspacePresenceRouteImport } from './routes/espace.presence'
+import { Route as EspaceNotificationsRouteImport } from './routes/espace.notifications'
+import { Route as EspaceFormationRouteImport } from './routes/espace.formation'
+import { Route as EspaceEvaluationsRouteImport } from './routes/espace.evaluations'
+import { Route as EspaceDocumentsRouteImport } from './routes/espace.documents'
+import { Route as EspaceDemandesRouteImport } from './routes/espace.demandes'
+import { Route as EspaceAssistantRouteImport } from './routes/espace.assistant'
 import { Route as FormationQcmIndexRouteImport } from './routes/formation.qcm.index'
 import { Route as RecrutementCandidatIdRouteImport } from './routes/recrutement.candidat.$id'
 import { Route as FormationQcmNouvelleRouteImport } from './routes/formation.qcm.nouvelle'
 import { Route as FormationQcmIdRouteImport } from './routes/formation.qcm.$id'
+import { Route as EspaceEvaluationIdRouteImport } from './routes/espace.evaluation.$id'
 
 const ReportingRoute = ReportingRouteImport.update({
   id: '/reporting',
@@ -39,6 +51,11 @@ const ReportingRoute = ReportingRouteImport.update({
 const PresencesRoute = PresencesRouteImport.update({
   id: '/presences',
   path: '/presences',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EspaceRoute = EspaceRouteImport.update({
+  id: '/espace',
+  path: '/espace',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CommunicationRoute = CommunicationRouteImport.update({
@@ -60,6 +77,11 @@ const OuvriersIndexRoute = OuvriersIndexRouteImport.update({
   id: '/ouvriers/',
   path: '/ouvriers/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const EspaceIndexRoute = EspaceIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => EspaceRoute,
 } as any)
 const SuiviReclamationsRoute = SuiviReclamationsRouteImport.update({
   id: '/suivi/reclamations',
@@ -116,6 +138,51 @@ const FormationParcoursRoute = FormationParcoursRouteImport.update({
   path: '/formation/parcours',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EspaceReclamationsRoute = EspaceReclamationsRouteImport.update({
+  id: '/reclamations',
+  path: '/reclamations',
+  getParentRoute: () => EspaceRoute,
+} as any)
+const EspaceProfilRoute = EspaceProfilRouteImport.update({
+  id: '/profil',
+  path: '/profil',
+  getParentRoute: () => EspaceRoute,
+} as any)
+const EspacePresenceRoute = EspacePresenceRouteImport.update({
+  id: '/presence',
+  path: '/presence',
+  getParentRoute: () => EspaceRoute,
+} as any)
+const EspaceNotificationsRoute = EspaceNotificationsRouteImport.update({
+  id: '/notifications',
+  path: '/notifications',
+  getParentRoute: () => EspaceRoute,
+} as any)
+const EspaceFormationRoute = EspaceFormationRouteImport.update({
+  id: '/formation',
+  path: '/formation',
+  getParentRoute: () => EspaceRoute,
+} as any)
+const EspaceEvaluationsRoute = EspaceEvaluationsRouteImport.update({
+  id: '/evaluations',
+  path: '/evaluations',
+  getParentRoute: () => EspaceRoute,
+} as any)
+const EspaceDocumentsRoute = EspaceDocumentsRouteImport.update({
+  id: '/documents',
+  path: '/documents',
+  getParentRoute: () => EspaceRoute,
+} as any)
+const EspaceDemandesRoute = EspaceDemandesRouteImport.update({
+  id: '/demandes',
+  path: '/demandes',
+  getParentRoute: () => EspaceRoute,
+} as any)
+const EspaceAssistantRoute = EspaceAssistantRouteImport.update({
+  id: '/assistant',
+  path: '/assistant',
+  getParentRoute: () => EspaceRoute,
+} as any)
 const FormationQcmIndexRoute = FormationQcmIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -136,13 +203,28 @@ const FormationQcmIdRoute = FormationQcmIdRouteImport.update({
   path: '/$id',
   getParentRoute: () => FormationQcmRoute,
 } as any)
+const EspaceEvaluationIdRoute = EspaceEvaluationIdRouteImport.update({
+  id: '/evaluation/$id',
+  path: '/evaluation/$id',
+  getParentRoute: () => EspaceRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/administration': typeof AdministrationRoute
   '/communication': typeof CommunicationRoute
+  '/espace': typeof EspaceRouteWithChildren
   '/presences': typeof PresencesRoute
   '/reporting': typeof ReportingRoute
+  '/espace/assistant': typeof EspaceAssistantRoute
+  '/espace/demandes': typeof EspaceDemandesRoute
+  '/espace/documents': typeof EspaceDocumentsRoute
+  '/espace/evaluations': typeof EspaceEvaluationsRoute
+  '/espace/formation': typeof EspaceFormationRoute
+  '/espace/notifications': typeof EspaceNotificationsRoute
+  '/espace/presence': typeof EspacePresenceRoute
+  '/espace/profil': typeof EspaceProfilRoute
+  '/espace/reclamations': typeof EspaceReclamationsRoute
   '/formation/parcours': typeof FormationParcoursRoute
   '/formation/planning': typeof FormationPlanningRoute
   '/formation/qcm': typeof FormationQcmRouteWithChildren
@@ -154,7 +236,9 @@ export interface FileRoutesByFullPath {
   '/recrutement/candidatures': typeof RecrutementCandidaturesRoute
   '/recrutement/entretiens': typeof RecrutementEntretiensRoute
   '/suivi/reclamations': typeof SuiviReclamationsRoute
+  '/espace/': typeof EspaceIndexRoute
   '/ouvriers/': typeof OuvriersIndexRoute
+  '/espace/evaluation/$id': typeof EspaceEvaluationIdRoute
   '/formation/qcm/$id': typeof FormationQcmIdRoute
   '/formation/qcm/nouvelle': typeof FormationQcmNouvelleRoute
   '/recrutement/candidat/$id': typeof RecrutementCandidatIdRoute
@@ -166,6 +250,15 @@ export interface FileRoutesByTo {
   '/communication': typeof CommunicationRoute
   '/presences': typeof PresencesRoute
   '/reporting': typeof ReportingRoute
+  '/espace/assistant': typeof EspaceAssistantRoute
+  '/espace/demandes': typeof EspaceDemandesRoute
+  '/espace/documents': typeof EspaceDocumentsRoute
+  '/espace/evaluations': typeof EspaceEvaluationsRoute
+  '/espace/formation': typeof EspaceFormationRoute
+  '/espace/notifications': typeof EspaceNotificationsRoute
+  '/espace/presence': typeof EspacePresenceRoute
+  '/espace/profil': typeof EspaceProfilRoute
+  '/espace/reclamations': typeof EspaceReclamationsRoute
   '/formation/parcours': typeof FormationParcoursRoute
   '/formation/planning': typeof FormationPlanningRoute
   '/formation/qualite': typeof FormationQualiteRoute
@@ -176,7 +269,9 @@ export interface FileRoutesByTo {
   '/recrutement/candidatures': typeof RecrutementCandidaturesRoute
   '/recrutement/entretiens': typeof RecrutementEntretiensRoute
   '/suivi/reclamations': typeof SuiviReclamationsRoute
+  '/espace': typeof EspaceIndexRoute
   '/ouvriers': typeof OuvriersIndexRoute
+  '/espace/evaluation/$id': typeof EspaceEvaluationIdRoute
   '/formation/qcm/$id': typeof FormationQcmIdRoute
   '/formation/qcm/nouvelle': typeof FormationQcmNouvelleRoute
   '/recrutement/candidat/$id': typeof RecrutementCandidatIdRoute
@@ -187,8 +282,18 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/administration': typeof AdministrationRoute
   '/communication': typeof CommunicationRoute
+  '/espace': typeof EspaceRouteWithChildren
   '/presences': typeof PresencesRoute
   '/reporting': typeof ReportingRoute
+  '/espace/assistant': typeof EspaceAssistantRoute
+  '/espace/demandes': typeof EspaceDemandesRoute
+  '/espace/documents': typeof EspaceDocumentsRoute
+  '/espace/evaluations': typeof EspaceEvaluationsRoute
+  '/espace/formation': typeof EspaceFormationRoute
+  '/espace/notifications': typeof EspaceNotificationsRoute
+  '/espace/presence': typeof EspacePresenceRoute
+  '/espace/profil': typeof EspaceProfilRoute
+  '/espace/reclamations': typeof EspaceReclamationsRoute
   '/formation/parcours': typeof FormationParcoursRoute
   '/formation/planning': typeof FormationPlanningRoute
   '/formation/qcm': typeof FormationQcmRouteWithChildren
@@ -200,7 +305,9 @@ export interface FileRoutesById {
   '/recrutement/candidatures': typeof RecrutementCandidaturesRoute
   '/recrutement/entretiens': typeof RecrutementEntretiensRoute
   '/suivi/reclamations': typeof SuiviReclamationsRoute
+  '/espace/': typeof EspaceIndexRoute
   '/ouvriers/': typeof OuvriersIndexRoute
+  '/espace/evaluation/$id': typeof EspaceEvaluationIdRoute
   '/formation/qcm/$id': typeof FormationQcmIdRoute
   '/formation/qcm/nouvelle': typeof FormationQcmNouvelleRoute
   '/recrutement/candidat/$id': typeof RecrutementCandidatIdRoute
@@ -212,8 +319,18 @@ export interface FileRouteTypes {
     | '/'
     | '/administration'
     | '/communication'
+    | '/espace'
     | '/presences'
     | '/reporting'
+    | '/espace/assistant'
+    | '/espace/demandes'
+    | '/espace/documents'
+    | '/espace/evaluations'
+    | '/espace/formation'
+    | '/espace/notifications'
+    | '/espace/presence'
+    | '/espace/profil'
+    | '/espace/reclamations'
     | '/formation/parcours'
     | '/formation/planning'
     | '/formation/qcm'
@@ -225,7 +342,9 @@ export interface FileRouteTypes {
     | '/recrutement/candidatures'
     | '/recrutement/entretiens'
     | '/suivi/reclamations'
+    | '/espace/'
     | '/ouvriers/'
+    | '/espace/evaluation/$id'
     | '/formation/qcm/$id'
     | '/formation/qcm/nouvelle'
     | '/recrutement/candidat/$id'
@@ -237,6 +356,15 @@ export interface FileRouteTypes {
     | '/communication'
     | '/presences'
     | '/reporting'
+    | '/espace/assistant'
+    | '/espace/demandes'
+    | '/espace/documents'
+    | '/espace/evaluations'
+    | '/espace/formation'
+    | '/espace/notifications'
+    | '/espace/presence'
+    | '/espace/profil'
+    | '/espace/reclamations'
     | '/formation/parcours'
     | '/formation/planning'
     | '/formation/qualite'
@@ -247,7 +375,9 @@ export interface FileRouteTypes {
     | '/recrutement/candidatures'
     | '/recrutement/entretiens'
     | '/suivi/reclamations'
+    | '/espace'
     | '/ouvriers'
+    | '/espace/evaluation/$id'
     | '/formation/qcm/$id'
     | '/formation/qcm/nouvelle'
     | '/recrutement/candidat/$id'
@@ -257,8 +387,18 @@ export interface FileRouteTypes {
     | '/'
     | '/administration'
     | '/communication'
+    | '/espace'
     | '/presences'
     | '/reporting'
+    | '/espace/assistant'
+    | '/espace/demandes'
+    | '/espace/documents'
+    | '/espace/evaluations'
+    | '/espace/formation'
+    | '/espace/notifications'
+    | '/espace/presence'
+    | '/espace/profil'
+    | '/espace/reclamations'
     | '/formation/parcours'
     | '/formation/planning'
     | '/formation/qcm'
@@ -270,7 +410,9 @@ export interface FileRouteTypes {
     | '/recrutement/candidatures'
     | '/recrutement/entretiens'
     | '/suivi/reclamations'
+    | '/espace/'
     | '/ouvriers/'
+    | '/espace/evaluation/$id'
     | '/formation/qcm/$id'
     | '/formation/qcm/nouvelle'
     | '/recrutement/candidat/$id'
@@ -281,6 +423,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdministrationRoute: typeof AdministrationRoute
   CommunicationRoute: typeof CommunicationRoute
+  EspaceRoute: typeof EspaceRouteWithChildren
   PresencesRoute: typeof PresencesRoute
   ReportingRoute: typeof ReportingRoute
   FormationParcoursRoute: typeof FormationParcoursRoute
@@ -314,6 +457,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PresencesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/espace': {
+      id: '/espace'
+      path: '/espace'
+      fullPath: '/espace'
+      preLoaderRoute: typeof EspaceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/communication': {
       id: '/communication'
       path: '/communication'
@@ -341,6 +491,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/ouvriers/'
       preLoaderRoute: typeof OuvriersIndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/espace/': {
+      id: '/espace/'
+      path: '/'
+      fullPath: '/espace/'
+      preLoaderRoute: typeof EspaceIndexRouteImport
+      parentRoute: typeof EspaceRoute
     }
     '/suivi/reclamations': {
       id: '/suivi/reclamations'
@@ -419,6 +576,69 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FormationParcoursRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/espace/reclamations': {
+      id: '/espace/reclamations'
+      path: '/reclamations'
+      fullPath: '/espace/reclamations'
+      preLoaderRoute: typeof EspaceReclamationsRouteImport
+      parentRoute: typeof EspaceRoute
+    }
+    '/espace/profil': {
+      id: '/espace/profil'
+      path: '/profil'
+      fullPath: '/espace/profil'
+      preLoaderRoute: typeof EspaceProfilRouteImport
+      parentRoute: typeof EspaceRoute
+    }
+    '/espace/presence': {
+      id: '/espace/presence'
+      path: '/presence'
+      fullPath: '/espace/presence'
+      preLoaderRoute: typeof EspacePresenceRouteImport
+      parentRoute: typeof EspaceRoute
+    }
+    '/espace/notifications': {
+      id: '/espace/notifications'
+      path: '/notifications'
+      fullPath: '/espace/notifications'
+      preLoaderRoute: typeof EspaceNotificationsRouteImport
+      parentRoute: typeof EspaceRoute
+    }
+    '/espace/formation': {
+      id: '/espace/formation'
+      path: '/formation'
+      fullPath: '/espace/formation'
+      preLoaderRoute: typeof EspaceFormationRouteImport
+      parentRoute: typeof EspaceRoute
+    }
+    '/espace/evaluations': {
+      id: '/espace/evaluations'
+      path: '/evaluations'
+      fullPath: '/espace/evaluations'
+      preLoaderRoute: typeof EspaceEvaluationsRouteImport
+      parentRoute: typeof EspaceRoute
+    }
+    '/espace/documents': {
+      id: '/espace/documents'
+      path: '/documents'
+      fullPath: '/espace/documents'
+      preLoaderRoute: typeof EspaceDocumentsRouteImport
+      parentRoute: typeof EspaceRoute
+    }
+    '/espace/demandes': {
+      id: '/espace/demandes'
+      path: '/demandes'
+      fullPath: '/espace/demandes'
+      preLoaderRoute: typeof EspaceDemandesRouteImport
+      parentRoute: typeof EspaceRoute
+    }
+    '/espace/assistant': {
+      id: '/espace/assistant'
+      path: '/assistant'
+      fullPath: '/espace/assistant'
+      preLoaderRoute: typeof EspaceAssistantRouteImport
+      parentRoute: typeof EspaceRoute
+    }
     '/formation/qcm/': {
       id: '/formation/qcm/'
       path: '/'
@@ -447,8 +667,46 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FormationQcmIdRouteImport
       parentRoute: typeof FormationQcmRoute
     }
+    '/espace/evaluation/$id': {
+      id: '/espace/evaluation/$id'
+      path: '/evaluation/$id'
+      fullPath: '/espace/evaluation/$id'
+      preLoaderRoute: typeof EspaceEvaluationIdRouteImport
+      parentRoute: typeof EspaceRoute
+    }
   }
 }
+
+interface EspaceRouteChildren {
+  EspaceAssistantRoute: typeof EspaceAssistantRoute
+  EspaceDemandesRoute: typeof EspaceDemandesRoute
+  EspaceDocumentsRoute: typeof EspaceDocumentsRoute
+  EspaceEvaluationsRoute: typeof EspaceEvaluationsRoute
+  EspaceFormationRoute: typeof EspaceFormationRoute
+  EspaceNotificationsRoute: typeof EspaceNotificationsRoute
+  EspacePresenceRoute: typeof EspacePresenceRoute
+  EspaceProfilRoute: typeof EspaceProfilRoute
+  EspaceReclamationsRoute: typeof EspaceReclamationsRoute
+  EspaceIndexRoute: typeof EspaceIndexRoute
+  EspaceEvaluationIdRoute: typeof EspaceEvaluationIdRoute
+}
+
+const EspaceRouteChildren: EspaceRouteChildren = {
+  EspaceAssistantRoute: EspaceAssistantRoute,
+  EspaceDemandesRoute: EspaceDemandesRoute,
+  EspaceDocumentsRoute: EspaceDocumentsRoute,
+  EspaceEvaluationsRoute: EspaceEvaluationsRoute,
+  EspaceFormationRoute: EspaceFormationRoute,
+  EspaceNotificationsRoute: EspaceNotificationsRoute,
+  EspacePresenceRoute: EspacePresenceRoute,
+  EspaceProfilRoute: EspaceProfilRoute,
+  EspaceReclamationsRoute: EspaceReclamationsRoute,
+  EspaceIndexRoute: EspaceIndexRoute,
+  EspaceEvaluationIdRoute: EspaceEvaluationIdRoute,
+}
+
+const EspaceRouteWithChildren =
+  EspaceRoute._addFileChildren(EspaceRouteChildren)
 
 interface FormationQcmRouteChildren {
   FormationQcmIdRoute: typeof FormationQcmIdRoute
@@ -470,6 +728,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdministrationRoute: AdministrationRoute,
   CommunicationRoute: CommunicationRoute,
+  EspaceRoute: EspaceRouteWithChildren,
   PresencesRoute: PresencesRoute,
   ReportingRoute: ReportingRoute,
   FormationParcoursRoute: FormationParcoursRoute,

@@ -85,6 +85,8 @@ interface Ctx {
     decision?: { commentaire: string; responsable: string },
   ) => string | undefined;
   majOnboarding: (ouvrierId: string, maj: (d: DossierOnboarding) => DossierOnboarding) => void;
+  /** Mise à jour générique d'une fiche ouvrier (utilisée par l'Espace Ouvrier). */
+  majOuvrier: (ouvrierId: string, maj: (o: Ouvrier) => Ouvrier) => void;
   finaliserAccueil: (ouvrierId: string) => void;
 
 }
@@ -615,6 +617,13 @@ export function LeoniProvider({ children }: { children: ReactNode }) {
     [],
   );
 
+  /** Mise à jour générique d'une fiche ouvrier (Espace Ouvrier ↔ Backoffice). */
+  const majOuvrier = useCallback((ouvrierId: string, maj: (o: Ouvrier) => Ouvrier) => {
+    setOuvriers((prev) => prev.map((o) => (o.id === ouvrierId ? maj(o) : o)));
+  }, []);
+
+
+
   /** Clôture de l'accueil : l'ouvrier passe en intégration effective. */
   const finaliserAccueil = useCallback(
     (ouvrierId: string) => {
@@ -672,9 +681,10 @@ export function LeoniProvider({ children }: { children: ReactNode }) {
       lancerTalentFit,
       preIntegrerCandidat,
       majOnboarding,
+      majOuvrier,
       finaliserAccueil,
     }),
-    [theme, setTheme, site, langue, candidats, ouvriers, entretiens, reclamations, alertes, notifications, marquerLues, pousserNotification, changerStatutCandidat, planifierEntretien, evaluerEntretien, transformerEnOuvrier, ajouterEvenement, enregistrerPresence, validerJournee, deciderParcours, deplacerReclamation, creerReclamation, creerCandidature, lancerTalentFit, preIntegrerCandidat, majOnboarding, finaliserAccueil],
+    [theme, setTheme, site, langue, candidats, ouvriers, entretiens, reclamations, alertes, notifications, marquerLues, pousserNotification, changerStatutCandidat, planifierEntretien, evaluerEntretien, transformerEnOuvrier, ajouterEvenement, enregistrerPresence, validerJournee, deciderParcours, deplacerReclamation, creerReclamation, creerCandidature, lancerTalentFit, preIntegrerCandidat, majOnboarding, majOuvrier, finaliserAccueil],
   );
 
   return <LeoniContext.Provider value={value}>{children}</LeoniContext.Provider>;
