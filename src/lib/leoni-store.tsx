@@ -454,9 +454,13 @@ export function LeoniProvider({ children }: { children: ReactNode }) {
   const creerCandidature = useCallback(
     (c: Omit<Candidat, "id" | "date">) => {
       const { date } = horodatage();
-      const suffixe = String(1250 + Math.floor(Math.random() * 40)).padStart(5, "0");
-      const candidat: Candidat = { ...c, id: `CAN-2026-${suffixe}`, date };
-      setCandidats((prev) => [candidat, ...prev]);
+      const candidat: Candidat = { ...c, id: "", date };
+      setCandidats((prev) => {
+        let n = 1250;
+        while (prev.some((x) => x.id === `CAN-2026-${String(n).padStart(5, "0")}`)) n += 1;
+        candidat.id = `CAN-2026-${String(n).padStart(5, "0")}`;
+        return [candidat, ...prev];
+      });
       pousserNotification({
         titre: candidat.brouillon ? "Brouillon de candidature enregistré" : "Candidature créée",
         detail: `${candidat.id} — ${candidat.nom} · ${candidat.poste}`,
