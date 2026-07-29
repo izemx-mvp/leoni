@@ -6,6 +6,7 @@ import {
   Barre,
   Btn,
   Field,
+  Input,
   Onglets,
   Panel,
   Select,
@@ -14,6 +15,7 @@ import {
   Table,
   Tag,
   Td,
+  Textarea,
   Th,
   Tr,
   Vide,
@@ -21,13 +23,20 @@ import {
 import { useLeoni } from "@/lib/leoni-store";
 import {
   CATALOGUE_CONSIGNES,
+  HORAIRES_FORMATION,
+  LIEUX_FORMATION,
+  LIGNES_TRANSPORT,
+  PARCOURS_FORMATION,
   STATUTS_BADGE,
   STATUTS_CASIER,
   STATUTS_DOCUMENT,
   STATUTS_EQUIPEMENT,
   STATUTS_TRANSPORT,
+  TYPES_CARTE,
   alertesOnboarding,
+  dateFinFormation,
   documentsManquants,
+  formationParDefaut,
   kpiDocuments,
   messageRelanceDocuments,
   progressionOnboarding,
@@ -37,6 +46,7 @@ import {
   type StatutEquipement,
   type StatutTransport,
 } from "@/data/onboarding";
+
 
 const SOUS_ONGLETS = [
   "Identité",
