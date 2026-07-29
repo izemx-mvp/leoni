@@ -27,6 +27,7 @@ import {
   Tr,
 } from "@/components/leoni/kit";
 import { useLeoni } from "@/lib/leoni-store";
+import { DecisionRetenu } from "@/components/leoni/recrutement/DecisionRetenu";
 
 export const Route = createFileRoute("/recrutement/candidat/$id")({
   head: () => ({
@@ -64,6 +65,7 @@ function FicheCandidat() {
   const candidat = candidats.find((c) => c.id === id);
   const [section, setSection] = useState(SECTIONS[0]);
   const [modale, setModale] = useState<null | "entretien" | "message" | "decision" | "evaluation">(null);
+  const [preIntegration, setPreIntegration] = useState(false);
   const [form, setForm] = useState({ date: "2026-08-03", heure: "09:00", type: "Entretien RH" });
   const [message, setMessage] = useState("Bonjour, merci de confirmer votre disponibilité pour l'entretien.");
   const [decision, setDecision] = useState("Retenu");
@@ -82,14 +84,14 @@ function FicheCandidat() {
 
   const valider = () => {
     if (decision === "Retenu") {
-      const matricule = transformerEnOuvrier(candidat.id);
       setModale(null);
-      if (matricule) navigate({ to: "/ouvriers/$id", params: { id: matricule } });
+      setPreIntegration(true);
       return;
     }
     changerStatutCandidat(candidat.id, decision === "Refusé" ? "Refusé" : "Vivier", motif);
     setModale(null);
   };
+
 
   return (
     <>
@@ -145,7 +147,7 @@ function FicheCandidat() {
             <Btn variant="secondary" onClick={() => changerStatutCandidat(candidat.id, "Vivier")}>
               <UserPlus className="size-3.5" /> Ajouter au vivier
             </Btn>
-            <Btn variant="primary" onClick={() => { setDecision("Retenu"); setModale("decision"); }}>
+            <Btn variant="primary" onClick={() => setPreIntegration(true)}>
               <Check className="size-3.5" /> Retenir
             </Btn>
             <Btn variant="danger" onClick={() => { setDecision("Refusé"); setModale("decision"); }}>
@@ -401,7 +403,7 @@ function FicheCandidat() {
               <Field label="Statut actuel" value={<StatutBadge valeur={candidat.statut} />} />
             </div>
             <div className="mt-5 flex flex-wrap gap-2">
-              <Btn variant="primary" onClick={() => { setDecision("Retenu"); setModale("decision"); }}>
+              <Btn variant="primary" onClick={() => setPreIntegration(true)}>
                 Retenir et créer la fiche ouvrier <ArrowRight className="size-3.5" />
               </Btn>
               <Btn variant="secondary" onClick={() => { setDecision("Vivier"); setModale("decision"); }}>
@@ -589,6 +591,8 @@ function FicheCandidat() {
           </div>
         </div>
       )}
+
+      {preIntegration && <DecisionRetenu candidat={candidat} onClose={() => setPreIntegration(false)} />}
     </>
   );
 }

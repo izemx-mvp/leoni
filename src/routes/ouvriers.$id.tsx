@@ -39,6 +39,7 @@ import {
   Tr,
 } from "@/components/leoni/kit";
 import { useLeoni } from "@/lib/leoni-store";
+import { DossierOuvrier } from "@/components/leoni/ouvriers/DossierOuvrier";
 
 export const Route = createFileRoute("/ouvriers/$id")({
   head: () => ({
@@ -330,73 +331,7 @@ function FicheOuvrier() {
       )}
 
       {/* 2. DOSSIER */}
-      {section === SECTIONS[1] && (
-        <div className="grid gap-4 lg:grid-cols-2">
-          <Panel title="Identité">
-            <div className="grid grid-cols-2 gap-4">
-              <Field label="Nom & prénom" value={o.nom} />
-              <Field label="Date de naissance" value={o.identite.naissance} />
-              <Field label="CIN" value={o.identite.cin} />
-              <Field label="Téléphone" value={o.identite.telephone} />
-              <Field label="Email" value={o.identite.email} />
-              <Field label="Adresse" value={o.identite.adresse} />
-              <Field label="Ville" value={o.identite.ville} />
-              <Field label="Contact d'urgence" value={o.identite.contactUrgence} />
-            </div>
-          </Panel>
-          <Panel title="Situation professionnelle">
-            <div className="grid grid-cols-2 gap-4">
-              <Field label="Matricule" value={o.id} />
-              <Field label="Site" value={o.site} />
-              <Field label="Département" value={o.situation.departement} />
-              <Field label="Atelier" value={o.atelier} />
-              <Field label="Poste" value={o.poste} />
-              <Field label="Équipe" value={o.situation.equipe} />
-              <Field label="Shift" value={o.situation.shift} />
-              <Field label="Manager" value={o.situation.manager} />
-              <Field label="Date d'entrée" value={o.dateIntegration} />
-            </div>
-          </Panel>
-          <Panel title="Origine recrutement">
-            <div className="grid grid-cols-2 gap-4">
-              <Field label="Référence candidature" value={o.candidatId ?? "—"} />
-              <Field label="Source" value={candidat?.source ?? "Portail carrière"} />
-              <Field label="Date de candidature" value={candidat?.date ?? "—"} />
-              <Field label="Score IA initial" value={candidat ? `${candidat.score} %` : "—"} />
-              <Field label="Entretien" value={candidat?.entretien ?? "—"} />
-              <Field label="Recruteur" value={candidat?.recruteur ?? "—"} />
-              <Field label="Décision RH" value="Retenu" />
-            </div>
-            {o.candidatId && (
-              <Link
-                to="/recrutement/candidat/$id"
-                params={{ id: o.candidatId }}
-                className="mt-4 inline-flex items-center gap-1 text-xs font-medium text-[var(--brand)] hover:underline"
-              >
-                Ouvrir le dossier candidat original <ChevronRight className="size-3" />
-              </Link>
-            )}
-          </Panel>
-          <Panel title="Documents" bodyClassName="p-0">
-            <Table>
-              <thead>
-                <tr><Th>Document</Th><Th>Date</Th><Th>Statut</Th><Th>Expiration</Th><Th /></tr>
-              </thead>
-              <tbody>
-                {o.documents.map((d) => (
-                  <Tr key={d.nom}>
-                    <Td className="font-medium">{d.nom}</Td>
-                    <Td className="num text-muted-foreground">{d.date}</Td>
-                    <Td><StatutBadge valeur={d.statut} /></Td>
-                    <Td className="num text-muted-foreground">{d.expiration ?? "—"}</Td>
-                    <Td><button className="text-xs text-[var(--brand)] hover:underline">Aperçu</button></Td>
-                  </Tr>
-                ))}
-              </tbody>
-            </Table>
-          </Panel>
-        </div>
-      )}
+      {section === SECTIONS[1] && <DossierOuvrier o={o} candidat={candidat} />}
 
       {/* 3. PARCOURS & FORMATION */}
       {section === SECTIONS[2] && (
