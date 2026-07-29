@@ -82,8 +82,8 @@ function DetailEvaluation() {
           <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
             <Kpi label="Affectés" valeur={s.affectes} ton="brand" />
             <Kpi label="Terminés" valeur={s.termines} ton="info" />
-            <Kpi label="Taux de participation" valeur={s.participation} suffixe="%" ton={tonTaux(s.participation)} />
-            <Kpi label="Taux de réussite" valeur={s.tauxReussite} suffixe="%" ton={tonTaux(s.tauxReussite)} />
+            <Kpi label="Taux de participation" valeur={Math.round((s.termines / Math.max(1, s.affectes)) * 100)} suffixe="%" ton={tonTaux(Math.round((s.termines / Math.max(1, s.affectes)) * 100))} />
+            <Kpi label="Taux de réussite" valeur={Math.round((s.reussis / Math.max(1, s.termines)) * 100)} suffixe="%" ton={tonTaux(Math.round((s.reussis / Math.max(1, s.termines)) * 100))} />
             <Kpi label="Score moyen" valeur={s.scoreMoyen} suffixe="%" ton={tonTaux(s.scoreMoyen)} />
           </div>
           <div className="grid gap-4 lg:grid-cols-[1fr_1fr]">
@@ -104,9 +104,9 @@ function DetailEvaluation() {
                   <li key={a.questionId}>
                     <div className="mb-1 flex items-center justify-between gap-3 text-xs">
                       <span className="truncate">{a.numero}. {a.intitule}</span>
-                      <span className="num font-medium">{a.reussite} %</span>
+                      <span className="num font-medium">{a.taux} %</span>
                     </div>
-                    <Barre valeur={a.reussite} ton={tonTaux(a.reussite)} />
+                    <Barre valeur={a.taux} ton={tonTaux(a.taux)} />
                   </li>
                 ))}
               </ul>

@@ -29,6 +29,7 @@ import { Route as FormationParcoursRouteImport } from './routes/formation.parcou
 import { Route as FormationQcmIndexRouteImport } from './routes/formation.qcm.index'
 import { Route as RecrutementCandidatIdRouteImport } from './routes/recrutement.candidat.$id'
 import { Route as FormationQcmNouvelleRouteImport } from './routes/formation.qcm.nouvelle'
+import { Route as FormationQcmIdRouteImport } from './routes/formation.qcm.$id'
 
 const ReportingRoute = ReportingRouteImport.update({
   id: '/reporting',
@@ -130,6 +131,11 @@ const FormationQcmNouvelleRoute = FormationQcmNouvelleRouteImport.update({
   path: '/nouvelle',
   getParentRoute: () => FormationQcmRoute,
 } as any)
+const FormationQcmIdRoute = FormationQcmIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => FormationQcmRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -149,6 +155,7 @@ export interface FileRoutesByFullPath {
   '/suivi/observations': typeof SuiviObservationsRoute
   '/suivi/reclamations': typeof SuiviReclamationsRoute
   '/ouvriers/': typeof OuvriersIndexRoute
+  '/formation/qcm/$id': typeof FormationQcmIdRoute
   '/formation/qcm/nouvelle': typeof FormationQcmNouvelleRoute
   '/recrutement/candidat/$id': typeof RecrutementCandidatIdRoute
   '/formation/qcm/': typeof FormationQcmIndexRoute
@@ -170,6 +177,7 @@ export interface FileRoutesByTo {
   '/suivi/observations': typeof SuiviObservationsRoute
   '/suivi/reclamations': typeof SuiviReclamationsRoute
   '/ouvriers': typeof OuvriersIndexRoute
+  '/formation/qcm/$id': typeof FormationQcmIdRoute
   '/formation/qcm/nouvelle': typeof FormationQcmNouvelleRoute
   '/recrutement/candidat/$id': typeof RecrutementCandidatIdRoute
   '/formation/qcm': typeof FormationQcmIndexRoute
@@ -193,6 +201,7 @@ export interface FileRoutesById {
   '/suivi/observations': typeof SuiviObservationsRoute
   '/suivi/reclamations': typeof SuiviReclamationsRoute
   '/ouvriers/': typeof OuvriersIndexRoute
+  '/formation/qcm/$id': typeof FormationQcmIdRoute
   '/formation/qcm/nouvelle': typeof FormationQcmNouvelleRoute
   '/recrutement/candidat/$id': typeof RecrutementCandidatIdRoute
   '/formation/qcm/': typeof FormationQcmIndexRoute
@@ -217,6 +226,7 @@ export interface FileRouteTypes {
     | '/suivi/observations'
     | '/suivi/reclamations'
     | '/ouvriers/'
+    | '/formation/qcm/$id'
     | '/formation/qcm/nouvelle'
     | '/recrutement/candidat/$id'
     | '/formation/qcm/'
@@ -238,6 +248,7 @@ export interface FileRouteTypes {
     | '/suivi/observations'
     | '/suivi/reclamations'
     | '/ouvriers'
+    | '/formation/qcm/$id'
     | '/formation/qcm/nouvelle'
     | '/recrutement/candidat/$id'
     | '/formation/qcm'
@@ -260,6 +271,7 @@ export interface FileRouteTypes {
     | '/suivi/observations'
     | '/suivi/reclamations'
     | '/ouvriers/'
+    | '/formation/qcm/$id'
     | '/formation/qcm/nouvelle'
     | '/recrutement/candidat/$id'
     | '/formation/qcm/'
@@ -428,15 +440,24 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FormationQcmNouvelleRouteImport
       parentRoute: typeof FormationQcmRoute
     }
+    '/formation/qcm/$id': {
+      id: '/formation/qcm/$id'
+      path: '/$id'
+      fullPath: '/formation/qcm/$id'
+      preLoaderRoute: typeof FormationQcmIdRouteImport
+      parentRoute: typeof FormationQcmRoute
+    }
   }
 }
 
 interface FormationQcmRouteChildren {
+  FormationQcmIdRoute: typeof FormationQcmIdRoute
   FormationQcmNouvelleRoute: typeof FormationQcmNouvelleRoute
   FormationQcmIndexRoute: typeof FormationQcmIndexRoute
 }
 
 const FormationQcmRouteChildren: FormationQcmRouteChildren = {
+  FormationQcmIdRoute: FormationQcmIdRoute,
   FormationQcmNouvelleRoute: FormationQcmNouvelleRoute,
   FormationQcmIndexRoute: FormationQcmIndexRoute,
 }
