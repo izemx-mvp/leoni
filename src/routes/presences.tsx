@@ -53,6 +53,29 @@ function PresencesPage() {
   const { vue, site } = Route.useSearch();
   const navigate = useNavigate();
   const { ouvriers, pousserNotification } = useLeoni();
+  const [cible, setCible] = useState<CibleAvertissement | null>(null);
+  const [niveau, setNiveau] = useState(NIVEAUX[1]);
+  const [canal, setCanal] = useState("WhatsApp");
+  const [message, setMessage] = useState("");
+  const [envoyes, setEnvoyes] = useState<Record<string, string>>({});
+
+  const ouvrirAvertissement = (c: CibleAvertissement) => {
+    setCible(c);
+    setNiveau(NIVEAUX[1]);
+    setCanal("WhatsApp");
+    setMessage(modeleAvertissement(NIVEAUX[1], c));
+  };
+
+  const envoyer = () => {
+    if (!cible) return;
+    setEnvoyes((p) => ({ ...p, [cible.id]: niveau }));
+    pousserNotification({
+      titre: `${niveau} envoyé`,
+      detail: `${cible.ouvrier} · ${cible.id} — ${canal}`,
+      ton: "warning",
+    });
+    setCible(null);
+  };
 
   const population = useMemo(
     () => ouvriers.filter((o) => site === "Tous les sites" || o.site === site),
@@ -66,7 +89,8 @@ function PresencesPage() {
       <PageHeader
         titre="Présences & absences"
         sousTitre="Pointage quotidien des opérateurs en formation et en intégration"
-        fil={[{ label: "Présences" }, { label: vue }]}
+        fil={[{ label: "Ouvriers" }, { label: "Présences & absences" }, { label: vue }]}
+
         actions={<Btn variant="secondary">Export Excel</Btn>}
       />
 
