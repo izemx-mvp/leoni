@@ -334,3 +334,188 @@ export function IAWarning({ texte }: { texte: string }) {
     </p>
   );
 }
+
+/* -------------------------------- Modale -------------------------------- */
+
+export function Modale({
+  titre,
+  sousTitre,
+  onClose,
+  children,
+  footer,
+  large,
+}: {
+  titre: string;
+  sousTitre?: string;
+  onClose: () => void;
+  children: ReactNode;
+  footer?: ReactNode;
+  large?: boolean;
+}) {
+  return (
+    <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/50 p-4 backdrop-blur-[2px]">
+      <div
+        className={cn(
+          "my-8 w-full rounded-md border border-border bg-card shadow-xl",
+          large ? "max-w-5xl" : "max-w-2xl",
+        )}
+      >
+        <header className="flex items-start justify-between gap-4 border-b border-border px-4 py-3">
+          <div>
+            <h2 className="text-sm font-semibold tracking-tight">{titre}</h2>
+            {sousTitre && <p className="mt-0.5 text-xs text-muted-foreground">{sousTitre}</p>}
+          </div>
+          <button
+            onClick={onClose}
+            aria-label="Fermer"
+            className="rounded-sm px-2 py-1 text-sm text-muted-foreground hover:bg-[var(--hover)]"
+          >
+            ✕
+          </button>
+        </header>
+        <div className="max-h-[70vh] overflow-y-auto p-4">{children}</div>
+        {footer && <footer className="flex flex-wrap justify-end gap-2 border-t border-border px-4 py-3">{footer}</footer>}
+      </div>
+    </div>
+  );
+}
+
+/* -------------------------------- Inputs -------------------------------- */
+
+export function Input({
+  label,
+  className,
+  ...props
+}: React.InputHTMLAttributes<HTMLInputElement> & { label?: string }) {
+  return (
+    <label className="block">
+      {label && <span className="label-xs">{label}</span>}
+      <input
+        {...props}
+        className={cn(
+          "mt-1 h-9 w-full rounded-sm border border-border bg-card px-2.5 text-sm outline-none focus:ring-2 focus:ring-[var(--ring)]",
+          className,
+        )}
+      />
+    </label>
+  );
+}
+
+export function Textarea({
+  label,
+  className,
+  ...props
+}: React.TextareaHTMLAttributes<HTMLTextAreaElement> & { label?: string }) {
+  return (
+    <label className="block">
+      {label && <span className="label-xs">{label}</span>}
+      <textarea
+        {...props}
+        className={cn(
+          "mt-1 w-full rounded-sm border border-border bg-card px-2.5 py-2 text-sm outline-none focus:ring-2 focus:ring-[var(--ring)]",
+          className,
+        )}
+      />
+    </label>
+  );
+}
+
+export function Champ({
+  label,
+  value,
+  onChange,
+  options,
+}: {
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+  options: string[];
+}) {
+  return (
+    <label className="block">
+      <span className="label-xs">{label}</span>
+      <Select value={value} onChange={onChange} options={options} className="mt-1 w-full" />
+    </label>
+  );
+}
+
+export function Toggle({
+  label,
+  actif,
+  onChange,
+}: {
+  label: string;
+  actif: boolean;
+  onChange: (v: boolean) => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={() => onChange(!actif)}
+      className="flex w-full items-center justify-between gap-3 rounded-sm border border-border px-2.5 py-2 text-left text-xs hover:bg-[var(--hover)]"
+    >
+      <span>{label}</span>
+      <span
+        className={cn(
+          "relative h-4 w-8 shrink-0 rounded-full transition-colors",
+          actif ? "bg-[var(--brand)]" : "bg-muted",
+        )}
+      >
+        <span
+          className={cn(
+            "absolute top-0.5 size-3 rounded-full bg-white transition-all",
+            actif ? "left-[18px]" : "left-0.5",
+          )}
+        />
+      </span>
+    </button>
+  );
+}
+
+/* -------------------------------- Onglets ------------------------------- */
+
+export function Onglets({
+  valeurs,
+  actif,
+  onChange,
+}: {
+  valeurs: string[];
+  actif: string;
+  onChange: (v: string) => void;
+}) {
+  return (
+    <div className="mb-4 flex flex-wrap items-center gap-2 border-b border-border pb-2">
+      {valeurs.map((v) => (
+        <button
+          key={v}
+          onClick={() => onChange(v)}
+          className={cn(
+            "rounded-sm px-3 py-1.5 text-xs font-medium transition-colors",
+            v === actif
+              ? "border border-[var(--brand)] bg-[var(--selected)] text-[var(--brand)]"
+              : "border border-transparent text-muted-foreground hover:bg-[var(--hover)] hover:text-foreground",
+          )}
+        >
+          {v}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+/* -------------------------------- Divers -------------------------------- */
+
+export function Stat({ label, valeur, ton }: { label: string; valeur: ReactNode; ton?: Ton }) {
+  return (
+    <div className="rounded-sm border border-border px-3 py-2">
+      <p className="label-xs">{label}</p>
+      <p className={cn("num mt-1 text-lg font-semibold", ton === "critical" && "text-[var(--critical)]", ton === "success" && "text-[var(--success)]")}>
+        {valeur}
+      </p>
+    </div>
+  );
+}
+
+export function Vide({ texte }: { texte: string }) {
+  return <p className="px-4 py-8 text-center text-xs text-muted-foreground">{texte}</p>;
+}
