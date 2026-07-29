@@ -13,7 +13,6 @@ import {
   formatCourt,
   formateurParId,
   formatLong,
-  isoDe,
   lundiDe,
   type SessionPlanning,
 } from "@/data/planning";
