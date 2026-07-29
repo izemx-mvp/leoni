@@ -6,6 +6,7 @@ import {
   Barre,
   Btn,
   Field,
+  Input,
   Onglets,
   Panel,
   Select,
@@ -14,6 +15,7 @@ import {
   Table,
   Tag,
   Td,
+  Textarea,
   Th,
   Tr,
   Vide,
@@ -21,13 +23,20 @@ import {
 import { useLeoni } from "@/lib/leoni-store";
 import {
   CATALOGUE_CONSIGNES,
+  HORAIRES_FORMATION,
+  LIEUX_FORMATION,
+  LIGNES_TRANSPORT,
+  PARCOURS_FORMATION,
   STATUTS_BADGE,
   STATUTS_CASIER,
   STATUTS_DOCUMENT,
   STATUTS_EQUIPEMENT,
   STATUTS_TRANSPORT,
+  TYPES_CARTE,
   alertesOnboarding,
+  dateFinFormation,
   documentsManquants,
+  formationParDefaut,
   kpiDocuments,
   messageRelanceDocuments,
   progressionOnboarding,
@@ -37,6 +46,7 @@ import {
   type StatutEquipement,
   type StatutTransport,
 } from "@/data/onboarding";
+
 
 const SOUS_ONGLETS = [
   "Identité",
@@ -60,6 +70,25 @@ export function DossierOuvrier({ o, candidat }: { o: Ouvrier; candidat?: Candida
   const { majOnboarding, finaliserAccueil, pousserNotification } = useLeoni();
   const [tab, setTab] = useState(SOUS_ONGLETS[0]);
   const d = o.onboarding;
+
+  // Formation d'intégration : générée par défaut à l'affectation, mais modifiable.
+  const formation =
+    d?.formation ??
+    formationParDefaut({
+      dateArrivee: d?.arrivee.date ?? o.dateIntegration,
+      poste: o.poste,
+      atelier: o.atelier,
+      formateur: o.formateur,
+      groupe: o.groupe,
+    });
+  const majFormation = (patch: Partial<typeof formation>) =>
+    majOnboarding(o.id, (dd) => ({ ...dd, formation: { ...(dd.formation ?? formation), ...patch } }));
+  const basculerConsigne = (id: string) =>
+    majOnboarding(o.id, (dd) => ({
+      ...dd,
+      consignes: dd.consignes.includes(id) ? dd.consignes.filter((x) => x !== id) : [...dd.consignes, id],
+    }));
+
 
   const vide = (texte: string) => (
     <Panel title="Pré-intégration">
@@ -322,13 +351,111 @@ export function DossierOuvrier({ o, candidat }: { o: Ouvrier; candidat?: Candida
               </div>
             </Panel>
 
-            <Panel title="Consignes communiquées">
-              <ul className="grid gap-1 text-xs text-muted-foreground">
-                {d.consignes.map((id) => (
-                  <li key={id}>• {CATALOGUE_CONSIGNES.find((c) => c.id === id)?.texte}</li>
-                ))}
-              </ul>
+            <Panel
+              title="Formation d'intégration"
+              className="lg:col-span-2"
+              action={<Tag ton="brand">Généré par défaut · modifiable</Tag>}
+            >
+              <div className="grid gap-3 sm:grid-cols-3">
+                <div>
+                  <p className="label-xs mb-1">Parcours de formation</p>
+                  <Select
+                    className="w-full"
+                    value={PARCOURS_FORMATION.includes(formation.parcours) ? formation.parcours : PARCOURS_FORMATION[0]}
+                    options={PARCOURS_FORMATION}
+                    onChange={(v) => majFormation({ parcours: v })}
+                  />
+                </div>
+                <Input
+                  label="Date de début de formation"
+                  value={formation.dateDebut}
+                  placeholder="JJ/MM/AAAA"
+                  onChange={(e) => majFormation({ dateDebut: e.target.value })}
+                />
+                <Input
+                  label="Durée (jours ouvrés)"
+                  type="number"
+                  min={1}
+                  value={formation.dureeJours}
+                  onChange={(e) => majFormation({ dureeJours: Number(e.target.value) || 1 })}
+                />
+                <div>
+                  <p className="label-xs mb-1">Horaire</p>
+                  <Select
+                    className="w-full"
+                    value={HORAIRES_FORMATION.includes(formation.horaire) ? formation.horaire : HORAIRES_FORMATION[0]}
+                    options={HORAIRES_FORMATION}
+                    onChange={(v) => majFormation({ horaire: v })}
+                  />
+                </div>
+                <div>
+                  <p className="label-xs mb-1">Lieu</p>
+                  <Select
+                    className="w-full"
+                    value={LIEUX_FORMATION.includes(formation.lieu) ? formation.lieu : LIEUX_FORMATION[0]}
+                    options={LIEUX_FORMATION}
+                    onChange={(v) => majFormation({ lieu: v })}
+                  />
+                </div>
+                <Input
+                  label="Formateur"
+                  value={formation.formateur}
+                  onChange={(e) => majFormation({ formateur: e.target.value })}
+                />
+                <Input
+                  label="Groupe de formation"
+                  value={formation.groupe}
+                  onChange={(e) => majFormation({ groupe: e.target.value })}
+                />
+                <Field label="Date de fin prévisionnelle" value={dateFinFormation(formation)} />
+                <Field label="Poste visé" value={`${o.poste} — ${o.atelier}`} />
+              </div>
+              <div className="mt-3">
+                <Textarea
+                  label="Instructions et consignes envoyées à l'ouvrier"
+                  rows={4}
+                  value={formation.instructions}
+                  onChange={(e) => majFormation({ instructions: e.target.value })}
+                />
+              </div>
+              <div className="mt-3 flex flex-wrap items-center gap-2">
+                <Btn
+                  size="sm"
+                  variant="secondary"
+                  onClick={() =>
+                    pousserNotification({
+                      titre: "Consignes de formation envoyées",
+                      detail: `${o.nom} — début le ${formation.dateDebut} (${formation.dureeJours} j).`,
+                      ton: "info",
+                    })
+                  }
+                >
+                  <Send className="size-3.5" /> Envoyer les instructions au salarié
+                </Btn>
+                <span className="text-xs text-muted-foreground">
+                  Du {formation.dateDebut} au {dateFinFormation(formation)} · {formation.horaire} · {formation.lieu}
+                </span>
+              </div>
             </Panel>
+
+            <Panel title="Consignes communiquées" className="lg:col-span-2">
+              <div className="grid gap-1.5 sm:grid-cols-2">
+                {CATALOGUE_CONSIGNES.filter((c) => c.active).map((c) => (
+                  <label key={c.id} className="flex items-start gap-2 text-xs">
+                    <input
+                      type="checkbox"
+                      className="mt-0.5 accent-[var(--brand)]"
+                      checked={d.consignes.includes(c.id)}
+                      onChange={() => basculerConsigne(c.id)}
+                    />
+                    <span>
+                      <span className="text-muted-foreground">[{c.categorie}]</span> {c.texte}
+                    </span>
+                  </label>
+                ))}
+              </div>
+            </Panel>
+
 
             <Panel title="Communications d'intégration" bodyClassName="p-0">
               {d.communications.length === 0 ? (
@@ -389,18 +516,87 @@ export function DossierOuvrier({ o, candidat }: { o: Ouvrier; candidat?: Candida
       {tab === "EPI & accès" &&
         (d ? (
           <div className="grid gap-4 lg:grid-cols-2">
-            <Panel title="Badge et accès">
-              <div className="grid grid-cols-2 gap-4">
-                <Field label="Numéro" value={d.badge.numero || "À attribuer"} />
-                <Field label="Zones" value={d.badge.zones} />
+            <Panel title="Badge affecté">
+              <div className="grid gap-3 sm:grid-cols-2">
+                <Input
+                  label="Numéro de badge"
+                  value={d.badge.numero}
+                  placeholder="À attribuer"
+                  onChange={(e) =>
+                    majOnboarding(o.id, (dd) => ({ ...dd, badge: { ...dd.badge, numero: e.target.value } }))
+                  }
+                />
+                <Input
+                  label="Zones d'accès"
+                  value={d.badge.zones}
+                  onChange={(e) =>
+                    majOnboarding(o.id, (dd) => ({ ...dd, badge: { ...dd.badge, zones: e.target.value } }))
+                  }
+                />
+                <div>
+                  <p className="label-xs mb-1">Statut du badge</p>
+                  <Select
+                    className="w-full"
+                    value={d.badge.statut}
+                    options={STATUTS_BADGE}
+                    onChange={(v) => majOnboarding(o.id, (dd) => ({ ...dd, badge: { ...dd.badge, statut: v as TStatutBadge } }))}
+                  />
+                </div>
                 <Field label="Instruction" value={d.badge.instruction} />
               </div>
-              <div className="mt-3 w-56">
-                <p className="label-xs mb-1">Statut du badge</p>
-                <Select
-                  value={d.badge.statut}
-                  options={STATUTS_BADGE}
-                  onChange={(v) => majOnboarding(o.id, (dd) => ({ ...dd, badge: { ...dd.badge, statut: v as TStatutBadge } }))}
+            </Panel>
+
+            <Panel title="Carte affectée">
+              <div className="grid gap-3 sm:grid-cols-2">
+                <div>
+                  <p className="label-xs mb-1">Type de carte</p>
+                  <Select
+                    className="w-full"
+                    value={d.carte?.type && TYPES_CARTE.includes(d.carte.type) ? d.carte.type : TYPES_CARTE[0]}
+                    options={TYPES_CARTE}
+                    onChange={(v) =>
+                      majOnboarding(o.id, (dd) => ({
+                        ...dd,
+                        carte: { type: v, numero: dd.carte?.numero ?? "", statut: dd.carte?.statut ?? "À préparer", validite: dd.carte?.validite ?? "" },
+                      }))
+                    }
+                  />
+                </div>
+                <Input
+                  label="Numéro de carte"
+                  value={d.carte?.numero ?? ""}
+                  placeholder="Non affectée"
+                  onChange={(e) =>
+                    majOnboarding(o.id, (dd) => ({
+                      ...dd,
+                      carte: { type: dd.carte?.type ?? TYPES_CARTE[0], numero: e.target.value, statut: dd.carte?.statut ?? "À préparer", validite: dd.carte?.validite ?? "" },
+                    }))
+                  }
+                />
+                <div>
+                  <p className="label-xs mb-1">Statut</p>
+                  <Select
+                    className="w-full"
+                    value={d.carte?.statut ?? "À préparer"}
+                    options={STATUTS_BADGE}
+                    onChange={(v) =>
+                      majOnboarding(o.id, (dd) => ({
+                        ...dd,
+                        carte: { type: dd.carte?.type ?? TYPES_CARTE[0], numero: dd.carte?.numero ?? "", statut: v as TStatutBadge, validite: dd.carte?.validite ?? "" },
+                      }))
+                    }
+                  />
+                </div>
+                <Input
+                  label="Validité"
+                  value={d.carte?.validite ?? ""}
+                  placeholder="JJ/MM/AAAA"
+                  onChange={(e) =>
+                    majOnboarding(o.id, (dd) => ({
+                      ...dd,
+                      carte: { type: dd.carte?.type ?? TYPES_CARTE[0], numero: dd.carte?.numero ?? "", statut: dd.carte?.statut ?? "À préparer", validite: e.target.value },
+                    }))
+                  }
                 />
               </div>
             </Panel>
@@ -420,13 +616,22 @@ export function DossierOuvrier({ o, candidat }: { o: Ouvrier; candidat?: Candida
               </div>
             </Panel>
 
-            <Panel title="Équipements de protection" bodyClassName="p-0" className="lg:col-span-2">
-              <div className="flex flex-wrap gap-4 border-b border-border p-3 text-xs text-muted-foreground">
-                <span>Blouse : <strong className="text-foreground">{d.tailles.blouse || "—"}</strong></span>
-                <span>Gilet : <strong className="text-foreground">{d.tailles.gilet || "—"}</strong></span>
-                <span>Pointure : <strong className="text-foreground">{d.tailles.chaussures || "—"}</strong></span>
-                <span>Gants : <strong className="text-foreground">{d.tailles.gants || "—"}</strong></span>
+            <Panel title="Tailles du salarié">
+              <div className="grid gap-3 sm:grid-cols-4">
+                {(["blouse", "gilet", "chaussures", "gants"] as const).map((k) => (
+                  <Input
+                    key={k}
+                    label={k === "chaussures" ? "Pointure" : k[0].toUpperCase() + k.slice(1)}
+                    value={d.tailles[k]}
+                    onChange={(e) =>
+                      majOnboarding(o.id, (dd) => ({ ...dd, tailles: { ...dd.tailles, [k]: e.target.value } }))
+                    }
+                  />
+                ))}
               </div>
+            </Panel>
+
+            <Panel title="Équipements de protection affectés" bodyClassName="p-0" className="lg:col-span-2">
               <Table>
                 <thead>
                   <tr><Th>Équipement</Th><Th>Taille</Th><Th>Quantité</Th><Th>Statut</Th></tr>
@@ -435,8 +640,21 @@ export function DossierOuvrier({ o, candidat }: { o: Ouvrier; candidat?: Candida
                   {d.equipements.map((e) => (
                     <Tr key={e.id}>
                       <Td className="font-medium">{e.nom}</Td>
-                      <Td className="num">{e.taille || "—"}</Td>
+                      <Td>
+                        <Input
+                          value={e.taille}
+                          placeholder="—"
+                          className="h-8 w-20"
+                          onChange={(ev) =>
+                            majOnboarding(o.id, (dd) => ({
+                              ...dd,
+                              equipements: dd.equipements.map((x) => (x.id === e.id ? { ...x, taille: ev.target.value } : x)),
+                            }))
+                          }
+                        />
+                      </Td>
                       <Td className="num">{e.quantite}</Td>
+
                       <Td>
                         <Select
                           value={e.statut}
@@ -462,17 +680,85 @@ export function DossierOuvrier({ o, candidat }: { o: Ouvrier; candidat?: Candida
       {tab === "Transport" &&
         (d ? (
           <div className="grid gap-4 lg:grid-cols-2">
-            <Panel title="Transport du personnel">
+            <Panel
+              title="Transport du personnel"
+              action={<Tag ton="brand">Modifiable</Tag>}
+            >
+              <label className="mb-3 flex items-center gap-2 text-xs">
+                <input
+                  type="checkbox"
+                  className="accent-[var(--brand)]"
+                  checked={d.transport.besoin}
+                  onChange={() =>
+                    majOnboarding(o.id, (dd) => ({ ...dd, transport: { ...dd.transport, besoin: !dd.transport.besoin } }))
+                  }
+                />
+                Le salarié utilise le transport du personnel
+              </label>
+
               {d.transport.besoin ? (
-                <div className="grid grid-cols-2 gap-4">
-                  <Field label="Ligne" value={d.transport.ligne || "À définir"} />
-                  <Field label="Point de ramassage" value={d.transport.point || "À définir"} />
-                  <Field label="Zone" value={d.transport.zone || "—"} />
-                  <Field label="Ville" value={d.transport.ville} />
-                  <Field label="Heure aller" value={d.transport.heureAller || "—"} />
-                  <Field label="Heure retour" value={d.transport.heureRetour || "—"} />
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <div className="sm:col-span-2">
+                    <p className="label-xs mb-1">Ligne de ramassage</p>
+                    <Select
+                      className="w-full"
+                      value={d.transport.ligne || "À définir"}
+                      options={["À définir", ...LIGNES_TRANSPORT.map((l) => l.ligne)]}
+                      render={(v) => {
+                        const l = LIGNES_TRANSPORT.find((x) => x.ligne === v);
+                        return l ? `${l.ligne} — ${l.point} (${l.aller})` : v;
+                      }}
+                      onChange={(v) =>
+                        majOnboarding(o.id, (dd) => {
+                          const l = LIGNES_TRANSPORT.find((x) => x.ligne === v);
+                          return {
+                            ...dd,
+                            transport: l
+                              ? {
+                                  ...dd.transport,
+                                  ligne: l.ligne,
+                                  point: l.point,
+                                  zone: l.zone,
+                                  heureAller: l.aller,
+                                  heureRetour: l.retour,
+                                  transporteur: l.transporteur,
+                                  contact: l.contact,
+                                  statut: dd.transport.statut === "À définir" ? "Trajet proposé" : dd.transport.statut,
+                                }
+                              : { ...dd.transport, ligne: "" },
+                          };
+                        })
+                      }
+                    />
+                  </div>
+                  <Input
+                    label="Point de ramassage"
+                    value={d.transport.point}
+                    placeholder="À définir"
+                    onChange={(e) => majOnboarding(o.id, (dd) => ({ ...dd, transport: { ...dd.transport, point: e.target.value } }))}
+                  />
+                  <Input
+                    label="Zone"
+                    value={d.transport.zone}
+                    onChange={(e) => majOnboarding(o.id, (dd) => ({ ...dd, transport: { ...dd.transport, zone: e.target.value } }))}
+                  />
+                  <Input
+                    label="Ville"
+                    value={d.transport.ville}
+                    onChange={(e) => majOnboarding(o.id, (dd) => ({ ...dd, transport: { ...dd.transport, ville: e.target.value } }))}
+                  />
+                  <Input
+                    label="Heure aller"
+                    value={d.transport.heureAller}
+                    onChange={(e) => majOnboarding(o.id, (dd) => ({ ...dd, transport: { ...dd.transport, heureAller: e.target.value } }))}
+                  />
+                  <Input
+                    label="Heure retour"
+                    value={d.transport.heureRetour}
+                    onChange={(e) => majOnboarding(o.id, (dd) => ({ ...dd, transport: { ...dd.transport, heureRetour: e.target.value } }))}
+                  />
                   <Field label="Transporteur" value={d.transport.transporteur || "—"} />
-                  <Field label="Contact" value={d.transport.contact || "—"} />
+                  <Field label="Contact transporteur" value={d.transport.contact || "—"} />
                 </div>
               ) : (
                 <Vide texte="Le salarié n'utilise pas le transport du personnel." />
@@ -480,12 +766,14 @@ export function DossierOuvrier({ o, candidat }: { o: Ouvrier; candidat?: Candida
               <div className="mt-3 w-64">
                 <p className="label-xs mb-1">Statut du transport</p>
                 <Select
+                  className="w-full"
                   value={d.transport.statut}
                   options={STATUTS_TRANSPORT}
                   onChange={(v) => majOnboarding(o.id, (dd) => ({ ...dd, transport: { ...dd.transport, statut: v as StatutTransport } }))}
                 />
               </div>
             </Panel>
+
             <Panel title="Communication au salarié">
               <label className="flex items-center gap-2 text-xs">
                 <input
