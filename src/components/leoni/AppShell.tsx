@@ -17,6 +17,8 @@ import {
   Monitor,
   Moon,
   Search,
+  Smartphone,
+
   Sun,
   UserRound,
   Users,
