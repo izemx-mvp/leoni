@@ -100,7 +100,7 @@ export function EspaceShell({ children }: { children: ReactNode }) {
 
         <header className="sticky top-0 z-40 flex h-16 items-center gap-3 border-b border-border bg-[var(--surface)] px-4">
           <div className="min-w-0 flex-1">
-            <p className="truncate text-base font-bold tracking-tight">Bonjour {prenom} 👋</p>
+            <p className="truncate text-base font-bold tracking-tight">Bonjour {prenom}</p>
             <p className="truncate text-[11px] text-muted-foreground">{AUJOURDHUI_LIBELLE}</p>
           </div>
           <Link
