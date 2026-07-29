@@ -74,6 +74,9 @@ interface Ctx {
   deciderParcours: (ouvrierId: string, decision: string, commentaire: string, motif?: string) => void;
   deplacerReclamation: (id: string, statut: ColonneKanban) => void;
   creerReclamation: (r: Omit<Reclamation, "id" | "date" | "statut">) => void;
+  creerCandidature: (c: Omit<Candidat, "id" | "date">) => Candidat;
+  lancerTalentFit: (candidatId: string) => void;
+
 }
 
 const LeoniContext = createContext<Ctx | null>(null);
@@ -448,6 +451,57 @@ export function LeoniProvider({ children }: { children: ReactNode }) {
     [pousserNotification],
   );
 
+  const creerCandidature = useCallback(
+    (c: Omit<Candidat, "id" | "date">) => {
+      const { date } = horodatage();
+      const candidat: Candidat = { ...c, id: "", date };
+      setCandidats((prev) => {
+        let n = 1250;
+        while (prev.some((x) => x.id === `CAN-2026-${String(n).padStart(5, "0")}`)) n += 1;
+        candidat.id = `CAN-2026-${String(n).padStart(5, "0")}`;
+        return [candidat, ...prev];
+      });
+      pousserNotification({
+        titre: candidat.brouillon ? "Brouillon de candidature enregistré" : "Candidature créée",
+        detail: `${candidat.id} — ${candidat.nom} · ${candidat.poste}`,
+        ton: candidat.brouillon ? "info" : "success",
+      });
+      return candidat;
+    },
+    [pousserNotification],
+  );
+
+  const lancerTalentFit = useCallback(
+    (candidatId: string) => {
+      const { date, heure } = horodatage();
+      setCandidats((prev) =>
+        prev.map((c) => {
+          if (c.id !== candidatId) return c;
+          const detail = [
+            { label: "Adéquation poste", valeur: 70 + Math.floor(Math.random() * 25) },
+            { label: "Expérience", valeur: 65 + Math.floor(Math.random() * 30) },
+            { label: "Apprentissage", valeur: 70 + Math.floor(Math.random() * 25) },
+            { label: "Disponibilité", valeur: c.disponibilite === "Immédiate" ? 100 : 80 },
+            { label: "Mobilité", valeur: c.mobilite?.toLowerCase().startsWith("oui") ? 92 : 70 },
+            { label: "Comportement", valeur: 75 + Math.floor(Math.random() * 20) },
+          ];
+          const score = Math.round(detail.reduce((s, d) => s + d.valeur, 0) / detail.length);
+          return {
+            ...c,
+            score,
+            detailScore: detail,
+            recommandation: score >= 80 ? "Fortement recommandé" : score >= 65 ? "Recommandé" : "À qualifier",
+            statut: score >= 70 ? ("Présélectionné" as const) : c.statut,
+            audit: [...(c.audit ?? []), { date, heure, libelle: `Talent Fit AI lancé — score ${score} %` }],
+          };
+        }),
+      );
+      pousserNotification({ titre: "Talent Fit AI lancé", detail: `Scoring de compatibilité calculé pour ${candidatId}`, ton: "info" });
+    },
+    [pousserNotification],
+  );
+
+
   const value = useMemo<Ctx>(
     () => ({
       theme,
@@ -474,8 +528,10 @@ export function LeoniProvider({ children }: { children: ReactNode }) {
       deciderParcours,
       deplacerReclamation,
       creerReclamation,
+      creerCandidature,
+      lancerTalentFit,
     }),
-    [theme, setTheme, site, langue, candidats, ouvriers, entretiens, reclamations, alertes, notifications, marquerLues, pousserNotification, changerStatutCandidat, planifierEntretien, evaluerEntretien, transformerEnOuvrier, ajouterEvenement, enregistrerPresence, validerJournee, deciderParcours, deplacerReclamation, creerReclamation],
+    [theme, setTheme, site, langue, candidats, ouvriers, entretiens, reclamations, alertes, notifications, marquerLues, pousserNotification, changerStatutCandidat, planifierEntretien, evaluerEntretien, transformerEnOuvrier, ajouterEvenement, enregistrerPresence, validerJournee, deciderParcours, deplacerReclamation, creerReclamation, creerCandidature, lancerTalentFit],
   );
 
   return <LeoniContext.Provider value={value}>{children}</LeoniContext.Provider>;
