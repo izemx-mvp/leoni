@@ -184,7 +184,15 @@ export const EQUIPEMENTS_PAR_POSTE: Record<string, string[]> = {
 export type StatutBadge = "À préparer" | "Commandé" | "Prêt" | "Remis" | "Activé";
 export const STATUTS_BADGE: StatutBadge[] = ["À préparer", "Commandé", "Prêt", "Remis", "Activé"];
 
+export const TYPES_CARTE = [
+  "Carte de pointage",
+  "Carte de cantine",
+  "Carte de transport",
+  "Carte d'accès parking",
+];
+
 export const INSTRUCTIONS_BADGE = [
+
   "Badge à récupérer à l'accueil sécurité",
   "Badge remis par RH",
   "Badge créé lors du premier jour",
