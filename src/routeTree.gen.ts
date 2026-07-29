@@ -34,6 +34,7 @@ import { Route as EspaceFormationRouteImport } from './routes/espace.formation'
 import { Route as EspaceEvaluationsRouteImport } from './routes/espace.evaluations'
 import { Route as EspaceDocumentsRouteImport } from './routes/espace.documents'
 import { Route as EspaceDemandesRouteImport } from './routes/espace.demandes'
+import { Route as EspaceAssistantRouteImport } from './routes/espace.assistant'
 import { Route as FormationQcmIndexRouteImport } from './routes/formation.qcm.index'
 import { Route as RecrutementCandidatIdRouteImport } from './routes/recrutement.candidat.$id'
 import { Route as FormationQcmNouvelleRouteImport } from './routes/formation.qcm.nouvelle'
@@ -165,6 +166,11 @@ const EspaceDemandesRoute = EspaceDemandesRouteImport.update({
   path: '/demandes',
   getParentRoute: () => EspaceRoute,
 } as any)
+const EspaceAssistantRoute = EspaceAssistantRouteImport.update({
+  id: '/assistant',
+  path: '/assistant',
+  getParentRoute: () => EspaceRoute,
+} as any)
 const FormationQcmIndexRoute = FormationQcmIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -198,6 +204,7 @@ export interface FileRoutesByFullPath {
   '/espace': typeof EspaceRouteWithChildren
   '/presences': typeof PresencesRoute
   '/reporting': typeof ReportingRoute
+  '/espace/assistant': typeof EspaceAssistantRoute
   '/espace/demandes': typeof EspaceDemandesRoute
   '/espace/documents': typeof EspaceDocumentsRoute
   '/espace/evaluations': typeof EspaceEvaluationsRoute
@@ -229,6 +236,7 @@ export interface FileRoutesByTo {
   '/communication': typeof CommunicationRoute
   '/presences': typeof PresencesRoute
   '/reporting': typeof ReportingRoute
+  '/espace/assistant': typeof EspaceAssistantRoute
   '/espace/demandes': typeof EspaceDemandesRoute
   '/espace/documents': typeof EspaceDocumentsRoute
   '/espace/evaluations': typeof EspaceEvaluationsRoute
@@ -261,6 +269,7 @@ export interface FileRoutesById {
   '/espace': typeof EspaceRouteWithChildren
   '/presences': typeof PresencesRoute
   '/reporting': typeof ReportingRoute
+  '/espace/assistant': typeof EspaceAssistantRoute
   '/espace/demandes': typeof EspaceDemandesRoute
   '/espace/documents': typeof EspaceDocumentsRoute
   '/espace/evaluations': typeof EspaceEvaluationsRoute
@@ -295,6 +304,7 @@ export interface FileRouteTypes {
     | '/espace'
     | '/presences'
     | '/reporting'
+    | '/espace/assistant'
     | '/espace/demandes'
     | '/espace/documents'
     | '/espace/evaluations'
@@ -326,6 +336,7 @@ export interface FileRouteTypes {
     | '/communication'
     | '/presences'
     | '/reporting'
+    | '/espace/assistant'
     | '/espace/demandes'
     | '/espace/documents'
     | '/espace/evaluations'
@@ -357,6 +368,7 @@ export interface FileRouteTypes {
     | '/espace'
     | '/presences'
     | '/reporting'
+    | '/espace/assistant'
     | '/espace/demandes'
     | '/espace/documents'
     | '/espace/evaluations'
@@ -582,6 +594,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EspaceDemandesRouteImport
       parentRoute: typeof EspaceRoute
     }
+    '/espace/assistant': {
+      id: '/espace/assistant'
+      path: '/assistant'
+      fullPath: '/espace/assistant'
+      preLoaderRoute: typeof EspaceAssistantRouteImport
+      parentRoute: typeof EspaceRoute
+    }
     '/formation/qcm/': {
       id: '/formation/qcm/'
       path: '/'
@@ -621,6 +640,7 @@ declare module '@tanstack/react-router' {
 }
 
 interface EspaceRouteChildren {
+  EspaceAssistantRoute: typeof EspaceAssistantRoute
   EspaceDemandesRoute: typeof EspaceDemandesRoute
   EspaceDocumentsRoute: typeof EspaceDocumentsRoute
   EspaceEvaluationsRoute: typeof EspaceEvaluationsRoute
@@ -632,6 +652,7 @@ interface EspaceRouteChildren {
 }
 
 const EspaceRouteChildren: EspaceRouteChildren = {
+  EspaceAssistantRoute: EspaceAssistantRoute,
   EspaceDemandesRoute: EspaceDemandesRoute,
   EspaceDocumentsRoute: EspaceDocumentsRoute,
   EspaceEvaluationsRoute: EspaceEvaluationsRoute,
