@@ -814,3 +814,134 @@ export const DOSSIER_DEMO: DossierOnboarding = {
   ],
   accueilFinalise: false,
 };
+
+/* ---------------- Dossier généré pour chaque ouvrier ---------------- */
+
+function empreinte(id: string) {
+  let h = 0;
+  for (let i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) % 100000;
+  return h;
+}
+
+/**
+ * Génère un dossier de pré-intégration complet pour un ouvrier qui n'en a pas encore
+ * (les valeurs restent modifiables dans la fiche ouvrier).
+ */
+export function dossierPourOuvrier(o: {
+  id: string;
+  candidatId?: string;
+  nom: string;
+  poste: string;
+  site: string;
+  atelier: string;
+  groupe: string;
+  statut: string;
+  formateur?: string;
+  dateIntegration: string;
+  identite?: { ville?: string };
+}): DossierOnboarding {
+  const h = empreinte(o.id);
+  const integre = o.statut !== "À intégrer";
+  const femme = /^(Sara|Nawal|Salma|Khadija|Imane|Fatima|Hafsa|Meryem|Amal|Zineb|Loubna|Hanane|Siham|Naima|Rachida|Asmae|Ilham)/i.test(o.nom);
+  const pointure = String(36 + (h % 7));
+  const taille = ["S", "M", "L", "XL"][h % 4];
+  const ligne = LIGNES_TRANSPORT.filter((l) => l.site === o.site)[h % Math.max(1, LIGNES_TRANSPORT.filter((l) => l.site === o.site).length)] ??
+    LIGNES_TRANSPORT[h % LIGNES_TRANSPORT.length];
+
+  return {
+    candidatId: o.candidatId,
+    arrivee: {
+      date: o.dateIntegration,
+      heure: "08:00",
+      site: o.site,
+      pointAccueil: POINTS_ACCUEIL[h % POINTS_ACCUEIL.length],
+      contactRH: "Nadia El Ghali",
+      telephoneRH: "+212 5 22 87 41 00",
+      departement: o.poste.toLowerCase().includes("qualité") ? "Qualité" : "Production câblage",
+      poste: o.poste,
+      atelier: o.atelier,
+    },
+    badge: {
+      statut: integre ? "Activé" : (["À préparer", "Commandé", "Prêt"] as StatutBadge[])[h % 3],
+      numero: `BDG-${20000 + (h % 9000)}`,
+      dateCreation: o.dateIntegration,
+      dateRemise: integre ? o.dateIntegration : "",
+      dateActivation: integre ? o.dateIntegration : "",
+      zones: "Zone production · Vestiaires · Réfectoire",
+      instruction: INSTRUCTIONS_BADGE[h % INSTRUCTIONS_BADGE.length],
+    },
+    carte: {
+      type: TYPES_CARTE[h % TYPES_CARTE.length],
+      numero: `CRT-${10000 + (h % 900)}`,
+      statut: integre ? "Remis" : "Prêt",
+      validite: "31/12/2026",
+    },
+    formation: formationParDefaut({
+      dateArrivee: o.dateIntegration,
+      poste: o.poste,
+      atelier: o.atelier,
+      formateur: o.formateur,
+      groupe: o.groupe,
+    }),
+    documents: documentsPreselectionnes(o.dateIntegration).map((d, i) => ({
+      ...d,
+      statut: integre ? "Validé" : i < 3 ? "Validé" : i < 5 ? "Reçu" : "Demandé",
+      demandeLe: o.dateIntegration,
+      recuLe: integre || i < 5 ? o.dateIntegration : undefined,
+      valideLe: integre || i < 3 ? o.dateIntegration : undefined,
+      validePar: integre || i < 3 ? "Nadia El Ghali" : undefined,
+    })),
+    equipements: equipementsPourPoste(o.poste).map((e, i) => ({
+      ...e,
+      taille:
+        CATALOGUE_EPI.find((c) => c.id === e.id)?.tailleType === "Pointure"
+          ? pointure
+          : CATALOGUE_EPI.find((c) => c.id === e.id)?.tailleType === "Aucune"
+            ? ""
+            : taille,
+      statut: (integre ? "Remis" : i % 3 === 2 ? "À commander" : "Disponible") as StatutEquipement,
+    })),
+    tailles: { blouse: taille, gilet: taille, chaussures: pointure, gants: taille },
+    vestiaire: {
+      statut: integre ? "Affecté" : (["À affecter", "Affecté"] as StatutCasier[])[h % 2],
+      vestiaire: femme ? "Vestiaire femmes B" : "Vestiaire hommes A",
+      casier: String(100 + (h % 300)),
+      cle: `CLE-${100 + (h % 300)}`,
+      dateRemise: integre ? o.dateIntegration : "",
+      checklist: checklistDepuis(
+        ["Casier attribué", "Clé remise", "Casier communiqué au salarié"],
+        integre ? ["Casier attribué", "Clé remise", "Casier communiqué au salarié"] : ["Casier attribué"],
+      ),
+    },
+    transport: {
+      statut: (integre ? "Confirmé" : (["À définir", "Proposé", "Confirmé"] as StatutTransport[])[h % 3]) as StatutTransport,
+      besoin: true,
+      ville: o.identite?.ville ?? (o.site === "Bouskoura" ? "Casablanca" : o.site),
+      zone: ligne?.point?.split(" – ")[0] ?? "Zone centre",
+      point: ligne?.point ?? "Point central",
+      ligne: ligne?.ligne ?? "TR-000",
+      heureAller: ligne?.aller ?? "06:30",
+      heureRetour: ligne?.retour ?? "17:30",
+      transporteur: "Casa Transport Services",
+      contact: "+212 6 62 18 44 07",
+      communique: integre,
+      luWhatsApp: integre,
+    },
+    preparation: checklistDepuis(CHECKLIST_PREPARATION, integre ? CHECKLIST_PREPARATION : CHECKLIST_PREPARATION.slice(0, 5)),
+    checkin: checklistDepuis(CHECKLIST_JOUR_J, integre ? CHECKLIST_JOUR_J : []),
+    consignes: consignesPreselectionnees(),
+    communications: [
+      {
+        id: `COM-${o.id}-1`,
+        date: o.dateIntegration,
+        heure: "16:42",
+        canal: "WhatsApp",
+        objet: "Informations d'intégration et documents à fournir",
+        contenu: `Bonjour ${o.nom}, votre intégration est prévue le ${o.dateIntegration} à 08:00 sur le site de ${o.site}.`,
+        statut: integre ? "Lu" : "Envoyé",
+        etapes: integre ? ["Message généré", "Message validé RH", "Envoyé", "Lu"] : ["Message généré", "Envoyé"],
+      },
+    ],
+    accueilFinalise: integre,
+  };
+}
