@@ -27,6 +27,7 @@ import {
   Tr,
 } from "@/components/leoni/kit";
 import { useLeoni } from "@/lib/leoni-store";
+import { DecisionRetenu } from "@/components/leoni/recrutement/DecisionRetenu";
 
 export const Route = createFileRoute("/recrutement/candidat/$id")({
   head: () => ({
@@ -146,7 +147,7 @@ function FicheCandidat() {
             <Btn variant="secondary" onClick={() => changerStatutCandidat(candidat.id, "Vivier")}>
               <UserPlus className="size-3.5" /> Ajouter au vivier
             </Btn>
-            <Btn variant="primary" onClick={() => { setDecision("Retenu"); setModale("decision"); }}>
+            <Btn variant="primary" onClick={() => setPreIntegration(true)}>
               <Check className="size-3.5" /> Retenir
             </Btn>
             <Btn variant="danger" onClick={() => { setDecision("Refusé"); setModale("decision"); }}>
@@ -402,7 +403,7 @@ function FicheCandidat() {
               <Field label="Statut actuel" value={<StatutBadge valeur={candidat.statut} />} />
             </div>
             <div className="mt-5 flex flex-wrap gap-2">
-              <Btn variant="primary" onClick={() => { setDecision("Retenu"); setModale("decision"); }}>
+              <Btn variant="primary" onClick={() => setPreIntegration(true)}>
                 Retenir et créer la fiche ouvrier <ArrowRight className="size-3.5" />
               </Btn>
               <Btn variant="secondary" onClick={() => { setDecision("Vivier"); setModale("decision"); }}>
@@ -590,6 +591,8 @@ function FicheCandidat() {
           </div>
         </div>
       )}
+
+      {preIntegration && <DecisionRetenu candidat={candidat} onClose={() => setPreIntegration(false)} />}
     </>
   );
 }
