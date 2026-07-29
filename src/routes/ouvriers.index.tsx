@@ -112,14 +112,43 @@ function Ouvriers() {
         <span className="ml-auto text-xs text-muted-foreground">{liste.length} opérateur(s)</span>
       </div>
 
+      {statut === "À intégrer" && (
+        <div className="mb-4 grid gap-3 sm:grid-cols-4">
+          <Stat label="Arrivées prévues" valeur={liste.length} />
+          <Stat
+            label="Dossiers complets"
+            valeur={liste.filter((o) => o.onboarding && alertesOnboarding(o.onboarding).length === 0).length}
+            ton="success"
+          />
+          <Stat
+            label="Documents manquants"
+            valeur={liste.reduce((s, o) => s + (o.onboarding ? documentsManquants(o.onboarding).length : 0), 0)}
+            ton="critical"
+          />
+          <Stat
+            label="Transports à confirmer"
+            valeur={liste.filter((o) => o.onboarding?.transport.besoin && !["Confirmé", "Communiqué au salarié"].includes(o.onboarding.transport.statut)).length}
+            ton="critical"
+          />
+        </div>
+      )}
+
       <Panel bodyClassName="p-0">
         <div className="max-h-[600px] overflow-auto">
           <Table>
             <thead>
-              <tr>
-                <Th>Ouvrier</Th><Th>Matricule</Th><Th>Site</Th><Th>Poste</Th><Th>Atelier</Th><Th>Parcours</Th><Th>Jour</Th>
-                <Th>Progression</Th><Th>Score</Th><Th>Présence</Th><Th>Risque</Th><Th>Statut</Th><Th>Prochaine action</Th>
-              </tr>
+              {statut === "À intégrer" ? (
+                <tr>
+                  <Th>Ouvrier</Th><Th>Matricule</Th><Th>Site</Th><Th>Poste</Th><Th>Atelier</Th>
+                  <Th>Date d'arrivée</Th><Th>Préparation</Th><Th>Documents</Th><Th>Badge</Th>
+                  <Th>EPI</Th><Th>Transport</Th><Th>Blocage principal</Th>
+                </tr>
+              ) : (
+                <tr>
+                  <Th>Ouvrier</Th><Th>Matricule</Th><Th>Site</Th><Th>Poste</Th><Th>Atelier</Th><Th>Parcours</Th><Th>Jour</Th>
+                  <Th>Progression</Th><Th>Score</Th><Th>Présence</Th><Th>Risque</Th><Th>Statut</Th><Th>Prochaine action</Th>
+                </tr>
+              )}
             </thead>
             <tbody>
               {liste.map((o) => (
@@ -139,20 +168,39 @@ function Ouvriers() {
                   <Td className="text-muted-foreground">{o.site}</Td>
                   <Td className="text-muted-foreground">{o.poste}</Td>
                   <Td className="text-muted-foreground">{o.atelier}</Td>
-                  <Td className="num text-xs">{o.parcours}</Td>
-                  <Td className="num text-muted-foreground">{o.jour}/{o.jourTotal}</Td>
-                  <Td><ProgressionCell valeur={o.progression} /></Td>
-                  <Td className="num font-medium">{o.score} %</Td>
-                  <Td className="num">{o.presence} %</Td>
-                  <Td><RisqueBadge valeur={o.risque} /></Td>
-                  <Td><StatutBadge valeur={o.statut} /></Td>
-                  <Td className="max-w-56 truncate text-xs text-muted-foreground">{o.prochaineAction}</Td>
+                  {statut === "À intégrer" ? (
+                    <>
+                      <Td className="num">{o.onboarding?.arrivee.date ?? o.dateIntegration}</Td>
+                      <Td><ProgressionCell valeur={o.onboarding ? progressionOnboarding(o.onboarding) : 0} /></Td>
+                      <Td className="num text-xs">
+                        {o.onboarding ? `${kpiDocuments(o.onboarding).recus}/${kpiDocuments(o.onboarding).requis}` : "—"}
+                      </Td>
+                      <Td><Tag ton={o.onboarding && ["Prêt", "Remis", "Activé"].includes(o.onboarding.badge.statut) ? "success" : "warning"}>{o.onboarding?.badge.statut ?? "—"}</Tag></Td>
+                      <Td><Tag ton={o.onboarding?.equipements.some((e) => e.statut === "À commander") ? "warning" : "success"}>{o.onboarding ? `${o.onboarding.equipements.filter((e) => e.statut !== "À commander").length}/${o.onboarding.equipements.length}` : "—"}</Tag></Td>
+                      <Td><Tag ton={o.onboarding && ["Confirmé", "Communiqué au salarié", "Non nécessaire"].includes(o.onboarding.transport.statut) ? "success" : "critical"}>{o.onboarding?.transport.statut ?? "—"}</Tag></Td>
+                      <Td className="max-w-56 truncate text-xs text-muted-foreground">
+                        {o.onboarding ? blocagePrincipal(o.onboarding) : "—"}
+                      </Td>
+                    </>
+                  ) : (
+                    <>
+                      <Td className="num text-xs">{o.parcours}</Td>
+                      <Td className="num text-muted-foreground">{o.jour}/{o.jourTotal}</Td>
+                      <Td><ProgressionCell valeur={o.progression} /></Td>
+                      <Td className="num font-medium">{o.score} %</Td>
+                      <Td className="num">{o.presence} %</Td>
+                      <Td><RisqueBadge valeur={o.risque} /></Td>
+                      <Td><StatutBadge valeur={o.statut} /></Td>
+                      <Td className="max-w-56 truncate text-xs text-muted-foreground">{o.prochaineAction}</Td>
+                    </>
+                  )}
                 </Tr>
               ))}
             </tbody>
           </Table>
         </div>
       </Panel>
+
     </>
   );
 }
