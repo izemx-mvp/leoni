@@ -40,8 +40,7 @@ const NAV: { code: string; titre: string; icone: typeof LayoutGrid; items: NavIt
     icone: LayoutGrid,
     items: [
       { label: "Dashboard global", to: "/" },
-      { label: "Recrutement", to: "/reporting", search: { vue: "Recrutement" } },
-      { label: "Formation", to: "/reporting", search: { vue: "Formation" } },
+      { label: "Rapports & analyses", to: "/reporting" },
       { label: "Population ouvrière", to: "/ouvriers", search: { statut: "Tous" } },
       { label: "Alertes & risques", to: "/pilotage/alertes" },
     ],
