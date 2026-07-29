@@ -488,19 +488,27 @@ export function blocagePrincipal(d: DossierOnboarding) {
 
 const MOIS = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
 
+/** Accepte les formats ISO (2026-08-05) et français (05/08/2026). */
+function parseDate(iso: string): Date | null {
+  const fr = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(iso.trim());
+  const d = fr ? new Date(Number(fr[3]), Number(fr[2]) - 1, Number(fr[1])) : new Date(iso);
+  return Number.isNaN(d.getTime()) ? null : d;
+}
+
 export function dateLongue(iso: string) {
-  const d = new Date(iso);
-  if (Number.isNaN(d.getTime())) return iso;
+  const d = parseDate(iso);
+  if (!d) return iso;
   const jours = ["dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi"];
   return `${jours[d.getDay()]} ${d.getDate()} ${MOIS[d.getMonth()]} ${d.getFullYear()}`;
 }
 
 export function dateCourte(iso: string) {
-  const d = new Date(iso);
-  if (Number.isNaN(d.getTime())) return iso;
+  const d = parseDate(iso);
+  if (!d) return iso;
   const p = (n: number) => String(n).padStart(2, "0");
   return `${p(d.getDate())}/${p(d.getMonth() + 1)}/${d.getFullYear()}`;
 }
+
 
 function libelleEquipements(d: DossierOnboarding) {
   const noms = d.equipements.filter((e) => e.requis).map((e) => e.nom.toLowerCase());
