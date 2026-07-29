@@ -437,7 +437,13 @@ function Header() {
                 <p>MFA : activé · SSO : LEONI ID</p>
                 <p>Dernière connexion : 28/07/2026 07:42</p>
               </div>
-              <div className="mt-3 flex gap-2">
+              <a
+                href="/espace"
+                className="mt-3 flex items-center justify-center gap-2 rounded-sm border border-border bg-[var(--brand-soft)] px-2.5 py-2 text-xs font-semibold text-[var(--brand)]"
+              >
+                <Smartphone className="size-3.5" /> Ouvrir l'Espace Ouvrier (démo)
+              </a>
+              <div className="mt-2 flex gap-2">
                 <Btn size="sm" variant="secondary" className="flex-1">
                   <UserRound className="size-3.5" /> Profil
                 </Btn>
@@ -445,6 +451,7 @@ function Header() {
                   Déconnexion
                 </Btn>
               </div>
+
             </div>
           )}
         </div>
