@@ -51,12 +51,8 @@ const NAV: { code: string; titre: string; icone: typeof LayoutGrid; items: NavIt
     icone: ClipboardList,
     items: [
       { label: "Candidatures", to: "/recrutement/candidatures", search: { vue: "Toutes" } },
-      { label: "Présélection IA", to: "/recrutement/candidatures", search: { vue: "Présélection IA" } },
       { label: "Entretiens", to: "/recrutement/entretiens" },
-      { label: "Décisions RH", to: "/recrutement/candidatures", search: { vue: "Décisions RH" } },
-      { label: "Vivier", to: "/recrutement/candidatures", search: { vue: "Vivier" } },
-      { label: "Campagnes", to: "/recrutement/campagnes" },
-      { label: "Besoins / postes", to: "/recrutement/campagnes" },
+      { label: "Campagnes & besoins", to: "/recrutement/campagnes" },
     ],
   },
   {
@@ -65,6 +61,7 @@ const NAV: { code: string; titre: string; icone: typeof LayoutGrid; items: NavIt
     icone: Users,
     items: [
       { label: "Tous les ouvriers", to: "/ouvriers", search: { statut: "Tous" } },
+      { label: "Présences & absences", to: "/presences", search: { vue: "Présences" } },
     ],
   },
   {
@@ -81,50 +78,37 @@ const NAV: { code: string; titre: string; icone: typeof LayoutGrid; items: NavIt
   },
   {
     code: "05",
-    titre: "Présences",
-    icone: Activity,
-    items: [
-      { label: "Présences", to: "/presences", search: { vue: "Présences" } },
-      { label: "Absences", to: "/presences", search: { vue: "Absences" } },
-      { label: "Retards", to: "/presences", search: { vue: "Retards" } },
-      { label: "Calendrier", to: "/presences", search: { vue: "Calendrier" } },
-    ],
-  },
-  {
-    code: "06",
     titre: "Réclamations",
     icone: AlertTriangle,
     items: [{ label: "Réclamations", to: "/suivi/reclamations" }],
   },
   {
-    code: "07",
+    code: "06",
     titre: "Communication",
     icone: MessageSquare,
-    items: [
-      { label: "WhatsApp & Emails", to: "/communication" },
-      { label: "Templates", to: "/communication" },
-      { label: "Historique", to: "/communication" },
-    ],
+    items: [{ label: "WhatsApp & Emails", to: "/communication" }],
   },
   {
-    code: "08",
+    code: "07",
     titre: "Reporting",
     icone: FileBarChart,
     items: [{ label: "Rapports & analyses", to: "/reporting" }],
   },
   {
-    code: "09",
+    code: "08",
     titre: "Administration",
     icone: Cog,
     items: [
       { label: "Utilisateurs & rôles", to: "/administration", search: { vue: "Utilisateurs" } },
       { label: "Sites & ateliers", to: "/administration", search: { vue: "Sites" } },
       { label: "Postes & compétences", to: "/administration", search: { vue: "Postes" } },
+      { label: "Onboarding", to: "/administration", search: { vue: "Onboarding" } },
       { label: "Paramètres IA", to: "/administration", search: { vue: "IA" } },
       { label: "Automatisations", to: "/administration", search: { vue: "Automatisations" } },
       { label: "Audit", to: "/administration", search: { vue: "Audit" } },
     ],
   },
+
 ];
 
 function Sidebar() {
