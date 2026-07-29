@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { ArrowUpDown, Download, Settings2, Sparkles } from "lucide-react";
+import { ArrowUpDown, ChevronDown, Download, Settings2, Sparkles } from "lucide-react";
 import { SITES } from "@/data/leoni";
 import {
   Barre,
@@ -17,6 +17,7 @@ import {
   Avatar,
 } from "@/components/leoni/kit";
 import { useLeoni } from "@/lib/leoni-store";
+import { NouvelleCandidature } from "@/components/leoni/recrutement/NouvelleCandidature";
 
 export const Route = createFileRoute("/recrutement/candidatures")({
   validateSearch: (s: Record<string, unknown>) => ({
@@ -45,6 +46,7 @@ const COLONNES = [
   "Recommandation",
   "Entretien",
   "Statut",
+  "Création",
   "Recruteur",
 ] as const;
 
@@ -61,6 +63,8 @@ function Candidatures() {
   const [selection, setSelection] = useState<string[]>([]);
   const [colonnes, setColonnes] = useState<string[]>([...COLONNES]);
   const [configOuvert, setConfigOuvert] = useState(false);
+  const [menuCreation, setMenuCreation] = useState(false);
+  const [creation, setCreation] = useState<"choix" | "ia" | "manuel" | "import" | null>(null);
   const parPage = 6;
 
   const filtres = useMemo(() => {
@@ -103,8 +107,41 @@ function Candidatures() {
             <Btn variant="secondary">
               <Download className="size-3.5" /> Export CSV
             </Btn>
-            <Btn variant="primary">Nouvelle candidature</Btn>
+            <div className="relative flex">
+              <Btn variant="primary" className="rounded-r-none" onClick={() => setCreation("choix")}>
+                Nouvelle candidature
+              </Btn>
+              <Btn
+                variant="primary"
+                aria-label="Options de création"
+                className="rounded-l-none border-l border-black/15 px-2"
+                onClick={() => setMenuCreation((v) => !v)}
+              >
+                <ChevronDown className="size-3.5" />
+              </Btn>
+              {menuCreation && (
+                <div className="absolute right-0 top-10 z-30 w-52 overflow-hidden rounded-sm border border-border bg-card shadow-lg">
+                  {[
+                    { label: "Créer avec l'IA", mode: "ia" as const },
+                    { label: "Saisie manuelle", mode: "manuel" as const },
+                    { label: "Import multiple", mode: "import" as const },
+                  ].map((o) => (
+                    <button
+                      key={o.mode}
+                      onClick={() => {
+                        setMenuCreation(false);
+                        setCreation(o.mode);
+                      }}
+                      className="block w-full px-3 py-2 text-left text-xs hover:bg-[var(--hover)]"
+                    >
+                      {o.label}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
           </>
+
         }
       />
 
@@ -275,6 +312,11 @@ function Candidatures() {
                       <StatutBadge valeur={c.statut} />
                     </Td>
                   )}
+                  {affiche("Création") && (
+                    <Td>
+                      <Tag ton={c.origine === "IA" ? "brand" : "neutral"}>{c.origine ?? "Manuelle"}</Tag>
+                    </Td>
+                  )}
                   {affiche("Recruteur") && <Td className="text-muted-foreground">{c.recruteur}</Td>}
                 </Tr>
               ))}
@@ -295,6 +337,8 @@ function Candidatures() {
           </div>
         </div>
       </Panel>
+
+      {creation && <NouvelleCandidature modeInitial={creation} onClose={() => setCreation(null)} />}
     </>
   );
 }

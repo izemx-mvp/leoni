@@ -34,6 +34,8 @@ export type StatutCandidature =
   | "Décision RH"
   | "Présélectionnée"
   | "Présélectionné"
+  | "Nouvelle candidature"
+  | "Brouillon"
   | "Retenu"
   | "Refusé"
   | "Vivier";
@@ -69,7 +71,20 @@ export interface Candidat {
   forces: string[];
   vigilances: string[];
   ouvrierId?: string;
+  origine?: "IA" | "Manuelle" | "Import";
+  brouillon?: boolean;
+  cin?: string;
+  dateNaissance?: string;
+  adresse?: string;
+  niveauEtude?: string;
+  permis?: string;
+  shift?: string;
+  commentaireRH?: string;
+  experiences?: { poste: string; entreprise: string; ville: string; periode: string; duree: string; competences: string[] }[];
+  tracabilite?: { champ: string; source: string; confiance?: number }[];
+  audit?: { date: string; heure: string; libelle: string }[];
 }
+
 
 export const CANDIDATS: Candidat[] = [
   {
