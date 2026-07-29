@@ -1,7 +1,7 @@
 // LEONI WORKFORCE JOURNEY — jeu de données de démonstration.
 // Toutes les personnes, matricules, scores et événements sont fictifs.
 
-import type { DossierOnboarding } from "@/data/onboarding";
+import { DOSSIER_DEMO, type DossierOnboarding } from "@/data/onboarding";
 
 
 export const SITES = [
@@ -867,6 +867,26 @@ function ouvrierSimple(o: Partial<Ouvrier> & Pick<Ouvrier, "id" | "nom" | "poste
 
 export const OUVRIERS: Ouvrier[] = [
   sara,
+  {
+    ...ouvrierSimple({
+      id: "LMA-BOU-2026-0421",
+      candidatId: "CAN-2026-01261",
+      nom: "Nawal Chafik",
+      poste: "Opératrice câblage",
+      site: "Bouskoura",
+      atelier: "Câblage B",
+      groupe: "À affecter",
+      progression: 0,
+      score: 0,
+      presence: 100,
+      risque: "Faible",
+      statut: "À intégrer",
+      formateur: "Salma Bennis",
+      dateIntegration: "03/08/2026",
+      prochaineAction: "Intégration prévue le 03/08/2026 à 08:00 — 2 documents obligatoires manquants",
+    }),
+    onboarding: DOSSIER_DEMO,
+  },
   ouvrierSimple({
     id: "LMA-BER-2026-0312",
     candidatId: "CAN-2026-01253",
