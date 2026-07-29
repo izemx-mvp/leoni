@@ -71,6 +71,25 @@ export function DossierOuvrier({ o, candidat }: { o: Ouvrier; candidat?: Candida
   const [tab, setTab] = useState(SOUS_ONGLETS[0]);
   const d = o.onboarding;
 
+  // Formation d'intégration : générée par défaut à l'affectation, mais modifiable.
+  const formation =
+    d?.formation ??
+    formationParDefaut({
+      dateArrivee: d?.arrivee.date ?? o.dateIntegration,
+      poste: o.poste,
+      atelier: o.atelier,
+      formateur: o.formateur,
+      groupe: o.groupe,
+    });
+  const majFormation = (patch: Partial<typeof formation>) =>
+    majOnboarding(o.id, (dd) => ({ ...dd, formation: { ...(dd.formation ?? formation), ...patch } }));
+  const basculerConsigne = (id: string) =>
+    majOnboarding(o.id, (dd) => ({
+      ...dd,
+      consignes: dd.consignes.includes(id) ? dd.consignes.filter((x) => x !== id) : [...dd.consignes, id],
+    }));
+
+
   const vide = (texte: string) => (
     <Panel title="Pré-intégration">
       <Vide texte={texte} />
