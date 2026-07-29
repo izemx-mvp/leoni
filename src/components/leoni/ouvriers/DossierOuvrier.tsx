@@ -149,7 +149,7 @@ export function DossierOuvrier({ o, candidat }: { o: Ouvrier; candidat?: Candida
               <Panel
                 title="Documents demandés"
                 bodyClassName="p-0"
-                actions={
+                action={
                   <Btn
                     size="sm"
                     variant="secondary"
@@ -291,7 +291,7 @@ export function DossierOuvrier({ o, candidat }: { o: Ouvrier; candidat?: Candida
 
             <Panel
               title="Check-in du jour d'intégration"
-              actions={
+              action={
                 <Btn
                   size="sm"
                   variant="primary"
