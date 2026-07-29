@@ -353,7 +353,15 @@ export interface DossierOnboarding {
     zones: string;
     instruction: string;
   };
+  carte?: {
+    type: string;
+    numero: string;
+    statut: StatutBadge;
+    validite: string;
+  };
+  formation?: FormationOnboarding;
   documents: DocumentOnboarding[];
+
   equipements: EquipementOnboarding[];
   tailles: { blouse: string; gilet: string; chaussures: string; gants: string };
   vestiaire: {
