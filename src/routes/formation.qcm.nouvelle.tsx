@@ -238,15 +238,15 @@ function NouvelleEvaluation() {
             <Input label="Heure d'ouverture" value={f.ouverture} onChange={(e) => set("ouverture", e.target.value)} />
           </div>
           <div className="grid gap-2 md:grid-cols-2">
-            <Toggle label="Ordre des questions aléatoire" checked={params.ordreQuestionsAleatoire} onChange={(v) => setP("ordreQuestionsAleatoire", v)} />
-            <Toggle label="Ordre des réponses aléatoire" checked={params.ordreReponsesAleatoire} onChange={(v) => setP("ordreReponsesAleatoire", v)} />
-            <Toggle label="Afficher le résultat immédiatement" checked={params.resultatImmediat} onChange={(v) => setP("resultatImmediat", v)} />
-            <Toggle label="Afficher les bonnes réponses après le test" checked={params.afficherBonnesReponses} onChange={(v) => setP("afficherBonnesReponses", v)} />
-            <Toggle label="Autoriser le retour en arrière" checked={params.retourArriere} onChange={(v) => setP("retourArriere", v)} />
-            <Toggle label="Mode plein écran obligatoire" checked={params.pleinEcran} onChange={(v) => setP("pleinEcran", v)} />
-            <Toggle label="Correction automatique" checked={params.validationAuto} onChange={(v) => setP("validationAuto", v)} />
-            <Toggle label="Rappel J-1" checked={params.rappelJ1} onChange={(v) => setP("rappelJ1", v)} />
-            <Toggle label="Rappel H-1" checked={params.rappelH1} onChange={(v) => setP("rappelH1", v)} />
+            <Toggle label="Ordre des questions aléatoire" actif={params.ordreQuestionsAleatoire} onChange={(v) => setP("ordreQuestionsAleatoire", v)} />
+            <Toggle label="Ordre des réponses aléatoire" actif={params.ordreReponsesAleatoire} onChange={(v) => setP("ordreReponsesAleatoire", v)} />
+            <Toggle label="Afficher le résultat immédiatement" actif={params.resultatImmediat} onChange={(v) => setP("resultatImmediat", v)} />
+            <Toggle label="Afficher les bonnes réponses après le test" actif={params.afficherBonnesReponses} onChange={(v) => setP("afficherBonnesReponses", v)} />
+            <Toggle label="Autoriser le retour en arrière" actif={params.retourArriere} onChange={(v) => setP("retourArriere", v)} />
+            <Toggle label="Mode plein écran obligatoire" actif={params.pleinEcran} onChange={(v) => setP("pleinEcran", v)} />
+            <Toggle label="Correction automatique" actif={params.validationAuto} onChange={(v) => setP("validationAuto", v)} />
+            <Toggle label="Rappel J-1" actif={params.rappelJ1} onChange={(v) => setP("rappelJ1", v)} />
+            <Toggle label="Rappel H-1" actif={params.rappelH1} onChange={(v) => setP("rappelH1", v)} />
           </div>
         </Panel>
       )}
