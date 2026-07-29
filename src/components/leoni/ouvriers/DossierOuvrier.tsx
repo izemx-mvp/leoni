@@ -351,13 +351,111 @@ export function DossierOuvrier({ o, candidat }: { o: Ouvrier; candidat?: Candida
               </div>
             </Panel>
 
-            <Panel title="Consignes communiquées">
-              <ul className="grid gap-1 text-xs text-muted-foreground">
-                {d.consignes.map((id) => (
-                  <li key={id}>• {CATALOGUE_CONSIGNES.find((c) => c.id === id)?.texte}</li>
-                ))}
-              </ul>
+            <Panel
+              title="Formation d'intégration"
+              className="lg:col-span-2"
+              action={<Tag ton="brand">Généré par défaut · modifiable</Tag>}
+            >
+              <div className="grid gap-3 sm:grid-cols-3">
+                <div>
+                  <p className="label-xs mb-1">Parcours de formation</p>
+                  <Select
+                    className="w-full"
+                    value={PARCOURS_FORMATION.includes(formation.parcours) ? formation.parcours : PARCOURS_FORMATION[0]}
+                    options={PARCOURS_FORMATION}
+                    onChange={(v) => majFormation({ parcours: v })}
+                  />
+                </div>
+                <Input
+                  label="Date de début de formation"
+                  value={formation.dateDebut}
+                  placeholder="JJ/MM/AAAA"
+                  onChange={(e) => majFormation({ dateDebut: e.target.value })}
+                />
+                <Input
+                  label="Durée (jours ouvrés)"
+                  type="number"
+                  min={1}
+                  value={formation.dureeJours}
+                  onChange={(e) => majFormation({ dureeJours: Number(e.target.value) || 1 })}
+                />
+                <div>
+                  <p className="label-xs mb-1">Horaire</p>
+                  <Select
+                    className="w-full"
+                    value={HORAIRES_FORMATION.includes(formation.horaire) ? formation.horaire : HORAIRES_FORMATION[0]}
+                    options={HORAIRES_FORMATION}
+                    onChange={(v) => majFormation({ horaire: v })}
+                  />
+                </div>
+                <div>
+                  <p className="label-xs mb-1">Lieu</p>
+                  <Select
+                    className="w-full"
+                    value={LIEUX_FORMATION.includes(formation.lieu) ? formation.lieu : LIEUX_FORMATION[0]}
+                    options={LIEUX_FORMATION}
+                    onChange={(v) => majFormation({ lieu: v })}
+                  />
+                </div>
+                <Input
+                  label="Formateur"
+                  value={formation.formateur}
+                  onChange={(e) => majFormation({ formateur: e.target.value })}
+                />
+                <Input
+                  label="Groupe de formation"
+                  value={formation.groupe}
+                  onChange={(e) => majFormation({ groupe: e.target.value })}
+                />
+                <Field label="Date de fin prévisionnelle" value={dateFinFormation(formation)} />
+                <Field label="Poste visé" value={`${o.poste} — ${o.atelier}`} />
+              </div>
+              <div className="mt-3">
+                <Textarea
+                  label="Instructions et consignes envoyées à l'ouvrier"
+                  rows={4}
+                  value={formation.instructions}
+                  onChange={(e) => majFormation({ instructions: e.target.value })}
+                />
+              </div>
+              <div className="mt-3 flex flex-wrap items-center gap-2">
+                <Btn
+                  size="sm"
+                  variant="secondary"
+                  onClick={() =>
+                    pousserNotification({
+                      titre: "Consignes de formation envoyées",
+                      detail: `${o.nom} — début le ${formation.dateDebut} (${formation.dureeJours} j).`,
+                      ton: "info",
+                    })
+                  }
+                >
+                  <Send className="size-3.5" /> Envoyer les instructions au salarié
+                </Btn>
+                <span className="text-xs text-muted-foreground">
+                  Du {formation.dateDebut} au {dateFinFormation(formation)} · {formation.horaire} · {formation.lieu}
+                </span>
+              </div>
             </Panel>
+
+            <Panel title="Consignes communiquées" className="lg:col-span-2">
+              <div className="grid gap-1.5 sm:grid-cols-2">
+                {CATALOGUE_CONSIGNES.filter((c) => c.active).map((c) => (
+                  <label key={c.id} className="flex items-start gap-2 text-xs">
+                    <input
+                      type="checkbox"
+                      className="mt-0.5 accent-[var(--brand)]"
+                      checked={d.consignes.includes(c.id)}
+                      onChange={() => basculerConsigne(c.id)}
+                    />
+                    <span>
+                      <span className="text-muted-foreground">[{c.categorie}]</span> {c.texte}
+                    </span>
+                  </label>
+                ))}
+              </div>
+            </Panel>
+
 
             <Panel title="Communications d'intégration" bodyClassName="p-0">
               {d.communications.length === 0 ? (
