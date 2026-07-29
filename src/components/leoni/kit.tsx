@@ -287,11 +287,13 @@ export function Select({
   onChange,
   options,
   className,
+  render,
 }: {
   value: string;
   onChange: (v: string) => void;
   options: string[];
   className?: string;
+  render?: (v: string) => string;
 }) {
   return (
     <select
@@ -304,9 +306,10 @@ export function Select({
     >
       {options.map((o) => (
         <option key={o} value={o}>
-          {o}
+          {render ? render(o) : o}
         </option>
       ))}
+
     </select>
   );
 }

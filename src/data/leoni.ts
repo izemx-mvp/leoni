@@ -1,6 +1,9 @@
 // LEONI WORKFORCE JOURNEY — jeu de données de démonstration.
 // Toutes les personnes, matricules, scores et événements sont fictifs.
 
+import type { DossierOnboarding } from "@/data/onboarding";
+
+
 export const SITES = [
   "Aïn Sebaâ",
   "Bouskoura",
@@ -575,7 +578,9 @@ export interface Ouvrier {
   courbe: { jour: string; score: number }[];
   historique: HistoriqueEntree[];
   decision?: { decision: string; commentaire: string; responsable: string; date: string; motif?: string };
+  onboarding?: DossierOnboarding;
 }
+
 
 const sara: Ouvrier = {
   id: "LMA-BOU-2026-0418",

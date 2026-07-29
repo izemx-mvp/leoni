@@ -64,6 +64,7 @@ function FicheCandidat() {
   const candidat = candidats.find((c) => c.id === id);
   const [section, setSection] = useState(SECTIONS[0]);
   const [modale, setModale] = useState<null | "entretien" | "message" | "decision" | "evaluation">(null);
+  const [preIntegration, setPreIntegration] = useState(false);
   const [form, setForm] = useState({ date: "2026-08-03", heure: "09:00", type: "Entretien RH" });
   const [message, setMessage] = useState("Bonjour, merci de confirmer votre disponibilité pour l'entretien.");
   const [decision, setDecision] = useState("Retenu");
@@ -82,14 +83,14 @@ function FicheCandidat() {
 
   const valider = () => {
     if (decision === "Retenu") {
-      const matricule = transformerEnOuvrier(candidat.id);
       setModale(null);
-      if (matricule) navigate({ to: "/ouvriers/$id", params: { id: matricule } });
+      setPreIntegration(true);
       return;
     }
     changerStatutCandidat(candidat.id, decision === "Refusé" ? "Refusé" : "Vivier", motif);
     setModale(null);
   };
+
 
   return (
     <>

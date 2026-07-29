@@ -22,6 +22,8 @@ import {
   type Reclamation,
   type StatutCandidature,
 } from "@/data/leoni";
+import type { CommunicationOnboarding, DossierOnboarding } from "@/data/onboarding";
+
 
 export type Theme = "light" | "dark" | "system";
 
@@ -76,6 +78,13 @@ interface Ctx {
   creerReclamation: (r: Omit<Reclamation, "id" | "date" | "statut">) => void;
   creerCandidature: (c: Omit<Candidat, "id" | "date">) => Candidat;
   lancerTalentFit: (candidatId: string) => void;
+  preIntegrerCandidat: (
+    candidatId: string,
+    dossier: DossierOnboarding,
+    decision?: { commentaire: string; responsable: string },
+  ) => string | undefined;
+  majOnboarding: (ouvrierId: string, maj: (d: DossierOnboarding) => DossierOnboarding) => void;
+  finaliserAccueil: (ouvrierId: string) => void;
 
 }
 
@@ -501,6 +510,131 @@ export function LeoniProvider({ children }: { children: ReactNode }) {
     [pousserNotification],
   );
 
+  /** Pré-intégration : crée la fiche ouvrier « À intégrer » avec son dossier d'onboarding. */
+  const preIntegrerCandidat = useCallback(
+    (candidatId: string, dossier: DossierOnboarding, decision?: { commentaire: string; responsable: string }) => {
+      const c = candidats.find((x) => x.id === candidatId);
+      if (!c) return undefined;
+      const existant = ouvriers.find((o) => o.candidatId === candidatId);
+      const code = matriculeSite[c.site] ?? "LMA";
+      const matricule = existant?.id ?? `LMA-${code}-2026-${Math.floor(Math.random() * 900 + 100)}`;
+      const modele = OUVRIERS[0];
+      const { date, heure } = horodatage();
+      const dossierComplet: DossierOnboarding = { ...dossier, candidatId };
+
+      if (existant) {
+        setOuvriers((prev) =>
+          prev.map((o) => (o.id === existant.id ? { ...o, onboarding: dossierComplet, statut: "À intégrer" } : o)),
+        );
+      } else {
+        const nouveau: Ouvrier = {
+          ...modele,
+          id: matricule,
+          candidatId,
+          nom: c.nom,
+          poste: dossier.arrivee.poste || c.poste,
+          site: c.site,
+          atelier: dossier.arrivee.atelier || "À affecter",
+          groupe: "À affecter",
+          jour: 0,
+          progression: 0,
+          score: 0,
+          presence: 100,
+          ponctualite: 100,
+          risque: "Faible",
+          statut: "À intégrer",
+          dateIntegration: dossier.arrivee.date,
+          prochaineAction: `Intégration prévue le ${dossier.arrivee.date} à ${dossier.arrivee.heure}`,
+          prochaineEtape: {
+            date: dossier.arrivee.date,
+            heure: dossier.arrivee.heure,
+            libelle: "Accueil et intégration",
+            lieu: dossier.arrivee.pointAccueil,
+          },
+          identite: { ...modele.identite, telephone: c.telephone, email: c.email, ville: c.ville },
+          situation: { ...modele.situation, departement: dossier.arrivee.departement },
+          journal: [],
+          presences: [],
+          tests: [],
+          evenements: [],
+          communications: dossier.communications.map((m: CommunicationOnboarding) => ({
+            date: m.date,
+            canal: m.canal,
+            objet: m.objet,
+            statut: m.statut,
+          })),
+          courbe: [],
+          modules: modele.modules.map((m) => ({ code: m.code, nom: m.nom, statut: "À venir" as const })),
+          documents: [],
+          onboarding: dossierComplet,
+          decision: decision
+            ? { decision: "Retenu", commentaire: decision.commentaire, responsable: decision.responsable, date }
+            : undefined,
+          historique: [
+            { id: `H-${Date.now()}`, date, heure, utilisateur: decision?.responsable ?? "Nadia El Ghali", type: "Création", action: "Fiche ouvrier créée depuis la décision RH « Retenu »", avant: candidatId, apres: matricule },
+          ],
+        };
+        setOuvriers((prev) => [nouveau, ...prev]);
+      }
+
+      setCandidats((prev) =>
+        prev.map((x) =>
+          x.id === candidatId
+            ? {
+                ...x,
+                statut: "Retenu",
+                ouvrierId: matricule,
+                audit: [...(x.audit ?? []), { date, heure, libelle: `Décision RH « Retenu » — pré-intégration créée (${matricule})` }],
+              }
+            : x,
+        ),
+      );
+      pousserNotification({
+        titre: "Pré-intégration créée",
+        detail: `${c.nom} — matricule ${matricule} · arrivée le ${dossier.arrivee.date} à ${dossier.arrivee.heure}`,
+        ton: "success",
+      });
+      return matricule;
+    },
+    [candidats, ouvriers, pousserNotification],
+  );
+
+  /** Mise à jour partielle du dossier d'onboarding d'un ouvrier. */
+  const majOnboarding = useCallback(
+    (ouvrierId: string, maj: (d: DossierOnboarding) => DossierOnboarding) => {
+      setOuvriers((prev) =>
+        prev.map((o) => (o.id === ouvrierId && o.onboarding ? { ...o, onboarding: maj(o.onboarding) } : o)),
+      );
+    },
+    [],
+  );
+
+  /** Clôture de l'accueil : l'ouvrier passe en intégration effective. */
+  const finaliserAccueil = useCallback(
+    (ouvrierId: string) => {
+      const { date, heure } = horodatage();
+      setOuvriers((prev) =>
+        prev.map((o) =>
+          o.id === ouvrierId
+            ? {
+                ...o,
+                statut: "En formation",
+                prochaineAction: "Démarrer le parcours d'intégration",
+                onboarding: o.onboarding ? { ...o.onboarding, accueilFinalise: true } : o.onboarding,
+                historique: [
+                  { id: `H-${Date.now()}`, date, heure, utilisateur: "Nadia El Ghali", type: "Intégration", action: "Accueil finalisé — passage en formation", avant: "À intégrer", apres: "En formation" },
+                  ...o.historique,
+                ],
+              }
+            : o,
+        ),
+      );
+      pousserNotification({ titre: "Accueil finalisé", detail: `${ouvrierId} — intégration démarrée`, ton: "success" });
+    },
+    [pousserNotification],
+  );
+
+
 
   const value = useMemo<Ctx>(
     () => ({
@@ -530,8 +664,11 @@ export function LeoniProvider({ children }: { children: ReactNode }) {
       creerReclamation,
       creerCandidature,
       lancerTalentFit,
+      preIntegrerCandidat,
+      majOnboarding,
+      finaliserAccueil,
     }),
-    [theme, setTheme, site, langue, candidats, ouvriers, entretiens, reclamations, alertes, notifications, marquerLues, pousserNotification, changerStatutCandidat, planifierEntretien, evaluerEntretien, transformerEnOuvrier, ajouterEvenement, enregistrerPresence, validerJournee, deciderParcours, deplacerReclamation, creerReclamation, creerCandidature, lancerTalentFit],
+    [theme, setTheme, site, langue, candidats, ouvriers, entretiens, reclamations, alertes, notifications, marquerLues, pousserNotification, changerStatutCandidat, planifierEntretien, evaluerEntretien, transformerEnOuvrier, ajouterEvenement, enregistrerPresence, validerJournee, deciderParcours, deplacerReclamation, creerReclamation, creerCandidature, lancerTalentFit, preIntegrerCandidat, majOnboarding, finaliserAccueil],
   );
 
   return <LeoniContext.Provider value={value}>{children}</LeoniContext.Provider>;
