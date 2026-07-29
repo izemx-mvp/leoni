@@ -516,18 +516,87 @@ export function DossierOuvrier({ o, candidat }: { o: Ouvrier; candidat?: Candida
       {tab === "EPI & accès" &&
         (d ? (
           <div className="grid gap-4 lg:grid-cols-2">
-            <Panel title="Badge et accès">
-              <div className="grid grid-cols-2 gap-4">
-                <Field label="Numéro" value={d.badge.numero || "À attribuer"} />
-                <Field label="Zones" value={d.badge.zones} />
+            <Panel title="Badge affecté">
+              <div className="grid gap-3 sm:grid-cols-2">
+                <Input
+                  label="Numéro de badge"
+                  value={d.badge.numero}
+                  placeholder="À attribuer"
+                  onChange={(e) =>
+                    majOnboarding(o.id, (dd) => ({ ...dd, badge: { ...dd.badge, numero: e.target.value } }))
+                  }
+                />
+                <Input
+                  label="Zones d'accès"
+                  value={d.badge.zones}
+                  onChange={(e) =>
+                    majOnboarding(o.id, (dd) => ({ ...dd, badge: { ...dd.badge, zones: e.target.value } }))
+                  }
+                />
+                <div>
+                  <p className="label-xs mb-1">Statut du badge</p>
+                  <Select
+                    className="w-full"
+                    value={d.badge.statut}
+                    options={STATUTS_BADGE}
+                    onChange={(v) => majOnboarding(o.id, (dd) => ({ ...dd, badge: { ...dd.badge, statut: v as TStatutBadge } }))}
+                  />
+                </div>
                 <Field label="Instruction" value={d.badge.instruction} />
               </div>
-              <div className="mt-3 w-56">
-                <p className="label-xs mb-1">Statut du badge</p>
-                <Select
-                  value={d.badge.statut}
-                  options={STATUTS_BADGE}
-                  onChange={(v) => majOnboarding(o.id, (dd) => ({ ...dd, badge: { ...dd.badge, statut: v as TStatutBadge } }))}
+            </Panel>
+
+            <Panel title="Carte affectée">
+              <div className="grid gap-3 sm:grid-cols-2">
+                <div>
+                  <p className="label-xs mb-1">Type de carte</p>
+                  <Select
+                    className="w-full"
+                    value={d.carte?.type && TYPES_CARTE.includes(d.carte.type) ? d.carte.type : TYPES_CARTE[0]}
+                    options={TYPES_CARTE}
+                    onChange={(v) =>
+                      majOnboarding(o.id, (dd) => ({
+                        ...dd,
+                        carte: { type: v, numero: dd.carte?.numero ?? "", statut: dd.carte?.statut ?? "À préparer", validite: dd.carte?.validite ?? "" },
+                      }))
+                    }
+                  />
+                </div>
+                <Input
+                  label="Numéro de carte"
+                  value={d.carte?.numero ?? ""}
+                  placeholder="Non affectée"
+                  onChange={(e) =>
+                    majOnboarding(o.id, (dd) => ({
+                      ...dd,
+                      carte: { type: dd.carte?.type ?? TYPES_CARTE[0], numero: e.target.value, statut: dd.carte?.statut ?? "À préparer", validite: dd.carte?.validite ?? "" },
+                    }))
+                  }
+                />
+                <div>
+                  <p className="label-xs mb-1">Statut</p>
+                  <Select
+                    className="w-full"
+                    value={d.carte?.statut ?? "À préparer"}
+                    options={STATUTS_BADGE}
+                    onChange={(v) =>
+                      majOnboarding(o.id, (dd) => ({
+                        ...dd,
+                        carte: { type: dd.carte?.type ?? TYPES_CARTE[0], numero: dd.carte?.numero ?? "", statut: v as TStatutBadge, validite: dd.carte?.validite ?? "" },
+                      }))
+                    }
+                  />
+                </div>
+                <Input
+                  label="Validité"
+                  value={d.carte?.validite ?? ""}
+                  placeholder="JJ/MM/AAAA"
+                  onChange={(e) =>
+                    majOnboarding(o.id, (dd) => ({
+                      ...dd,
+                      carte: { type: dd.carte?.type ?? TYPES_CARTE[0], numero: dd.carte?.numero ?? "", statut: dd.carte?.statut ?? "À préparer", validite: e.target.value },
+                    }))
+                  }
                 />
               </div>
             </Panel>
@@ -547,13 +616,22 @@ export function DossierOuvrier({ o, candidat }: { o: Ouvrier; candidat?: Candida
               </div>
             </Panel>
 
-            <Panel title="Équipements de protection" bodyClassName="p-0" className="lg:col-span-2">
-              <div className="flex flex-wrap gap-4 border-b border-border p-3 text-xs text-muted-foreground">
-                <span>Blouse : <strong className="text-foreground">{d.tailles.blouse || "—"}</strong></span>
-                <span>Gilet : <strong className="text-foreground">{d.tailles.gilet || "—"}</strong></span>
-                <span>Pointure : <strong className="text-foreground">{d.tailles.chaussures || "—"}</strong></span>
-                <span>Gants : <strong className="text-foreground">{d.tailles.gants || "—"}</strong></span>
+            <Panel title="Tailles du salarié">
+              <div className="grid gap-3 sm:grid-cols-4">
+                {(["blouse", "gilet", "chaussures", "gants"] as const).map((k) => (
+                  <Input
+                    key={k}
+                    label={k === "chaussures" ? "Pointure" : k[0].toUpperCase() + k.slice(1)}
+                    value={d.tailles[k]}
+                    onChange={(e) =>
+                      majOnboarding(o.id, (dd) => ({ ...dd, tailles: { ...dd.tailles, [k]: e.target.value } }))
+                    }
+                  />
+                ))}
               </div>
+            </Panel>
+
+            <Panel title="Équipements de protection affectés" bodyClassName="p-0" className="lg:col-span-2">
               <Table>
                 <thead>
                   <tr><Th>Équipement</Th><Th>Taille</Th><Th>Quantité</Th><Th>Statut</Th></tr>
@@ -562,8 +640,21 @@ export function DossierOuvrier({ o, candidat }: { o: Ouvrier; candidat?: Candida
                   {d.equipements.map((e) => (
                     <Tr key={e.id}>
                       <Td className="font-medium">{e.nom}</Td>
-                      <Td className="num">{e.taille || "—"}</Td>
+                      <Td>
+                        <Input
+                          value={e.taille}
+                          placeholder="—"
+                          className="h-8 w-20"
+                          onChange={(ev) =>
+                            majOnboarding(o.id, (dd) => ({
+                              ...dd,
+                              equipements: dd.equipements.map((x) => (x.id === e.id ? { ...x, taille: ev.target.value } : x)),
+                            }))
+                          }
+                        />
+                      </Td>
                       <Td className="num">{e.quantite}</Td>
+
                       <Td>
                         <Select
                           value={e.statut}
