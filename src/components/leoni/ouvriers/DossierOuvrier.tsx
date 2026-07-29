@@ -680,17 +680,85 @@ export function DossierOuvrier({ o, candidat }: { o: Ouvrier; candidat?: Candida
       {tab === "Transport" &&
         (d ? (
           <div className="grid gap-4 lg:grid-cols-2">
-            <Panel title="Transport du personnel">
+            <Panel
+              title="Transport du personnel"
+              action={<Tag ton="brand">Modifiable</Tag>}
+            >
+              <label className="mb-3 flex items-center gap-2 text-xs">
+                <input
+                  type="checkbox"
+                  className="accent-[var(--brand)]"
+                  checked={d.transport.besoin}
+                  onChange={() =>
+                    majOnboarding(o.id, (dd) => ({ ...dd, transport: { ...dd.transport, besoin: !dd.transport.besoin } }))
+                  }
+                />
+                Le salarié utilise le transport du personnel
+              </label>
+
               {d.transport.besoin ? (
-                <div className="grid grid-cols-2 gap-4">
-                  <Field label="Ligne" value={d.transport.ligne || "À définir"} />
-                  <Field label="Point de ramassage" value={d.transport.point || "À définir"} />
-                  <Field label="Zone" value={d.transport.zone || "—"} />
-                  <Field label="Ville" value={d.transport.ville} />
-                  <Field label="Heure aller" value={d.transport.heureAller || "—"} />
-                  <Field label="Heure retour" value={d.transport.heureRetour || "—"} />
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <div className="sm:col-span-2">
+                    <p className="label-xs mb-1">Ligne de ramassage</p>
+                    <Select
+                      className="w-full"
+                      value={d.transport.ligne || "À définir"}
+                      options={["À définir", ...LIGNES_TRANSPORT.map((l) => l.ligne)]}
+                      render={(v) => {
+                        const l = LIGNES_TRANSPORT.find((x) => x.ligne === v);
+                        return l ? `${l.ligne} — ${l.point} (${l.aller})` : v;
+                      }}
+                      onChange={(v) =>
+                        majOnboarding(o.id, (dd) => {
+                          const l = LIGNES_TRANSPORT.find((x) => x.ligne === v);
+                          return {
+                            ...dd,
+                            transport: l
+                              ? {
+                                  ...dd.transport,
+                                  ligne: l.ligne,
+                                  point: l.point,
+                                  zone: l.zone,
+                                  heureAller: l.aller,
+                                  heureRetour: l.retour,
+                                  transporteur: l.transporteur,
+                                  contact: l.contact,
+                                  statut: dd.transport.statut === "À définir" ? "Trajet proposé" : dd.transport.statut,
+                                }
+                              : { ...dd.transport, ligne: "" },
+                          };
+                        })
+                      }
+                    />
+                  </div>
+                  <Input
+                    label="Point de ramassage"
+                    value={d.transport.point}
+                    placeholder="À définir"
+                    onChange={(e) => majOnboarding(o.id, (dd) => ({ ...dd, transport: { ...dd.transport, point: e.target.value } }))}
+                  />
+                  <Input
+                    label="Zone"
+                    value={d.transport.zone}
+                    onChange={(e) => majOnboarding(o.id, (dd) => ({ ...dd, transport: { ...dd.transport, zone: e.target.value } }))}
+                  />
+                  <Input
+                    label="Ville"
+                    value={d.transport.ville}
+                    onChange={(e) => majOnboarding(o.id, (dd) => ({ ...dd, transport: { ...dd.transport, ville: e.target.value } }))}
+                  />
+                  <Input
+                    label="Heure aller"
+                    value={d.transport.heureAller}
+                    onChange={(e) => majOnboarding(o.id, (dd) => ({ ...dd, transport: { ...dd.transport, heureAller: e.target.value } }))}
+                  />
+                  <Input
+                    label="Heure retour"
+                    value={d.transport.heureRetour}
+                    onChange={(e) => majOnboarding(o.id, (dd) => ({ ...dd, transport: { ...dd.transport, heureRetour: e.target.value } }))}
+                  />
                   <Field label="Transporteur" value={d.transport.transporteur || "—"} />
-                  <Field label="Contact" value={d.transport.contact || "—"} />
+                  <Field label="Contact transporteur" value={d.transport.contact || "—"} />
                 </div>
               ) : (
                 <Vide texte="Le salarié n'utilise pas le transport du personnel." />
@@ -698,12 +766,14 @@ export function DossierOuvrier({ o, candidat }: { o: Ouvrier; candidat?: Candida
               <div className="mt-3 w-64">
                 <p className="label-xs mb-1">Statut du transport</p>
                 <Select
+                  className="w-full"
                   value={d.transport.statut}
                   options={STATUTS_TRANSPORT}
                   onChange={(v) => majOnboarding(o.id, (dd) => ({ ...dd, transport: { ...dd.transport, statut: v as StatutTransport } }))}
                 />
               </div>
             </Panel>
+
             <Panel title="Communication au salarié">
               <label className="flex items-center gap-2 text-xs">
                 <input
