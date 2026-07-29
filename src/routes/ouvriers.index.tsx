@@ -15,7 +15,16 @@ import {
   Td,
   Th,
   Tr,
+  Stat,
+  Tag,
 } from "@/components/leoni/kit";
+import {
+  alertesOnboarding,
+  blocagePrincipal,
+  documentsManquants,
+  kpiDocuments,
+  progressionOnboarding,
+} from "@/data/onboarding";
 import { useLeoni } from "@/lib/leoni-store";
 
 export const Route = createFileRoute("/ouvriers/")({
