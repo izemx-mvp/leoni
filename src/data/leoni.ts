@@ -1,7 +1,7 @@
 // LEONI WORKFORCE JOURNEY — jeu de données de démonstration.
 // Toutes les personnes, matricules, scores et événements sont fictifs.
 
-import { DOSSIER_DEMO, type DossierOnboarding } from "@/data/onboarding";
+import { DOSSIER_DEMO, dossierPourOuvrier, type DossierOnboarding } from "@/data/onboarding";
 
 
 export const SITES = [
@@ -865,7 +865,7 @@ function ouvrierSimple(o: Partial<Ouvrier> & Pick<Ouvrier, "id" | "nom" | "poste
   } as Ouvrier;
 }
 
-export const OUVRIERS: Ouvrier[] = [
+const OUVRIERS_BRUTS: Ouvrier[] = [
   sara,
   {
     ...ouvrierSimple({
@@ -973,6 +973,12 @@ export const OUVRIERS: Ouvrier[] = [
     prochaineAction: "Suivi module sécurité",
   }),
 ];
+
+/** Chaque ouvrier dispose d'un dossier de pré-intégration (EPI, badge, transport…) — modifiable dans sa fiche. */
+export const OUVRIERS: Ouvrier[] = OUVRIERS_BRUTS.map((o) => ({
+  ...o,
+  onboarding: o.onboarding ?? dossierPourOuvrier(o),
+}));
 
 /* ------------------------------------------------------------------ */
 /* Dashboard                                                           */
