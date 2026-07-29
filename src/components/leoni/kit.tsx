@@ -37,7 +37,7 @@ export function Panel({
 
 /* --------------------------------- Badge -------------------------------- */
 
-type Ton = "brand" | "success" | "warning" | "critical" | "info" | "neutral";
+export type Ton = "brand" | "success" | "warning" | "critical" | "info" | "neutral";
 
 const TONS: Record<Ton, string> = {
   brand: "text-[var(--brand)] bg-[var(--brand-soft)] border-[color-mix(in_oklab,var(--brand)_35%,transparent)]",
