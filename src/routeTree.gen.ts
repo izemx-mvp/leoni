@@ -31,6 +31,7 @@ import { Route as FormationParcoursRouteImport } from './routes/formation.parcou
 import { Route as EspaceReclamationsRouteImport } from './routes/espace.reclamations'
 import { Route as EspaceProfilRouteImport } from './routes/espace.profil'
 import { Route as EspacePresenceRouteImport } from './routes/espace.presence'
+import { Route as EspaceNotificationsRouteImport } from './routes/espace.notifications'
 import { Route as EspaceFormationRouteImport } from './routes/espace.formation'
 import { Route as EspaceEvaluationsRouteImport } from './routes/espace.evaluations'
 import { Route as EspaceDocumentsRouteImport } from './routes/espace.documents'
@@ -152,6 +153,11 @@ const EspacePresenceRoute = EspacePresenceRouteImport.update({
   path: '/presence',
   getParentRoute: () => EspaceRoute,
 } as any)
+const EspaceNotificationsRoute = EspaceNotificationsRouteImport.update({
+  id: '/notifications',
+  path: '/notifications',
+  getParentRoute: () => EspaceRoute,
+} as any)
 const EspaceFormationRoute = EspaceFormationRouteImport.update({
   id: '/formation',
   path: '/formation',
@@ -215,6 +221,7 @@ export interface FileRoutesByFullPath {
   '/espace/documents': typeof EspaceDocumentsRoute
   '/espace/evaluations': typeof EspaceEvaluationsRoute
   '/espace/formation': typeof EspaceFormationRoute
+  '/espace/notifications': typeof EspaceNotificationsRoute
   '/espace/presence': typeof EspacePresenceRoute
   '/espace/profil': typeof EspaceProfilRoute
   '/espace/reclamations': typeof EspaceReclamationsRoute
@@ -248,6 +255,7 @@ export interface FileRoutesByTo {
   '/espace/documents': typeof EspaceDocumentsRoute
   '/espace/evaluations': typeof EspaceEvaluationsRoute
   '/espace/formation': typeof EspaceFormationRoute
+  '/espace/notifications': typeof EspaceNotificationsRoute
   '/espace/presence': typeof EspacePresenceRoute
   '/espace/profil': typeof EspaceProfilRoute
   '/espace/reclamations': typeof EspaceReclamationsRoute
@@ -282,6 +290,7 @@ export interface FileRoutesById {
   '/espace/documents': typeof EspaceDocumentsRoute
   '/espace/evaluations': typeof EspaceEvaluationsRoute
   '/espace/formation': typeof EspaceFormationRoute
+  '/espace/notifications': typeof EspaceNotificationsRoute
   '/espace/presence': typeof EspacePresenceRoute
   '/espace/profil': typeof EspaceProfilRoute
   '/espace/reclamations': typeof EspaceReclamationsRoute
@@ -318,6 +327,7 @@ export interface FileRouteTypes {
     | '/espace/documents'
     | '/espace/evaluations'
     | '/espace/formation'
+    | '/espace/notifications'
     | '/espace/presence'
     | '/espace/profil'
     | '/espace/reclamations'
@@ -351,6 +361,7 @@ export interface FileRouteTypes {
     | '/espace/documents'
     | '/espace/evaluations'
     | '/espace/formation'
+    | '/espace/notifications'
     | '/espace/presence'
     | '/espace/profil'
     | '/espace/reclamations'
@@ -384,6 +395,7 @@ export interface FileRouteTypes {
     | '/espace/documents'
     | '/espace/evaluations'
     | '/espace/formation'
+    | '/espace/notifications'
     | '/espace/presence'
     | '/espace/profil'
     | '/espace/reclamations'
@@ -585,6 +597,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EspacePresenceRouteImport
       parentRoute: typeof EspaceRoute
     }
+    '/espace/notifications': {
+      id: '/espace/notifications'
+      path: '/notifications'
+      fullPath: '/espace/notifications'
+      preLoaderRoute: typeof EspaceNotificationsRouteImport
+      parentRoute: typeof EspaceRoute
+    }
     '/espace/formation': {
       id: '/espace/formation'
       path: '/formation'
@@ -664,6 +683,7 @@ interface EspaceRouteChildren {
   EspaceDocumentsRoute: typeof EspaceDocumentsRoute
   EspaceEvaluationsRoute: typeof EspaceEvaluationsRoute
   EspaceFormationRoute: typeof EspaceFormationRoute
+  EspaceNotificationsRoute: typeof EspaceNotificationsRoute
   EspacePresenceRoute: typeof EspacePresenceRoute
   EspaceProfilRoute: typeof EspaceProfilRoute
   EspaceReclamationsRoute: typeof EspaceReclamationsRoute
@@ -677,6 +697,7 @@ const EspaceRouteChildren: EspaceRouteChildren = {
   EspaceDocumentsRoute: EspaceDocumentsRoute,
   EspaceEvaluationsRoute: EspaceEvaluationsRoute,
   EspaceFormationRoute: EspaceFormationRoute,
+  EspaceNotificationsRoute: EspaceNotificationsRoute,
   EspacePresenceRoute: EspacePresenceRoute,
   EspaceProfilRoute: EspaceProfilRoute,
   EspaceReclamationsRoute: EspaceReclamationsRoute,
