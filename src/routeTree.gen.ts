@@ -29,6 +29,7 @@ import { Route as FormationQcmRouteImport } from './routes/formation.qcm'
 import { Route as FormationPlanningRouteImport } from './routes/formation.planning'
 import { Route as FormationParcoursRouteImport } from './routes/formation.parcours'
 import { Route as EspaceReclamationsRouteImport } from './routes/espace.reclamations'
+import { Route as EspaceProfilRouteImport } from './routes/espace.profil'
 import { Route as EspacePresenceRouteImport } from './routes/espace.presence'
 import { Route as EspaceFormationRouteImport } from './routes/espace.formation'
 import { Route as EspaceEvaluationsRouteImport } from './routes/espace.evaluations'
@@ -141,6 +142,11 @@ const EspaceReclamationsRoute = EspaceReclamationsRouteImport.update({
   path: '/reclamations',
   getParentRoute: () => EspaceRoute,
 } as any)
+const EspaceProfilRoute = EspaceProfilRouteImport.update({
+  id: '/profil',
+  path: '/profil',
+  getParentRoute: () => EspaceRoute,
+} as any)
 const EspacePresenceRoute = EspacePresenceRouteImport.update({
   id: '/presence',
   path: '/presence',
@@ -210,6 +216,7 @@ export interface FileRoutesByFullPath {
   '/espace/evaluations': typeof EspaceEvaluationsRoute
   '/espace/formation': typeof EspaceFormationRoute
   '/espace/presence': typeof EspacePresenceRoute
+  '/espace/profil': typeof EspaceProfilRoute
   '/espace/reclamations': typeof EspaceReclamationsRoute
   '/formation/parcours': typeof FormationParcoursRoute
   '/formation/planning': typeof FormationPlanningRoute
@@ -242,6 +249,7 @@ export interface FileRoutesByTo {
   '/espace/evaluations': typeof EspaceEvaluationsRoute
   '/espace/formation': typeof EspaceFormationRoute
   '/espace/presence': typeof EspacePresenceRoute
+  '/espace/profil': typeof EspaceProfilRoute
   '/espace/reclamations': typeof EspaceReclamationsRoute
   '/formation/parcours': typeof FormationParcoursRoute
   '/formation/planning': typeof FormationPlanningRoute
@@ -275,6 +283,7 @@ export interface FileRoutesById {
   '/espace/evaluations': typeof EspaceEvaluationsRoute
   '/espace/formation': typeof EspaceFormationRoute
   '/espace/presence': typeof EspacePresenceRoute
+  '/espace/profil': typeof EspaceProfilRoute
   '/espace/reclamations': typeof EspaceReclamationsRoute
   '/formation/parcours': typeof FormationParcoursRoute
   '/formation/planning': typeof FormationPlanningRoute
@@ -310,6 +319,7 @@ export interface FileRouteTypes {
     | '/espace/evaluations'
     | '/espace/formation'
     | '/espace/presence'
+    | '/espace/profil'
     | '/espace/reclamations'
     | '/formation/parcours'
     | '/formation/planning'
@@ -342,6 +352,7 @@ export interface FileRouteTypes {
     | '/espace/evaluations'
     | '/espace/formation'
     | '/espace/presence'
+    | '/espace/profil'
     | '/espace/reclamations'
     | '/formation/parcours'
     | '/formation/planning'
@@ -374,6 +385,7 @@ export interface FileRouteTypes {
     | '/espace/evaluations'
     | '/espace/formation'
     | '/espace/presence'
+    | '/espace/profil'
     | '/espace/reclamations'
     | '/formation/parcours'
     | '/formation/planning'
@@ -559,6 +571,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EspaceReclamationsRouteImport
       parentRoute: typeof EspaceRoute
     }
+    '/espace/profil': {
+      id: '/espace/profil'
+      path: '/profil'
+      fullPath: '/espace/profil'
+      preLoaderRoute: typeof EspaceProfilRouteImport
+      parentRoute: typeof EspaceRoute
+    }
     '/espace/presence': {
       id: '/espace/presence'
       path: '/presence'
@@ -646,6 +665,7 @@ interface EspaceRouteChildren {
   EspaceEvaluationsRoute: typeof EspaceEvaluationsRoute
   EspaceFormationRoute: typeof EspaceFormationRoute
   EspacePresenceRoute: typeof EspacePresenceRoute
+  EspaceProfilRoute: typeof EspaceProfilRoute
   EspaceReclamationsRoute: typeof EspaceReclamationsRoute
   EspaceIndexRoute: typeof EspaceIndexRoute
   EspaceEvaluationIdRoute: typeof EspaceEvaluationIdRoute
@@ -658,6 +678,7 @@ const EspaceRouteChildren: EspaceRouteChildren = {
   EspaceEvaluationsRoute: EspaceEvaluationsRoute,
   EspaceFormationRoute: EspaceFormationRoute,
   EspacePresenceRoute: EspacePresenceRoute,
+  EspaceProfilRoute: EspaceProfilRoute,
   EspaceReclamationsRoute: EspaceReclamationsRoute,
   EspaceIndexRoute: EspaceIndexRoute,
   EspaceEvaluationIdRoute: EspaceEvaluationIdRoute,
