@@ -720,6 +720,20 @@ export const DOSSIER_DEMO: DossierOnboarding = {
     zones: "Zone production · Vestiaires · Réfectoire",
     instruction: INSTRUCTIONS_BADGE[0],
   },
+  carte: {
+    type: TYPES_CARTE[0],
+    numero: "CRT-10482",
+    statut: "Prêt",
+    validite: "31/12/2026",
+  },
+  formation: formationParDefaut({
+    dateArrivee: "03/08/2026",
+    poste: "Opératrice câblage",
+    atelier: "Câblage B",
+    formateur: "Khadija Ait Ben",
+    groupe: "GRP-CAB-08",
+  }),
+
   documents: documentsPreselectionnes("2026-08-01").map((d, i) => ({
     ...d,
     statut: i < 3 ? "Validé" : i < 5 ? "Reçu" : "Demandé",
