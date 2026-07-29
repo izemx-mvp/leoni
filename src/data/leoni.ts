@@ -962,35 +962,148 @@ export const FUNNEL = [
 ];
 
 export const EVOLUTION_MENSUELLE = [
-  { mois: "Jan", candidatures: 745 },
-  { mois: "Fév", candidatures: 810 },
-  { mois: "Mar", candidatures: 892 },
-  { mois: "Avr", candidatures: 940 },
-  { mois: "Mai", candidatures: 1011 },
-  { mois: "Juin", candidatures: 1102 },
-  { mois: "Juil", candidatures: 1248 },
+  { mois: "Jan", candidatures: 745, analysees: 512, entretiens: 78, recrutes: 49, integres: 41, abandons: 8 },
+  { mois: "Fév", candidatures: 810, analysees: 564, entretiens: 84, recrutes: 55, integres: 46, abandons: 9 },
+  { mois: "Mar", candidatures: 892, analysees: 621, entretiens: 92, recrutes: 61, integres: 52, abandons: 9 },
+  { mois: "Avr", candidatures: 940, analysees: 668, entretiens: 101, recrutes: 66, integres: 57, abandons: 10 },
+  { mois: "Mai", candidatures: 1011, analysees: 712, entretiens: 108, recrutes: 71, integres: 62, abandons: 9 },
+  { mois: "Juin", candidatures: 1102, analysees: 795, entretiens: 117, recrutes: 78, integres: 66, abandons: 12 },
+  { mois: "Juil", candidatures: 1248, analysees: 864, entretiens: 126, recrutes: 84, integres: 71, abandons: 13 },
 ];
 
 export const REPARTITION_SITES = [
-  { site: "Bouskoura", part: 31 },
-  { site: "Berrechid", part: 22 },
-  { site: "Aïn Sebaâ", part: 17 },
-  { site: "Bouznika", part: 14 },
-  { site: "Agadir", part: 12 },
-  { site: "Autres", part: 4 },
+  { site: "Bouskoura", part: 31, valeur: 387, recrutes: 26, enFormation: 68 },
+  { site: "Berrechid", part: 22, valeur: 275, recrutes: 19, enFormation: 47 },
+  { site: "Aïn Sebaâ", part: 17, valeur: 212, recrutes: 14, enFormation: 36 },
+  { site: "Bouznika", part: 14, valeur: 175, recrutes: 12, enFormation: 29 },
+  { site: "Agadir", part: 12, valeur: 149, recrutes: 10, enFormation: 24 },
+  { site: "Autres", part: 4, valeur: 50, recrutes: 3, enFormation: 10 },
 ];
 
 export const RESULTATS_FORMATION = [
-  { label: "Réussite", part: 84 },
-  { label: "Prolongation", part: 9 },
-  { label: "Arrêt", part: 4 },
-  { label: "En cours", part: 3 },
+  { label: "Réussite", part: 84, module: "Réussite", reussite: 84, echec: 16 },
+  { label: "Prolongation", part: 9, module: "Prolongation", reussite: 9, echec: 0 },
+  { label: "Arrêt", part: 4, module: "Arrêt", reussite: 0, echec: 4 },
+  { label: "En cours", part: 3, module: "En cours", reussite: 3, echec: 0 },
 ];
 
 export const POPULATION_RISQUE = [
-  { niveau: "Faible", nombre: 164 },
-  { niveau: "Moyen", nombre: 33 },
-  { niveau: "Élevé", nombre: 17 },
+  { niveau: "Faible", nombre: 164, valeur: 164 },
+  { niveau: "Moyen", nombre: 33, valeur: 33 },
+  { niveau: "Élevé", nombre: 17, valeur: 17 },
+];
+
+/* ---------------------- Reporting : recrutement ---------------------- */
+
+export const SOURCES_CANDIDATURES = [
+  { source: "Cooptation opérateurs", candidatures: 384, retenus: 31, coutMAD: 180 },
+  { source: "Job dating régional", candidatures: 296, retenus: 24, coutMAD: 320 },
+  { source: "ANAPEC", candidatures: 241, retenus: 13, coutMAD: 90 },
+  { source: "Candidatures spontanées", candidatures: 187, retenus: 9, coutMAD: 0 },
+  { source: "Réseaux sociaux", candidatures: 140, retenus: 7, coutMAD: 260 },
+];
+
+export const DELAIS_ETAPES = [
+  { etape: "Réception → analyse IA", jours: 0.4 },
+  { etape: "Analyse → présélection", jours: 1.2 },
+  { etape: "Présélection → entretien", jours: 2.6 },
+  { etape: "Entretien → décision", jours: 1.8 },
+  { etape: "Décision → intégration", jours: 4.3 },
+];
+
+export const QUALITE_RECRUTEMENT = [
+  { critere: "Fiabilité du score IA", valeur: 88 },
+  { critere: "Adéquation au poste", valeur: 81 },
+  { critere: "Présence en formation", valeur: 94 },
+  { critere: "Réussite des tests", valeur: 84 },
+  { critere: "Maintien à 90 jours", valeur: 79 },
+  { critere: "Satisfaction chef de ligne", valeur: 86 },
+];
+
+export const MOTIFS_REFUS = [
+  { motif: "Score IA insuffisant", nombre: 218 },
+  { motif: "Expérience non conforme", nombre: 141 },
+  { motif: "Indisponibilité horaires", nombre: 96 },
+  { motif: "Distance domicile-site", nombre: 74 },
+  { motif: "Désistement candidat", nombre: 58 },
+];
+
+export const RECRUTEMENT_PAR_POSTE = [
+  { poste: "Opérateur câblage", besoin: 120, recrutes: 96, tauxCouverture: 80 },
+  { poste: "Opératrice assemblage", besoin: 80, recrutes: 71, tauxCouverture: 89 },
+  { poste: "Contrôleur qualité", besoin: 45, recrutes: 34, tauxCouverture: 76 },
+  { poste: "Opérateur coupe", besoin: 38, recrutes: 30, tauxCouverture: 79 },
+  { poste: "Technicien ligne", besoin: 22, recrutes: 14, tauxCouverture: 64 },
+];
+
+/* ---------------------- Reporting : formation ------------------------ */
+
+export const RESULTATS_MODULES = [
+  { module: "Sécurité & EPI", reussite: 92, echec: 8, moyenne: 87, inscrits: 214 },
+  { module: "Introduction câblage", reussite: 86, echec: 14, moyenne: 81, inscrits: 96 },
+  { module: "Techniques assemblage", reussite: 78, echec: 22, moyenne: 74, inscrits: 96 },
+  { module: "Contrôle visuel", reussite: 81, echec: 19, moyenne: 77, inscrits: 138 },
+  { module: "Contrôle qualité", reussite: 74, echec: 26, moyenne: 71, inscrits: 42 },
+  { module: "Paramétrage coupe", reussite: 69, echec: 31, moyenne: 68, inscrits: 38 },
+];
+
+export const PROGRESSION_HEBDO = [
+  { semaine: "S23", scoreMoyen: 62, presence: 91, validations: 18 },
+  { semaine: "S24", scoreMoyen: 66, presence: 92, validations: 24 },
+  { semaine: "S25", scoreMoyen: 69, presence: 93, validations: 27 },
+  { semaine: "S26", scoreMoyen: 73, presence: 94, validations: 31 },
+  { semaine: "S27", scoreMoyen: 76, presence: 93, validations: 29 },
+  { semaine: "S28", scoreMoyen: 79, presence: 95, validations: 35 },
+  { semaine: "S29", scoreMoyen: 82, presence: 94, validations: 38 },
+];
+
+export const FORMATION_PAR_PARCOURS = [
+  { parcours: "Intégration câblage", inscrits: 96, valides: 78, enCours: 12, arretes: 6, tauxReussite: 81 },
+  { parcours: "Contrôleur qualité", inscrits: 42, valides: 31, enCours: 8, arretes: 3, tauxReussite: 74 },
+  { parcours: "Opérateur coupe", inscrits: 38, valides: 27, enCours: 9, arretes: 2, tauxReussite: 71 },
+  { parcours: "Sécurité industrielle", inscrits: 214, valides: 197, enCours: 12, arretes: 5, tauxReussite: 92 },
+];
+
+export const PERFORMANCE_FORMATEURS = [
+  { formateur: "Salma Bennis", sessions: 42, apprenants: 148, tauxReussite: 88, satisfaction: 4.6 },
+  { formateur: "Nabil Cherkaoui", sessions: 31, apprenants: 96, tauxReussite: 82, satisfaction: 4.3 },
+  { formateur: "Karim Sebti", sessions: 28, apprenants: 214, tauxReussite: 91, satisfaction: 4.7 },
+  { formateur: "Otmane Rifi", sessions: 24, apprenants: 74, tauxReussite: 76, satisfaction: 4.1 },
+];
+
+export const COMPETENCES_ACQUISES = [
+  { competence: "Lecture d'instructions", niveau: 88 },
+  { competence: "Sertissage", niveau: 74 },
+  { competence: "Contrôle visuel", niveau: 82 },
+  { competence: "Respect des consignes HSE", niveau: 93 },
+  { competence: "Cadence de production", niveau: 69 },
+  { competence: "Travail en équipe", niveau: 85 },
+];
+
+/* ---------------------- Reporting : présence & perf ------------------ */
+
+export const PRESENCE_PAR_SITE = [
+  { site: "Bouskoura", presence: 94, ponctualite: 91, absences: 12 },
+  { site: "Berrechid", presence: 96, ponctualite: 93, absences: 7 },
+  { site: "Aïn Sebaâ", presence: 92, ponctualite: 88, absences: 9 },
+  { site: "Bouznika", presence: 90, ponctualite: 86, absences: 11 },
+  { site: "Agadir", presence: 95, ponctualite: 92, absences: 5 },
+];
+
+export const MOTIFS_ABSENCE = [
+  { motif: "Maladie", nombre: 42 },
+  { motif: "Transport", nombre: 27 },
+  { motif: "Familial", nombre: 19 },
+  { motif: "Non justifiée", nombre: 16 },
+  { motif: "Autorisation", nombre: 13 },
+];
+
+export const EVOLUTION_RECLAMATIONS = [
+  { mois: "Mar", ouvertes: 14, resolues: 11 },
+  { mois: "Avr", ouvertes: 17, resolues: 15 },
+  { mois: "Mai", ouvertes: 21, resolues: 18 },
+  { mois: "Juin", ouvertes: 19, resolues: 19 },
+  { mois: "Juil", ouvertes: 24, resolues: 21 },
 ];
 
 export const TAUX_PRESENCE_GLOBAL = 94.2;

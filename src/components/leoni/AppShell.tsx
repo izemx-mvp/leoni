@@ -40,8 +40,7 @@ const NAV: { code: string; titre: string; icone: typeof LayoutGrid; items: NavIt
     icone: LayoutGrid,
     items: [
       { label: "Dashboard global", to: "/" },
-      { label: "Recrutement", to: "/reporting", search: { vue: "Recrutement" } },
-      { label: "Formation", to: "/reporting", search: { vue: "Formation" } },
+      { label: "Rapports & analyses", to: "/reporting" },
       { label: "Population ouvrière", to: "/ouvriers", search: { statut: "Tous" } },
       { label: "Alertes & risques", to: "/pilotage/alertes" },
     ],
@@ -118,14 +117,7 @@ const NAV: { code: string; titre: string; icone: typeof LayoutGrid; items: NavIt
     code: "08",
     titre: "Reporting",
     icone: FileBarChart,
-    items: [
-      { label: "Recrutement", to: "/reporting", search: { vue: "Recrutement" } },
-      { label: "Formation", to: "/reporting", search: { vue: "Formation" } },
-      { label: "Présence", to: "/reporting", search: { vue: "Présence" } },
-      { label: "Performance", to: "/reporting", search: { vue: "Performance" } },
-      { label: "Risques", to: "/reporting", search: { vue: "Risques" } },
-      { label: "Réclamations", to: "/reporting", search: { vue: "Réclamations" } },
-    ],
+    items: [{ label: "Rapports & analyses", to: "/reporting" }],
   },
   {
     code: "09",
