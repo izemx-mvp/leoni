@@ -88,7 +88,12 @@ interface Ctx {
 
 }
 
-const LeoniContext = createContext<Ctx | null>(null);
+// Le contexte est mis en cache globalement : lors d'un rechargement à chaud (HMR),
+// ce module peut être ré-exécuté alors que des consommateurs référencent encore
+// l'ancien contexte — ce qui provoquait « useLeoni doit être utilisé dans LeoniProvider ».
+const globalRef = globalThis as unknown as { __leoniContext?: React.Context<Ctx | null> };
+const LeoniContext: React.Context<Ctx | null> =
+  globalRef.__leoniContext ?? (globalRef.__leoniContext = createContext<Ctx | null>(null));
 
 const matriculeSite: Record<string, string> = {
   Bouskoura: "BOU",
