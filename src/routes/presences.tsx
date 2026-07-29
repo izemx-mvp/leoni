@@ -1,10 +1,37 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
+import { AlertTriangle, Send } from "lucide-react";
 import { ABSENCES, JOURS_SEMAINE, SITES, TAUX_PRESENCE_GLOBAL } from "@/data/leoni";
-import { Barre, Btn, Kpi, PageHeader, Panel, Select, Table, Tag, Td, Th, Tr } from "@/components/leoni/kit";
+import { Barre, Btn, Kpi, Modale, PageHeader, Panel, Select, Table, Tag, Td, Th, Tr } from "@/components/leoni/kit";
 import { useLeoni } from "@/lib/leoni-store";
 
 const VUES = ["Présences", "Absences", "Retards", "Calendrier"];
+
+const NIVEAUX = ["Rappel verbal", "Avertissement écrit", "Mise en demeure"];
+
+type CibleAvertissement = { id: string; ouvrier: string; site: string; date: string; type: string; duree: string };
+
+function modeleAvertissement(niveau: string, c: CibleAvertissement) {
+  const entete =
+    niveau === "Rappel verbal"
+      ? "Rappel concernant votre assiduité"
+      : niveau === "Avertissement écrit"
+        ? "Avertissement écrit — manquement à l'assiduité"
+        : "Mise en demeure — manquements répétés à l'assiduité";
+  return `Bonjour ${c.ouvrier.split(" ")[0]},
+
+Objet : ${entete}
+
+Nous avons enregistré un événement de type « ${c.type} » le ${c.date} (${c.duree}) sur le site de ${c.site}, référence ${c.id}.
+
+L'assiduité et la ponctualité sont indispensables au bon déroulement de votre parcours d'intégration et de formation.
+Nous vous demandons de régulariser votre situation et, le cas échéant, de transmettre un justificatif au service RH.
+
+En cas de nouvel écart, des mesures complémentaires pourront être engagées conformément au règlement intérieur.
+
+Service Ressources Humaines — LEONI Maroc`;
+}
+
 
 export const Route = createFileRoute("/presences")({
   validateSearch: (s: Record<string, unknown>) => ({
