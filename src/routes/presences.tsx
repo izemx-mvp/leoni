@@ -1,10 +1,37 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
+import { AlertTriangle, Send } from "lucide-react";
 import { ABSENCES, JOURS_SEMAINE, SITES, TAUX_PRESENCE_GLOBAL } from "@/data/leoni";
-import { Barre, Btn, Kpi, PageHeader, Panel, Select, Table, Tag, Td, Th, Tr } from "@/components/leoni/kit";
+import { Barre, Btn, Kpi, Modale, PageHeader, Panel, Select, Table, Tag, Td, Th, Tr } from "@/components/leoni/kit";
 import { useLeoni } from "@/lib/leoni-store";
 
 const VUES = ["Présences", "Absences", "Retards", "Calendrier"];
+
+const NIVEAUX = ["Rappel verbal", "Avertissement écrit", "Mise en demeure"];
+
+type CibleAvertissement = { id: string; ouvrier: string; site: string; date: string; type: string; duree: string };
+
+function modeleAvertissement(niveau: string, c: CibleAvertissement) {
+  const entete =
+    niveau === "Rappel verbal"
+      ? "Rappel concernant votre assiduité"
+      : niveau === "Avertissement écrit"
+        ? "Avertissement écrit — manquement à l'assiduité"
+        : "Mise en demeure — manquements répétés à l'assiduité";
+  return `Bonjour ${c.ouvrier.split(" ")[0]},
+
+Objet : ${entete}
+
+Nous avons enregistré un événement de type « ${c.type} » le ${c.date} (${c.duree}) sur le site de ${c.site}, référence ${c.id}.
+
+L'assiduité et la ponctualité sont indispensables au bon déroulement de votre parcours d'intégration et de formation.
+Nous vous demandons de régulariser votre situation et, le cas échéant, de transmettre un justificatif au service RH.
+
+En cas de nouvel écart, des mesures complémentaires pourront être engagées conformément au règlement intérieur.
+
+Service Ressources Humaines — LEONI Maroc`;
+}
+
 
 export const Route = createFileRoute("/presences")({
   validateSearch: (s: Record<string, unknown>) => ({
@@ -26,6 +53,29 @@ function PresencesPage() {
   const { vue, site } = Route.useSearch();
   const navigate = useNavigate();
   const { ouvriers, pousserNotification } = useLeoni();
+  const [cible, setCible] = useState<CibleAvertissement | null>(null);
+  const [niveau, setNiveau] = useState(NIVEAUX[1]);
+  const [canal, setCanal] = useState("WhatsApp");
+  const [message, setMessage] = useState("");
+  const [envoyes, setEnvoyes] = useState<Record<string, string>>({});
+
+  const ouvrirAvertissement = (c: CibleAvertissement) => {
+    setCible(c);
+    setNiveau(NIVEAUX[1]);
+    setCanal("WhatsApp");
+    setMessage(modeleAvertissement(NIVEAUX[1], c));
+  };
+
+  const envoyer = () => {
+    if (!cible) return;
+    setEnvoyes((p) => ({ ...p, [cible.id]: niveau }));
+    pousserNotification({
+      titre: `${niveau} envoyé`,
+      detail: `${cible.ouvrier} · ${cible.id} — ${canal}`,
+      ton: "warning",
+    });
+    setCible(null);
+  };
 
   const population = useMemo(
     () => ouvriers.filter((o) => site === "Tous les sites" || o.site === site),
@@ -39,7 +89,8 @@ function PresencesPage() {
       <PageHeader
         titre="Présences & absences"
         sousTitre="Pointage quotidien des opérateurs en formation et en intégration"
-        fil={[{ label: "Présences" }, { label: vue }]}
+        fil={[{ label: "Ouvriers" }, { label: "Présences & absences" }, { label: vue }]}
+
         actions={<Btn variant="secondary">Export Excel</Btn>}
       />
 
@@ -104,7 +155,7 @@ function PresencesPage() {
         <Panel title={vue} bodyClassName="p-0">
           <Table>
             <thead>
-              <tr><Th>Référence</Th><Th>Opérateur</Th><Th>Site</Th><Th>Date</Th><Th>Type</Th><Th>Durée</Th><Th>Statut</Th><Th>Action</Th></tr>
+              <tr><Th>Référence</Th><Th>Opérateur</Th><Th>Site</Th><Th>Date</Th><Th>Type</Th><Th>Durée</Th><Th>Statut</Th><Th>Avertissement</Th><Th>Actions</Th></tr>
             </thead>
             <tbody>
               {(vue === "Retards" ? retards : absences.filter((a) => a.type !== "Retard")).map((a) => (
@@ -117,9 +168,17 @@ function PresencesPage() {
                   <Td className="num text-muted-foreground">{a.duree}</Td>
                   <Td><Tag ton={/valid|reçu/i.test(a.statut) ? "success" : /rattrapage/i.test(a.statut) ? "critical" : "warning"}>{a.statut}</Tag></Td>
                   <Td>
-                    <Btn size="sm" onClick={() => pousserNotification({ titre: "Absence traitée", detail: `${a.id} — ${a.ouvrier}`, ton: "info" })}>
-                      Traiter
-                    </Btn>
+                    {envoyes[a.id] ? <Tag ton="critical">{envoyes[a.id]}</Tag> : <span className="text-xs text-muted-foreground">—</span>}
+                  </Td>
+                  <Td>
+                    <div className="flex gap-1.5">
+                      <Btn size="sm" variant="secondary" onClick={() => pousserNotification({ titre: "Absence traitée", detail: `${a.id} — ${a.ouvrier}`, ton: "info" })}>
+                        Traiter
+                      </Btn>
+                      <Btn size="sm" onClick={() => ouvrirAvertissement(a)}>
+                        <AlertTriangle className="size-3.5" /> Avertissement
+                      </Btn>
+                    </div>
                   </Td>
                 </Tr>
               ))}
@@ -145,6 +204,60 @@ function PresencesPage() {
           </div>
         </Panel>
       )}
+
+      {cible && (
+        <Modale
+          titre={`Avertissement — ${cible.ouvrier}`}
+          sousTitre={`${cible.id} · ${cible.type} du ${cible.date} (${cible.duree}) · ${cible.site}`}
+          onClose={() => setCible(null)}
+          large
+          footer={
+            <>
+              <Btn variant="ghost" onClick={() => setCible(null)}>Annuler</Btn>
+              <Btn variant="primary" onClick={envoyer}>
+                <Send className="size-3.5" /> Envoyer l'avertissement
+              </Btn>
+            </>
+          }
+        >
+          <div className="grid gap-4 md:grid-cols-[220px_1fr]">
+            <div className="grid content-start gap-3">
+              <label className="block">
+                <span className="label-xs">Niveau</span>
+                <div className="mt-1">
+                  <Select
+                    value={niveau}
+                    onChange={(v) => {
+                      setNiveau(v);
+                      setMessage(modeleAvertissement(v, cible));
+                    }}
+                    options={NIVEAUX}
+                  />
+                </div>
+              </label>
+              <label className="block">
+                <span className="label-xs">Canal</span>
+                <div className="mt-1">
+                  <Select value={canal} onChange={setCanal} options={["WhatsApp", "Email", "Courrier remis en main propre"]} />
+                </div>
+              </label>
+              <div className="rounded-sm border border-border bg-[var(--hover)] p-2 text-[11px] text-muted-foreground">
+                L'avertissement est archivé dans la fiche ouvrier (Suivi & événements) et compte dans le score de risque.
+              </div>
+            </div>
+            <label className="block">
+              <span className="label-xs">Message</span>
+              <textarea
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                rows={16}
+                className="mt-1 w-full rounded-sm border border-border bg-card p-3 font-mono text-xs outline-none focus:ring-2 focus:ring-[var(--ring)]"
+              />
+            </label>
+          </div>
+        </Modale>
+      )}
     </>
+
   );
 }
