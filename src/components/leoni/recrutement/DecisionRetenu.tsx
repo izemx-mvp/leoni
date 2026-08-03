@@ -74,7 +74,7 @@ export function DecisionRetenu({ candidat, onClose }: { candidat: Candidat; onCl
   const [commentaire, setCommentaire] = useState(
     `Profil validé pour le poste de ${candidat.poste} — score Talent Fit ${candidat.score} %.`,
   );
-  const [responsable, setResponsable] = useState("Nadia El Ghali");
+  const [responsable, setResponsable] = useState("Amina Rajouh");
   const [typeContrat, setTypeContrat] = useState("CDD 6 mois");
 
   // Arrivée
@@ -84,7 +84,7 @@ export function DecisionRetenu({ candidat, onClose }: { candidat: Candidat; onCl
   const [departement, setDepartement] = useState("Production câblage");
   const [poste, setPoste] = useState(candidat.poste);
   const [atelier, setAtelier] = useState("À affecter");
-  const [contactRH, setContactRH] = useState("Nadia El Ghali");
+  const [contactRH, setContactRH] = useState("Amina Rajouh");
   const [telephoneRH, setTelephoneRH] = useState("+212 5 22 87 41 00");
 
   // Étape 2

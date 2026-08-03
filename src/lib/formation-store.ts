@@ -102,7 +102,7 @@ export const actionsFormation = {
               type: "Incident" as const,
               origine: `Feedback ${fb.id} — ${fb.categorie}`,
               priorite: "Moyenne" as const,
-              responsable: "Nadia El Ghali",
+              responsable: "Amina Rajouh",
               statut: "Ouverte" as const,
               action: "Traitement du feedback critique",
             },

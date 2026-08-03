@@ -1033,7 +1033,7 @@ function FicheOuvrier() {
                       />
                     </label>
                   )}
-                  <p className="text-muted-foreground">Responsable : Nadia El Ghali · Date : 28/07/2026</p>
+                  <p className="text-muted-foreground">Responsable : Amina Rajouh · Date : 28/07/2026</p>
                 </div>
                 <div className="mt-4 flex justify-end gap-2">
                   <Btn variant="ghost" onClick={() => setModale(null)}>Annuler</Btn>

@@ -18,7 +18,7 @@ export function ParametresOnboarding() {
   const [poste, setPoste] = useState(Object.keys(EQUIPEMENTS_PAR_POSTE)[0]);
   const [heure, setHeure] = useState("08:00");
   const [point, setPoint] = useState(POINTS_ACCUEIL[0]);
-  const [contact, setContact] = useState("Nadia El Ghali");
+  const [contact, setContact] = useState("Amina Rajouh");
   const [telephone, setTelephone] = useState("+212 5 22 87 41 00");
   const [docs, setDocs] = useState<string[]>(CATALOGUE_DOCUMENTS.filter((d) => d.presetOperateur).map((d) => d.id));
   const [epi, setEpi] = useState<string[]>(EQUIPEMENTS_PAR_POSTE[poste] ?? []);

@@ -40,7 +40,7 @@ function horodatage() {
     .slice(0, 5)}`;
 }
 
-function tracer(s: SessionPlanning, action: string, detail?: string, auteur = "Nadia El Ghali"): SessionPlanning {
+function tracer(s: SessionPlanning, action: string, detail?: string, auteur = "Amina Rajouh"): SessionPlanning {
   return { ...s, journal: [...s.journal, { horodatage: horodatage(), action, detail, auteur }] };
 }
 
@@ -77,7 +77,7 @@ export const actionsPlanning = {
       id: `SES-${Math.floor(Math.random() * 9000) + 9000}`,
       statut: "Brouillon",
       notifications: { envoyees: 0, lues: 0 },
-      journal: [{ horodatage: horodatage(), action: "Session dupliquée", detail: src.id, auteur: "Nadia El Ghali" }],
+      journal: [{ horodatage: horodatage(), action: "Session dupliquée", detail: src.id, auteur: "Amina Rajouh" }],
     };
     publier([...etat, copie]);
     return copie.id;
@@ -89,7 +89,7 @@ export const actionsPlanning = {
     const nouvelle: SessionPlanning = {
       ...s,
       id: `SES-${Math.floor(Math.random() * 9000) + 9000}`,
-      journal: [{ horodatage: horodatage(), action: "Session créée", auteur: "Nadia El Ghali" }],
+      journal: [{ horodatage: horodatage(), action: "Session créée", auteur: "Amina Rajouh" }],
     };
     publier([...etat, nouvelle]);
     return nouvelle.id;

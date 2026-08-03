@@ -163,7 +163,7 @@ export function LeoniProvider({ children }: { children: ReactNode }) {
                 ...o,
                 historique: [
                   ...o.historique,
-                  { id: `H-${Date.now()}`, date, heure, utilisateur: "Nadia El Ghali", type, action, avant, apres },
+                  { id: `H-${Date.now()}`, date, heure, utilisateur: "Amina Rajouh", type, action, avant, apres },
                 ],
               }
             : o,
@@ -280,7 +280,7 @@ export function LeoniProvider({ children }: { children: ReactNode }) {
         courbe: [],
         modules: modele.modules.map((m) => ({ code: m.code, nom: m.nom, statut: "À venir" as const })),
         historique: [
-          { id: `H-${Date.now()}`, date, heure, utilisateur: "Nadia El Ghali", type: "Création", action: "Fiche ouvrier créée depuis la candidature", avant: candidatId, apres: matricule },
+          { id: `H-${Date.now()}`, date, heure, utilisateur: "Amina Rajouh", type: "Création", action: "Fiche ouvrier créée depuis la candidature", avant: candidatId, apres: matricule },
         ],
       };
       setOuvriers((prev) => [nouveau, ...prev]);
@@ -425,7 +425,7 @@ export function LeoniProvider({ children }: { children: ReactNode }) {
             ? {
                 ...o,
                 statut: map[decision] ?? o.statut,
-                decision: { decision, commentaire, responsable: "Nadia El Ghali", date, motif },
+                decision: { decision, commentaire, responsable: "Amina Rajouh", date, motif },
               }
             : o,
         ),
@@ -579,7 +579,7 @@ export function LeoniProvider({ children }: { children: ReactNode }) {
             ? { decision: "Retenu", commentaire: decision.commentaire, responsable: decision.responsable, date }
             : undefined,
           historique: [
-            { id: `H-${Date.now()}`, date, heure, utilisateur: decision?.responsable ?? "Nadia El Ghali", type: "Création", action: "Fiche ouvrier créée depuis la décision RH « Retenu »", avant: candidatId, apres: matricule },
+            { id: `H-${Date.now()}`, date, heure, utilisateur: decision?.responsable ?? "Amina Rajouh", type: "Création", action: "Fiche ouvrier créée depuis la décision RH « Retenu »", avant: candidatId, apres: matricule },
           ],
         };
         setOuvriers((prev) => [nouveau, ...prev]);
@@ -637,7 +637,7 @@ export function LeoniProvider({ children }: { children: ReactNode }) {
                 prochaineAction: "Démarrer le parcours d'intégration",
                 onboarding: o.onboarding ? { ...o.onboarding, accueilFinalise: true } : o.onboarding,
                 historique: [
-                  { id: `H-${Date.now()}`, date, heure, utilisateur: "Nadia El Ghali", type: "Intégration", action: "Accueil finalisé — passage en formation", avant: "À intégrer", apres: "En formation" },
+                  { id: `H-${Date.now()}`, date, heure, utilisateur: "Amina Rajouh", type: "Intégration", action: "Accueil finalisé — passage en formation", avant: "À intégrer", apres: "En formation" },
                   ...o.historique,
                 ],
               }

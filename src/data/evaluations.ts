@@ -213,7 +213,7 @@ export const BIBLIOTHEQUE: Question[] = [
     bonneReponse: "Gants anti-coupure, Lunettes de protection, Chaussures de sécurité",
     explication: "Le casque n'est pas requis en zone coupe, contrairement aux trois autres EPI.",
     points: 2, categorie: "EPI", competence: "Sécurité industrielle", difficulte: "Moyenne", obligatoire: true,
-    formation: "FOR-SEC-01", module: "EPI", utilisations: 21, tauxReussite: 96, derniereUtilisation: "28/07/2026", createur: "Nadia El Ghali", tempsMoyen: "48 s",
+    formation: "FOR-SEC-01", module: "EPI", utilisations: 21, tauxReussite: 96, derniereUtilisation: "28/07/2026", createur: "Amina Rajouh", tempsMoyen: "48 s",
   },
   {
     questionId: "Q-SEC-007", numero: 7,
@@ -263,7 +263,7 @@ export const BIBLIOTHEQUE: Question[] = [
     bonneReponse: "La fiche de contrôle qualité signée",
     explication: "La traçabilité impose une fiche de contrôle signée par le contrôleur.",
     points: 1, categorie: "Contrôle", competence: "Contrôle qualité", difficulte: "Difficile", obligatoire: true,
-    formation: "FOR-QC-01", module: "Contrôle qualité", utilisations: 14, tauxReussite: 58, derniereUtilisation: "28/07/2026", createur: "Nadia El Ghali", tempsMoyen: "1 min 21 s",
+    formation: "FOR-QC-01", module: "Contrôle qualité", utilisations: 14, tauxReussite: 58, derniereUtilisation: "28/07/2026", createur: "Amina Rajouh", tempsMoyen: "1 min 21 s",
   },
   {
     questionId: "Q-QLT-004", numero: 4,
@@ -313,7 +313,7 @@ export const BIBLIOTHEQUE: Question[] = [
     bonneReponse: "Changer une lame",
     explication: "Le changement de lame relève exclusivement de la maintenance habilitée.",
     points: 1, categorie: "Maintenance", competence: "Sécurité industrielle", difficulte: "Facile", obligatoire: true,
-    formation: "FOR-SEC-01", module: "Risques industriels", utilisations: 11, tauxReussite: 90, derniereUtilisation: "20/07/2026", createur: "Nadia El Ghali", tempsMoyen: "35 s",
+    formation: "FOR-SEC-01", module: "Risques industriels", utilisations: 11, tauxReussite: 90, derniereUtilisation: "20/07/2026", createur: "Amina Rajouh", tempsMoyen: "35 s",
   },
   {
     questionId: "Q-LOG-001", numero: 13,
@@ -538,7 +538,7 @@ export const EVALUATIONS_INITIALES: Evaluation[] = [
     validationAuto: false,
     rappels: ["24 h avant"],
     canaux: ["Email", "Notification"],
-    createur: "Nadia El Ghali",
+    createur: "Amina Rajouh",
     questions: questionsDe(["Q-QLT-004", "Q-QLT-018", "Q-LOG-001"]),
     participants: [],
   },
@@ -667,7 +667,7 @@ export const EVALUATIONS_INITIALES: Evaluation[] = [
     validationAuto: true,
     rappels: ["24 h avant", "2 h avant"],
     canaux: ["Email"],
-    createur: "Nadia El Ghali",
+    createur: "Amina Rajouh",
     questions: questionsDe(["Q-QLT-004", "Q-QLT-018", "Q-LOG-001", "Q-MNT-002"]),
     participants: [
       {
@@ -773,7 +773,7 @@ export const AUDIT_INITIAL: EntreeAudit[] = [
   { id: "AUD-001", date: "15/07/2026 10:24", utilisateur: "Salma Bennis", evaluationId: "EVA-001", action: "Création", detail: "Création de QCM-SEC-01 — Sécurité et EPI" },
   { id: "AUD-002", date: "16/07/2026 15:31", utilisateur: "Salma Bennis", evaluationId: "EVA-001", action: "Modification", detail: "Ajout de 4 questions depuis la bibliothèque" },
   { id: "AUD-003", date: "22/07/2026 11:05", utilisateur: "Karim Sebti", evaluationId: "EVA-007", action: "Correction", detail: "Grille pratique saisie — Sara Amrani 26/35" },
-  { id: "AUD-004", date: "25/07/2026 09:00", utilisateur: "Nadia El Ghali", evaluationId: "EVA-001", action: "Publication", detail: "Publication et diffusion à 120 participants" },
+  { id: "AUD-004", date: "25/07/2026 09:00", utilisateur: "Amina Rajouh", evaluationId: "EVA-001", action: "Publication", detail: "Publication et diffusion à 120 participants" },
   { id: "AUD-005", date: "25/07/2026 09:01", utilisateur: "Système", evaluationId: "EVA-001", action: "Affectation", detail: "Génération de 120 affectations (WhatsApp, Email)" },
   { id: "AUD-006", date: "28/07/2026 09:18", utilisateur: "Sara Amrani", evaluationId: "EVA-001", action: "Passage", detail: "Évaluation terminée — 95 %" },
   { id: "AUD-007", date: "28/07/2026 09:28", utilisateur: "Khadija Rami", evaluationId: "EVA-001", action: "Résultat", detail: "Évaluation terminée — 55 % (échec)" },
@@ -819,7 +819,7 @@ export const KPIS_MODULE = {
 };
 
 export const GROUPES = ["CBL-07", "QC-04", "ASM-02", "SEC-01"];
-export const FORMATEURS = ["Karim Sebti", "Salma Bennis", "Nadia El Ghali", "Youssef Tahiri"];
+export const FORMATEURS = ["Karim Sebti", "Salma Bennis", "Amina Rajouh", "Youssef Tahiri"];
 export const LIEUX = [
   "Salle formation A – Bouskoura",
   "Salle formation B – Bouskoura",
