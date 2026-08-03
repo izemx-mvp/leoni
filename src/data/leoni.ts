@@ -18,10 +18,10 @@ export const SITES_PARAMETRAGE = [...SITES, "Kénitra – futur site"];
 export type Site = (typeof SITES)[number];
 
 export const UTILISATEUR = {
-  nom: "Nadia El Ghali",
+  nom: "Amina Rajouh",
   role: "Responsable RH Maroc",
   perimetre: "Tous les sites",
-  initiales: "NE",
+  initiales: "AR",
 };
 
 /* ------------------------------------------------------------------ */
@@ -1174,7 +1174,7 @@ export const ALERTES: Alerte[] = [
   { id: "ALR-505", type: "3 ouvriers avec 2 absences consécutives", personne: "Ayoub Najjar +2", site: "Bouznika", priorite: "Élevée", date: "27/07/2026", proprietaire: "Otmane Rifi", cta: "Planifier rattrapage", lien: "/presences" },
   { id: "ALR-506", type: "2 formations sécurité non validées", personne: "Khadija Rami, Ayoub Najjar", site: "Bouskoura", priorite: "Critique", date: "26/07/2026", proprietaire: "Karim Sebti", cta: "Programmer rattrapage", lien: "/formation/qcm" },
   { id: "ALR-507", type: "2 réclamations EPI critiques", personne: "Khadija Rami", site: "Bouskoura", priorite: "Critique", date: "26/07/2026", proprietaire: "Service Sécurité", cta: "Ouvrir la réclamation", lien: "/suivi/reclamations" },
-  { id: "ALR-508", type: "1 parcours avec recommandation IA d'arrêt", personne: "Ayoub Najjar", site: "Bouznika", priorite: "Critique", date: "25/07/2026", proprietaire: "Nadia El Ghali", cta: "Décision RH", lien: "/ouvriers" },
+  { id: "ALR-508", type: "1 parcours avec recommandation IA d'arrêt", personne: "Ayoub Najjar", site: "Bouznika", priorite: "Critique", date: "25/07/2026", proprietaire: "Amina Rajouh", cta: "Décision RH", lien: "/ouvriers" },
 ];
 
 /* ------------------------------------------------------------------ */
@@ -1351,7 +1351,7 @@ export const ROLES = [
 ];
 
 export const UTILISATEURS = [
-  { nom: "Nadia El Ghali", role: "Responsable RH Maroc", perimetre: "Tous les sites", statut: "Actif", mfa: "Activé" },
+  { nom: "Amina Rajouh", role: "Responsable RH Maroc", perimetre: "Tous les sites", statut: "Actif", mfa: "Activé" },
   { nom: "Yassine Alaoui", role: "Recruteur", perimetre: "Bouskoura", statut: "Actif", mfa: "Activé" },
   { nom: "Imane El Fassi", role: "RH Site", perimetre: "Berrechid", statut: "Actif", mfa: "Activé" },
   { nom: "Salma Bennis", role: "Formateur", perimetre: "Bouskoura", statut: "Actif", mfa: "Désactivé" },
@@ -1386,7 +1386,7 @@ export const PONDERATIONS_IA = [
 
 export const AUDIT = [
   { date: "28/07/2026 11:00", utilisateur: "Worker Readiness AI", module: "Ouvriers", action: "Recalcul du score", objet: "LMA-BOU-2026-0418", avant: "84", apres: "86" },
-  { date: "28/07/2026 09:12", utilisateur: "Nadia El Ghali", module: "Communication", action: "Envoi WhatsApp", objet: "Sara Amrani", avant: "—", apres: "Rappel QCM" },
+  { date: "28/07/2026 09:12", utilisateur: "Amina Rajouh", module: "Communication", action: "Envoi WhatsApp", objet: "Sara Amrani", avant: "—", apres: "Rappel QCM" },
   { date: "27/07/2026 16:30", utilisateur: "Salma Bennis", module: "Suivi", action: "Ajout observation", objet: "LMA-BOU-2026-0418", avant: "—", apres: "Observation positive" },
   { date: "27/07/2026 10:22", utilisateur: "Yassine Alaoui", module: "Recrutement", action: "Changement de statut", objet: "CAN-2026-01253", avant: "Entretien réalisé", apres: "Décision RH" },
   { date: "26/07/2026 15:04", utilisateur: "Service Sécurité", module: "Réclamations", action: "Prise en charge", objet: "REC-2026-081", avant: "À qualifier", apres: "En cours" },

@@ -24,8 +24,8 @@ type Mode = "choix" | "ia" | "manuel" | "import";
 
 const ETAPES_IA = ["Documents", "Analyse IA", "Vérification", "Poste & candidature", "Validation"];
 const ETAPES_MANUEL = ["Identité", "Coordonnées", "Profil", "Poste", "Documents", "Validation"];
-const RECRUTEURS = ["Nadia El Ghali", "Yassine Alaoui", "Hind Bekkali", "Otmane Rifi"];
-const OPERATRICE = "Nadia El Ghali";
+const RECRUTEURS = ["Amina Rajouh", "Yassine Alaoui", "Hind Bekkali", "Otmane Rifi"];
+const OPERATRICE = "Amina Rajouh";
 
 function taille(octets: number) {
   return octets > 1_000_000 ? `${(octets / 1_048_576).toFixed(1)} Mo` : `${Math.max(1, Math.round(octets / 1024))} Ko`;

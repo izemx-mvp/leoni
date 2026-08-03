@@ -155,7 +155,7 @@ export function DossierOuvrier({ o, candidat }: { o: Ouvrier; candidat?: Candida
           <Panel title="Dossier administratif">
             <div className="grid grid-cols-2 gap-4">
               <Field label="Contrat" value={o.decision?.decision === "Retenu" ? "En cours de signature" : "Actif"} />
-              <Field label="Responsable RH" value={d?.arrivee.contactRH ?? "Nadia El Ghali"} />
+              <Field label="Responsable RH" value={d?.arrivee.contactRH ?? "Amina Rajouh"} />
               <Field label="Téléphone RH" value={d?.arrivee.telephoneRH ?? "+212 5 22 87 41 00"} />
               <Field label="Visite médicale" value={d?.preparation.find((c) => c.label === "Visite médicale programmée")?.fait ? "Programmée" : "À programmer"} />
               <Field label="CNSS" value={d ? (d.documents.find((x) => x.id === "DOC-CNSS")?.statut ?? "—") : "Enregistré"} />
