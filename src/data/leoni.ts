@@ -21,7 +21,7 @@ export const UTILISATEUR = {
   nom: "Amina Rajouh",
   role: "Responsable RH Maroc",
   perimetre: "Tous les sites",
-  initiales: "NE",
+  initiales: "AR",
 };
 
 /* ------------------------------------------------------------------ */
