@@ -538,6 +538,34 @@ function FicheCandidat() {
         </div>
       )}
 
+      {section === SECTIONS[6] && (
+        <div className="grid gap-4">
+          {posteCritique ? (
+            <>
+              <CartePosteCriticite poste={candidat.poste} conformite={conformite} />
+              <CarteConformite conformite={conformite} titre="Conformité au poste critique" />
+              {derogations.length > 0 && (
+                <Panel title="Dérogations enregistrées">
+                  <ul className="space-y-1.5 text-xs">
+                    {derogations.map((d) => (
+                      <li key={d.id} className="border-b border-border pb-1.5">
+                        {d.date} — {d.contexte} · validateur {d.validateur} ({d.niveauApprobation}) : {d.motif}
+                      </li>
+                    ))}
+                  </ul>
+                </Panel>
+              )}
+            </>
+          ) : (
+            <Panel title="Conformité au poste">
+              <p className="text-sm text-muted-foreground">
+                Poste non critique — contrôle standard d'affectation.
+              </p>
+            </Panel>
+          )}
+        </div>
+      )}
+
       {modale && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onClick={() => setModale(null)}>
           <div className="w-full max-w-lg rounded-md border border-border bg-card p-5" onClick={(e) => e.stopPropagation()}>
@@ -695,6 +723,18 @@ function FicheCandidat() {
       )}
 
       {preIntegration && <DecisionRetenu candidat={candidat} onClose={() => setPreIntegration(false)} />}
+
+      {affectationBloquee && (
+        <ModaleAffectationBloquee
+          sujet={candidat.nom}
+          poste={candidat.poste}
+          contexte="La décision « Retenir » vers ce poste critique"
+          conformite={conformite}
+          onClose={() => setAffectationBloquee(false)}
+          onCorrigerDabord={() => setAffectationBloquee(false)}
+          onDeroger={enregistrerDerogation}
+        />
+      )}
     </>
   );
 }
