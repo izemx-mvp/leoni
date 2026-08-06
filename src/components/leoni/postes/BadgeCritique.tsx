@@ -51,7 +51,7 @@ export function BadgeCritique({
 export function CartePosteCriticite({ poste, conformite }: { poste?: string; conformite: Conformite }) {
   const p = posteDe(poste);
   return (
-    <Panel title="Poste &amp; criticité">
+    <Panel title="Poste & criticité">
       <div className="grid gap-3 sm:grid-cols-2">
         <Info label="Poste visé" valeur={p?.nom ?? poste ?? "—"} />
         <Info label="Code poste" valeur={p?.code ?? "—"} />
