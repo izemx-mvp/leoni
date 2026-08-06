@@ -474,7 +474,9 @@ function ReportingPage() {
           </Table>
         </div>
       </Panel>
+      </>)}
 
+      {vis("05") && (<>
       {/* -------------------------- Risques & qualité -------------------------- */}
       <SectionTitre code="05" titre="Risques & réclamations" sousTitre="Population exposée, alertes et traitement des réclamations" />
       <div className="grid gap-4 lg:grid-cols-2">
