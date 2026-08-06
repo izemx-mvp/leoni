@@ -315,6 +315,61 @@ function FicheCandidat() {
             </div>
             <IAWarning texte="Cette analyse constitue une aide à la décision. La décision finale appartient aux équipes RH." />
           </Panel>
+
+          {posteCritique && exigences && (
+            <Panel title="Pondération renforcée — poste critique" className="lg:col-span-3">
+              <p className="text-xs text-muted-foreground">
+                Ce poste étant critique, l'analyse Talent Fit AI renforce le poids de l'expérience secteur,
+                des compétences bloquantes et des documents obligatoires (dont le casier judiciaire et
+                l'aptitude médicale).
+              </p>
+              <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+                {[
+                  { l: "Expérience secteur requise", v: exigences.experience.secteur },
+                  { l: "Compétences bloquantes", v: `${exigences.competences.filter((c) => c.bloquante).length}` },
+                  { l: "Documents obligatoires", v: `${exigences.documents.filter((d) => d.bloquant).length}` },
+                  { l: "Score requis (candidat)", v: `${exigences.seuils.scoreCandidat} %` },
+                ].map((k) => (
+                  <div key={k.l} className="rounded-sm border border-border p-2.5">
+                    <p className="label-xs">{k.l}</p>
+                    <p className="num mt-1 text-sm font-semibold">{k.v}</p>
+                  </div>
+                ))}
+              </div>
+
+              {conformite.blocages.length > 0 ? (
+                <div className="mt-3 rounded-sm border border-[color-mix(in_oklab,var(--critical)_40%,transparent)] bg-[color-mix(in_oklab,var(--critical)_8%,transparent)] p-3">
+                  <p className="text-xs font-semibold text-[var(--critical)]">Exigences manquantes</p>
+                  <ul className="mt-1.5 space-y-1 text-xs">
+                    {conformite.blocages.map((b) => (
+                      <li key={b.categorie + b.libelle}>
+                        • {b.libelle} — attendu {b.attendu}, constaté : {b.constate}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ) : (
+                <p className="mt-3 text-xs text-[var(--success)]">Aucune exigence bloquante manquante à ce stade.</p>
+              )}
+
+              <div className="mt-3 rounded-sm border border-border bg-[var(--brand-soft)] p-3 text-sm">
+                <p className="label-xs">Recommandation explicite</p>
+                <p className="mt-1 font-semibold">
+                  {conformite.blocages.length === 0
+                    ? "Retenir"
+                    : conformite.blocages.length <= 2 && conformite.score >= 50
+                      ? "Retenir sous réserve — compléter les exigences manquantes avant affectation définitive"
+                      : "Ne pas retenir pour ce poste critique"}
+                </p>
+                {conformite.blocages.length > 2 && (
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    Postes alternatifs non critiques suggérés : Opérateur / Opératrice câblage, Opérateur / Opératrice
+                    assemblage, Opérateur coupe.
+                  </p>
+                )}
+              </div>
+            </Panel>
+          )}
           <Panel title="Lecture IA du dossier">
             <p className="label-xs">Points forts</p>
             <ul className="mt-2 space-y-1.5 text-sm">
