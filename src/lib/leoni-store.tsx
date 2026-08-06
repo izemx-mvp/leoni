@@ -24,6 +24,16 @@ import {
   type StatutCandidature,
 } from "@/data/leoni";
 import type { CommunicationOnboarding, DossierOnboarding } from "@/data/onboarding";
+import {
+  ACTIONS_SATISFACTION,
+  ALERTES_SATISFACTION,
+  CONFIG_SATISFACTION_DEFAUT,
+  MOODS_INITIAUX,
+  type ActionCorrectiveSat,
+  type AlerteSatisfaction,
+  type ConfigSatisfaction,
+  type Mood,
+} from "@/data/satisfaction";
 
 
 export type Theme = "light" | "dark" | "system";
@@ -88,6 +98,15 @@ interface Ctx {
   /** Mise à jour générique d'une fiche ouvrier (utilisée par l'Espace Ouvrier). */
   majOuvrier: (ouvrierId: string, maj: (o: Ouvrier) => Ouvrier) => void;
   finaliserAccueil: (ouvrierId: string) => void;
+  /* --- Satisfaction quotidienne (mood) --- */
+  moods: Mood[];
+  configSatisfaction: ConfigSatisfaction;
+  majConfigSatisfaction: (maj: Partial<ConfigSatisfaction>) => void;
+  enregistrerMood: (m: Omit<Mood, "id" | "statut">) => void;
+  majStatutMood: (id: string, statut: Mood["statut"]) => void;
+  alertesSatisfaction: AlerteSatisfaction[];
+  actionsSatisfaction: ActionCorrectiveSat[];
+  creerActionSatisfaction: (a: Omit<ActionCorrectiveSat, "id">) => void;
 
 }
 
@@ -117,6 +136,10 @@ export function LeoniProvider({ children }: { children: ReactNode }) {
   const [reclamations, setReclamations] = useState<Reclamation[]>(RECLAMATIONS);
   const [alertes, setAlertes] = useState<Alerte[]>(ALERTES);
   const [notifications, setNotifications] = useState<Notification[]>(NOTIFS_INITIALES);
+  const [moods, setMoods] = useState<Mood[]>(MOODS_INITIAUX);
+  const [configSatisfaction, setConfigSatisfaction] = useState<ConfigSatisfaction>(CONFIG_SATISFACTION_DEFAUT);
+  const [alertesSatisfaction] = useState<AlerteSatisfaction[]>(ALERTES_SATISFACTION);
+  const [actionsSatisfaction, setActionsSatisfaction] = useState<ActionCorrectiveSat[]>(ACTIONS_SATISFACTION);
 
   useEffect(() => {
     const saved = (localStorage.getItem("leoni-theme") as Theme) ?? "light";
@@ -651,6 +674,39 @@ export function LeoniProvider({ children }: { children: ReactNode }) {
 
 
 
+  /* ------------------------------ Satisfaction --------------------------- */
+
+  const majConfigSatisfaction = useCallback((maj: Partial<ConfigSatisfaction>) => {
+    setConfigSatisfaction((prev) => ({ ...prev, ...maj }));
+  }, []);
+
+  const enregistrerMood = useCallback(
+    (m: Omit<Mood, "id" | "statut">) => {
+      const nouveau: Mood = { ...m, id: `MD-${Date.now()}`, statut: m.score <= 2 ? "À analyser" : "Nouveau" };
+      setMoods((prev) => [nouveau, ...prev]);
+      if (m.score <= 2) {
+        pousserNotification({
+          titre: "Retour de satisfaction négatif",
+          detail: `${m.anonyme ? "Réponse anonyme" : (m.ouvrierNom ?? "Ouvrier")} — ${m.categorie} (${m.score}/5)`,
+          ton: "warning",
+        });
+      }
+    },
+    [pousserNotification],
+  );
+
+  const majStatutMood = useCallback((id: string, statut: Mood["statut"]) => {
+    setMoods((prev) => prev.map((m) => (m.id === id ? { ...m, statut } : m)));
+  }, []);
+
+  const creerActionSatisfaction = useCallback(
+    (a: Omit<ActionCorrectiveSat, "id">) => {
+      setActionsSatisfaction((prev) => [{ ...a, id: `ACS-${Date.now()}` }, ...prev]);
+      pousserNotification({ titre: "Action corrective créée", detail: `${a.sujet} — ${a.action}`, ton: "success" });
+    },
+    [pousserNotification],
+  );
+
   const value = useMemo<Ctx>(
     () => ({
       theme,
@@ -683,8 +739,16 @@ export function LeoniProvider({ children }: { children: ReactNode }) {
       majOnboarding,
       majOuvrier,
       finaliserAccueil,
+      moods,
+      configSatisfaction,
+      majConfigSatisfaction,
+      enregistrerMood,
+      majStatutMood,
+      alertesSatisfaction,
+      actionsSatisfaction,
+      creerActionSatisfaction,
     }),
-    [theme, setTheme, site, langue, candidats, ouvriers, entretiens, reclamations, alertes, notifications, marquerLues, pousserNotification, changerStatutCandidat, planifierEntretien, evaluerEntretien, transformerEnOuvrier, ajouterEvenement, enregistrerPresence, validerJournee, deciderParcours, deplacerReclamation, creerReclamation, creerCandidature, lancerTalentFit, preIntegrerCandidat, majOnboarding, majOuvrier, finaliserAccueil],
+    [theme, setTheme, site, langue, candidats, ouvriers, entretiens, reclamations, alertes, notifications, marquerLues, pousserNotification, changerStatutCandidat, planifierEntretien, evaluerEntretien, transformerEnOuvrier, ajouterEvenement, enregistrerPresence, validerJournee, deciderParcours, deplacerReclamation, creerReclamation, creerCandidature, lancerTalentFit, preIntegrerCandidat, majOnboarding, majOuvrier, finaliserAccueil, moods, configSatisfaction, majConfigSatisfaction, enregistrerMood, majStatutMood, alertesSatisfaction, actionsSatisfaction, creerActionSatisfaction],
   );
 
   return <LeoniContext.Provider value={value}>{children}</LeoniContext.Provider>;
