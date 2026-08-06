@@ -44,6 +44,7 @@ import {
 } from "@/data/leoni";
 import { Barre, Btn, Kpi, PageHeader, Panel, Table, Tag, Td, Th, Tr } from "@/components/leoni/kit";
 import { useLeoni } from "@/lib/leoni-store";
+import { SatisfactionRetention } from "@/components/leoni/reporting/SatisfactionRetention";
 
 export const Route = createFileRoute("/reporting")({
   head: () => ({
@@ -559,6 +560,13 @@ function ReportingPage() {
           </ResponsiveContainer>
         </Panel>
       </div>
+
+      <SectionTitre
+        code="06"
+        titre="Satisfaction, départs & rétention"
+        sousTitre="Satisfaction quotidienne, turnover, motifs de départ, cohortes et risque de départ précoce"
+      />
+      <SatisfactionRetention onExport={exporter} />
 
       <p className="mt-6 text-[11px] text-muted-foreground">
         Rapports actualisés à chaque action réalisée dans l'application — prototype de démonstration LEONI Maroc.

@@ -14,6 +14,7 @@ import {
 import { useEspace } from "@/lib/espace-store";
 import { AUJOURDHUI, PLANNING_ESPACE } from "@/data/espace-ouvrier";
 import { BarreProgression, Carte, KpiE, Puce, SectionTitre, VideE, tonStatutOuvrier } from "@/components/espace/kit";
+import { CarteMood } from "@/components/espace/CarteMood";
 
 export const Route = createFileRoute("/espace/")({
   head: () => ({
@@ -86,6 +87,18 @@ function Accueil() {
           <BarreProgression valeur={ouvrier.progression} />
         </div>
       </Carte>
+
+      <section>
+        <SectionTitre titre="Ma journée" />
+        <CarteMood
+          ouvrierId={ouvrier.id}
+          ouvrierNom={ouvrier.nom}
+          site={ouvrier.site}
+          formation={ouvrier.parcoursLibelle}
+          groupe={ouvrier.groupe}
+          formateur={ouvrier.formateur ?? "—"}
+        />
+      </section>
 
       <section>
         <SectionTitre titre={`À faire aujourd'hui (${taches.length})`} />
