@@ -84,8 +84,22 @@ function SectionTitre({ code, titre, sousTitre }: { code: string; titre: string;
   );
 }
 
+const SECTIONS = [
+  { code: "Tous", label: "Tous les rapports" },
+  { code: "01", label: "Synthèse générale" },
+  { code: "02", label: "Recrutement" },
+  { code: "03", label: "Formation" },
+  { code: "04", label: "Présence & assiduité" },
+  { code: "05", label: "Risques & réclamations" },
+  { code: "06", label: "Satisfaction & rétention" },
+];
+
 function ReportingPage() {
   const { ouvriers, candidats, reclamations, pousserNotification } = useLeoni();
+  const [vue, setVue] = useState("Tous");
+  const vis = (code: string) => vue === "Tous" || vue === code;
+
+
 
   const scoreMoyenCandidats = Math.round(candidats.reduce((s, c) => s + c.score, 0) / candidats.length);
   const scoreMoyenOuvriers = Math.round(ouvriers.reduce((s, o) => s + o.score, 0) / ouvriers.length);
