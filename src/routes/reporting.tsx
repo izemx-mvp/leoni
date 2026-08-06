@@ -291,7 +291,9 @@ function ReportingPage() {
           </ResponsiveContainer>
         </Panel>
       </div>
+      </>)}
 
+      {vis("03") && (<>
       {/* ------------------------------ Formation ----------------------------- */}
       <SectionTitre code="03" titre="Formation" sousTitre="Parcours, modules, progression pédagogique, formateurs et compétences" />
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
