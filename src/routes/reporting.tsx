@@ -166,7 +166,9 @@ function ReportingPage() {
           </div>
         </Panel>
       </div>
+      </>)}
 
+      {vis("02") && (<>
       {/* ----------------------------- Recrutement ---------------------------- */}
       <SectionTitre code="02" titre="Recrutement" sousTitre="Sourcing, entonnoir, délais, qualité et couverture des besoins" />
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
