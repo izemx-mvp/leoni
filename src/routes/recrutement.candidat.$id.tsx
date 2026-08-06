@@ -12,6 +12,21 @@ import {
 } from "lucide-react";
 import { CRITERES_ENTRETIEN } from "@/data/leoni";
 import {
+  conformiteCandidat,
+  estCritique,
+  exigencesDe,
+  posteDe,
+} from "@/data/postes-critiques";
+import {
+  BadgeCritique,
+  CarteConformite,
+  CartePosteCriticite,
+} from "@/components/leoni/postes/BadgeCritique";
+import {
+  ModaleAffectationBloquee,
+  type Derogation,
+} from "@/components/leoni/postes/ModaleAffectationBloquee";
+import {
   Avatar,
   Barre,
   Btn,
@@ -48,6 +63,7 @@ const SECTIONS = [
   "04 Entretien",
   "05 Communication",
   "06 Décision",
+  "07 Conformité poste critique",
 ];
 
 function FicheCandidat() {
@@ -73,6 +89,8 @@ function FicheCandidat() {
   const [notes, setNotes] = useState<Record<string, number>>(
     Object.fromEntries(CRITERES_ENTRETIEN.map((c) => [c, 4])),
   );
+  const [affectationBloquee, setAffectationBloquee] = useState(false);
+  const [derogations, setDerogations] = useState<Derogation[]>([]);
 
   if (!candidat) {
     return <p className="text-sm text-muted-foreground">Candidature introuvable.</p>;
@@ -82,10 +100,38 @@ function FicheCandidat() {
   const moyenne =
     Object.values(notes).reduce((a, b) => a + b, 0) / Object.values(notes).length;
 
+  const conformite = conformiteCandidat(candidat);
+  const posteCritique = estCritique(candidat.poste);
+  const exigences = exigencesDe(candidat.poste);
+
+  const demanderRetenir = () => {
+    if (conformite.critique && conformite.blocages.length > 0) {
+      setAffectationBloquee(true);
+      return;
+    }
+    setPreIntegration(true);
+  };
+
+  const enregistrerDerogation = (d: Omit<Derogation, "id" | "date">) => {
+    const derogation: Derogation = {
+      ...d,
+      id: `DER-${Date.now()}`,
+      date: new Date().toLocaleDateString("fr-FR"),
+    };
+    setDerogations((prev) => [...prev, derogation]);
+    pousserNotification({
+      titre: "Dérogation encadrée enregistrée",
+      detail: `${candidat.nom} — affectation autorisée sous dérogation (${derogation.niveauApprobation})`,
+      ton: "warning",
+    });
+    setAffectationBloquee(false);
+    setPreIntegration(true);
+  };
+
   const valider = () => {
     if (decision === "Retenu") {
       setModale(null);
-      setPreIntegration(true);
+      demanderRetenir();
       return;
     }
     changerStatutCandidat(candidat.id, decision === "Refusé" ? "Refusé" : "Vivier", motif);
@@ -115,6 +161,7 @@ function FicheCandidat() {
             </p>
             <div className="mt-1.5 flex flex-wrap gap-1.5">
               <StatutBadge valeur={candidat.statut} />
+              <BadgeCritique poste={candidat.poste} compact />
               <Tag ton={candidat.score >= 80 ? "success" : candidat.score >= 60 ? "warning" : "critical"}>
                 Talent Fit AI {candidat.score} %
               </Tag>
@@ -147,7 +194,7 @@ function FicheCandidat() {
             <Btn variant="secondary" onClick={() => changerStatutCandidat(candidat.id, "Vivier")}>
               <UserPlus className="size-3.5" /> Ajouter au vivier
             </Btn>
-            <Btn variant="primary" onClick={() => setPreIntegration(true)}>
+            <Btn variant="primary" onClick={demanderRetenir}>
               <Check className="size-3.5" /> Retenir
             </Btn>
             <Btn variant="danger" onClick={() => { setDecision("Refusé"); setModale("decision"); }}>
@@ -403,7 +450,7 @@ function FicheCandidat() {
               <Field label="Statut actuel" value={<StatutBadge valeur={candidat.statut} />} />
             </div>
             <div className="mt-5 flex flex-wrap gap-2">
-              <Btn variant="primary" onClick={() => setPreIntegration(true)}>
+              <Btn variant="primary" onClick={demanderRetenir}>
                 Retenir et créer la fiche ouvrier <ArrowRight className="size-3.5" />
               </Btn>
               <Btn variant="secondary" onClick={() => { setDecision("Vivier"); setModale("decision"); }}>

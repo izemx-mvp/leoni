@@ -1259,46 +1259,291 @@ export const ABSENCES = [
 
 export const FEEDBACKS = [
   { id: "FB-118", auteur: "Sara Amrani", ouvrierId: "LMA-BOU-2026-0418", texte: "La formation pratique était claire aujourd'hui.", categorie: "Formation", sentiment: "Positif", date: "26/07/2026" },
-  { id: "FB-119", auteur: "Khadija Rami", ouvrierId: "LMA-BOU-2026-0395", texte: "Je n'ai pas reçu mes gants de protection.", categorie: "EPI", sentiment: "Critique", date: "26/07/2026" },
+  { id: "FB-119", auteur: "Khadija Rami", ouvrierId: "LMA-BOU-2026-0395", texte: "Je n'ai pas reçu mes gants de protection.", categorie: "EPI", sentiment: "Critique", date: "27/07/2026" },
   { id: "FB-120", auteur: "Anas El Fassi", ouvrierId: "LMA-BZN-2026-0208", texte: "J'ai besoin de plus d'explications sur le contrôle final.", categorie: "Formation", sentiment: "Moyen", date: "27/07/2026" },
 ];
 
+/* ------------------------------------------------------------------ */
+/* Réclamations                                                        */
+/* ------------------------------------------------------------------ */
+
+/** Statuts explicites du workflow de traitement d'une réclamation. */
 export const COLONNES_KANBAN = [
   "Nouvelle",
-  "À qualifier",
-  "Affectée",
+  "Assignée",
   "En cours",
-  "En attente",
-  "Escaladée",
+  "En attente ouvrier",
   "Résolue",
   "Clôturée",
+  "Rejetée",
+  "Escaladée",
 ] as const;
 
 export type ColonneKanban = (typeof COLONNES_KANBAN)[number];
+/** Alias explicite — même jeu de valeurs que ColonneKanban. */
+export type StatutReclamation = ColonneKanban;
+
+export const CATEGORIES_RECLAMATION = [
+  "Transport",
+  "Formateur",
+  "EPI",
+  "Salaire/Paie",
+  "Conditions de travail",
+  "Encadrement",
+  "Hygiène",
+  "Autre",
+] as const;
+
+export type CategorieReclamation = (typeof CATEGORIES_RECLAMATION)[number];
+
+export const PRIORITES_RECLAMATION = ["Basse", "Normale", "Haute", "Critique"] as const;
+export type PrioriteReclamation = (typeof PRIORITES_RECLAMATION)[number];
+
+export const CANAUX_RECLAMATION = ["Espace ouvrier", "WhatsApp", "Boîte à idées", "Entretien RH"] as const;
+export type CanalReclamation = (typeof CANAUX_RECLAMATION)[number];
+
+export interface EvenementReclamation {
+  id: string;
+  date: string;
+  heure: string;
+  auteur: string;
+  action: string;
+  detail?: string;
+}
+
+export interface NoteInterneReclamation {
+  id: string;
+  date: string;
+  heure: string;
+  auteur: string;
+  texte: string;
+}
+
+export interface ActionCorrectiveReclamation {
+  id: string;
+  titre: string;
+  responsable: string;
+  echeance: string;
+  statut: "Ouverte" | "En cours" | "Terminée";
+}
+
+export interface PieceJointeReclamation {
+  id: string;
+  nom: string;
+  type: "Photo" | "Document" | "Audio";
+  taille: string;
+}
+
+export interface SatisfactionReclamation {
+  note: 1 | 2 | 3 | 4 | 5;
+  commentaire?: string;
+  anonyme: boolean;
+  date: string;
+}
 
 export interface Reclamation {
   id: string;
+  reference?: string;
   objet: string;
+  description?: string;
   ouvrier: string;
   ouvrierId?: string;
+  posteOuvrier?: string;
   site: Site;
   categorie: string;
-  priorite: "Critique" | "Élevée" | "Normale" | "Faible";
+  sousCategorie?: string;
+  priorite: "Critique" | "Élevée" | "Normale" | "Faible" | PrioriteReclamation;
+  canal?: CanalReclamation;
   responsable: string;
+  assigneA?: string;
   statut: ColonneKanban;
   date: string;
+  datePriseEnCharge?: string;
+  dateResolution?: string;
+  dateCloture?: string;
+  slaEcheance?: string;
+  slaRespecte?: boolean;
+  historique?: EvenementReclamation[];
+  notesInternes?: NoteInterneReclamation[];
+  reponseOfficielle?: string;
+  actionsCorrectives?: ActionCorrectiveReclamation[];
+  satisfaction?: SatisfactionReclamation;
+  confidentielle?: boolean;
+  piecesJointes?: PieceJointeReclamation[];
+  /** @deprecated conservé pour compatibilité, préférer reponseOfficielle */
   resolution?: string;
 }
 
 export const RECLAMATIONS: Reclamation[] = [
-  { id: "REC-2026-081", objet: "Absence de gants de protection", ouvrier: "Khadija Rami", ouvrierId: "LMA-BOU-2026-0395", site: "Bouskoura", categorie: "EPI", priorite: "Critique", responsable: "Service Sécurité", statut: "En cours", date: "26/07/2026" },
-  { id: "REC-2026-079", objet: "Planning reçu tardivement", ouvrier: "Ayoub Najjar", site: "Bouznika", categorie: "Organisation", priorite: "Normale", responsable: "Coordination formation", statut: "Affectée", date: "24/07/2026" },
-  { id: "REC-2026-075", objet: "Erreur d'affectation de groupe", ouvrier: "Mariam Lahlou", ouvrierId: "LMA-BOU-2026-0435", site: "Bouskoura", categorie: "Formation", priorite: "Élevée", responsable: "Salma Bennis", statut: "En attente", date: "23/07/2026" },
-  { id: "REC-2026-072", objet: "Badge d'accès non fonctionnel", ouvrier: "Mehdi Berrada", ouvrierId: "LMA-BER-2026-0312", site: "Berrechid", categorie: "Accès", priorite: "Normale", responsable: "Services généraux", statut: "Résolue", date: "22/07/2026", resolution: "Badge réédité le 23/07." },
-  { id: "REC-2026-070", objet: "Demande de changement de shift", ouvrier: "Anas El Fassi", ouvrierId: "LMA-BZN-2026-0208", site: "Bouznika", categorie: "Organisation", priorite: "Faible", responsable: "Otmane Rifi", statut: "Nouvelle", date: "21/07/2026" },
-  { id: "REC-2026-068", objet: "Chaussures de sécurité à la mauvaise taille", ouvrier: "Imane Zahraoui", site: "Bouskoura", categorie: "EPI", priorite: "Élevée", responsable: "Service Sécurité", statut: "À qualifier", date: "21/07/2026" },
-  { id: "REC-2026-064", objet: "Salle de formation surchargée", ouvrier: "Groupe CBL-08", site: "Bouskoura", categorie: "Organisation", priorite: "Normale", responsable: "Coordination formation", statut: "Escaladée", date: "19/07/2026" },
-  { id: "REC-2026-060", objet: "Attestation de formation non reçue", ouvrier: "Othmane Benali", ouvrierId: "LMA-BER-2026-0279", site: "Berrechid", categorie: "Documents", priorite: "Faible", responsable: "RH Site", statut: "Clôturée", date: "16/07/2026", resolution: "Attestation transmise par email." },
+  {
+    id: "REC-2026-081", reference: "REC-2026-081", objet: "Absence de gants de protection",
+    description: "Le poste de câblage 12 n'a plus de gants de protection en taille 8 depuis deux jours.",
+    ouvrier: "Khadija Rami", ouvrierId: "LMA-BOU-2026-0395", posteOuvrier: "Opératrice câblage",
+    site: "Bouskoura", categorie: "EPI", sousCategorie: "Disponibilité EPI", priorite: "Critique",
+    canal: "Espace ouvrier", responsable: "Service Sécurité", assigneA: "Karim Sebti", statut: "En cours",
+    date: "26/07/2026", datePriseEnCharge: "26/07/2026", slaEcheance: "28/07/2026", slaRespecte: undefined,
+    historique: [
+      { id: "EVR-1", date: "26/07/2026", heure: "08:31", auteur: "Khadija Rami", action: "Réclamation créée" },
+      { id: "EVR-2", date: "26/07/2026", heure: "15:04", auteur: "Karim Sebti", action: "Prise en charge", detail: "Assignée au Service Sécurité" },
+    ],
+    notesInternes: [
+      { id: "NI-1", date: "26/07/2026", heure: "15:10", auteur: "Karim Sebti", texte: "Commande de gants T7/T8 relancée auprès du magasin." },
+    ],
+    actionsCorrectives: [
+      { id: "AC-1", titre: "Réapprovisionner gants T7/T8 — magasin Bouskoura", responsable: "Karim Sebti", echeance: "29/07/2026", statut: "En cours" },
+    ],
+    piecesJointes: [{ id: "PJ-1", nom: "photo_poste_12.jpg", type: "Photo", taille: "1.2 Mo" }],
+  },
+  {
+    id: "REC-2026-079", reference: "REC-2026-079", objet: "Planning reçu tardivement",
+    description: "Le planning de la semaine 31 a été communiqué la veille au soir seulement.",
+    ouvrier: "Ayoub Najjar", site: "Bouznika", categorie: "Encadrement", sousCategorie: "Communication planning",
+    priorite: "Normale", canal: "WhatsApp", responsable: "Coordination formation", assigneA: "Otmane Rifi",
+    statut: "Assignée", date: "24/07/2026", datePriseEnCharge: "25/07/2026", slaEcheance: "31/07/2026",
+    historique: [
+      { id: "EVR-3", date: "24/07/2026", heure: "18:20", auteur: "Ayoub Najjar", action: "Réclamation créée" },
+      { id: "EVR-4", date: "25/07/2026", heure: "09:00", auteur: "Otmane Rifi", action: "Assignée à Otmane Rifi" },
+    ],
+    notesInternes: [],
+  },
+  {
+    id: "REC-2026-075", reference: "REC-2026-075", objet: "Erreur d'affectation de groupe",
+    description: "Mariam a été affectée au groupe CBL-08 alors qu'elle devait rejoindre CBL-06 avec sa cohorte.",
+    ouvrier: "Mariam Lahlou", ouvrierId: "LMA-BOU-2026-0435", posteOuvrier: "Opératrice assemblage",
+    site: "Bouskoura", categorie: "Formateur", sousCategorie: "Affectation groupe", priorite: "Haute",
+    canal: "Entretien RH", responsable: "Salma Bennis", assigneA: "Salma Bennis", statut: "En attente ouvrier",
+    date: "23/07/2026", datePriseEnCharge: "23/07/2026", slaEcheance: "26/07/2026", slaRespecte: false,
+    historique: [
+      { id: "EVR-5", date: "23/07/2026", heure: "10:00", auteur: "Salma Bennis", action: "Réclamation créée depuis un entretien RH" },
+      { id: "EVR-6", date: "23/07/2026", heure: "11:00", auteur: "Salma Bennis", action: "Prise en charge" },
+      { id: "EVR-7", date: "24/07/2026", heure: "09:30", auteur: "Salma Bennis", action: "Passage en attente ouvrier", detail: "Confirmation du nouveau groupe demandée à l'ouvrière" },
+    ],
+    notesInternes: [
+      { id: "NI-2", date: "23/07/2026", heure: "11:05", auteur: "Salma Bennis", texte: "Vérifier avec la coordination formation si un transfert est possible avant vendredi." },
+    ],
+  },
+  {
+    id: "REC-2026-072", reference: "REC-2026-072", objet: "Badge d'accès non fonctionnel",
+    description: "Le badge d'accès de Mehdi ne fonctionne plus au portique de l'atelier B.",
+    ouvrier: "Mehdi Berrada", ouvrierId: "LMA-BER-2026-0312", posteOuvrier: "Technicien ligne",
+    site: "Berrechid", categorie: "Autre", sousCategorie: "Accès site", priorite: "Normale",
+    canal: "Boîte à idées", responsable: "Services généraux", assigneA: "Nabil Cherkaoui", statut: "Résolue",
+    date: "22/07/2026", datePriseEnCharge: "22/07/2026", dateResolution: "23/07/2026", slaEcheance: "24/07/2026", slaRespecte: true,
+    reponseOfficielle: "Badge réédité le 23/07 et remis en main propre à l'accueil du site.",
+    resolution: "Badge réédité le 23/07.",
+    historique: [
+      { id: "EVR-8", date: "22/07/2026", heure: "08:00", auteur: "Mehdi Berrada", action: "Réclamation créée" },
+      { id: "EVR-9", date: "22/07/2026", heure: "09:00", auteur: "Nabil Cherkaoui", action: "Prise en charge" },
+      { id: "EVR-10", date: "23/07/2026", heure: "10:15", auteur: "Nabil Cherkaoui", action: "Marquée comme résolue", detail: "Badge réédité" },
+    ],
+    satisfaction: { note: 5, commentaire: "Traitement rapide, merci.", anonyme: false, date: "23/07/2026" },
+  },
+  {
+    id: "REC-2026-070", reference: "REC-2026-070", objet: "Demande de changement de shift",
+    description: "Anas souhaite passer du shift de nuit au shift de matin pour des raisons de transport.",
+    ouvrier: "Anas El Fassi", ouvrierId: "LMA-BZN-2026-0208", posteOuvrier: "Opérateur coupe",
+    site: "Bouznika", categorie: "Conditions de travail", sousCategorie: "Organisation des shifts", priorite: "Basse",
+    canal: "Espace ouvrier", responsable: "Otmane Rifi", statut: "Nouvelle", date: "21/07/2026", slaEcheance: "28/07/2026",
+    historique: [{ id: "EVR-11", date: "21/07/2026", heure: "17:40", auteur: "Anas El Fassi", action: "Réclamation créée" }],
+    notesInternes: [],
+  },
+  {
+    id: "REC-2026-068", reference: "REC-2026-068", objet: "Chaussures de sécurité à la mauvaise taille",
+    description: "Les chaussures fournies sont trop petites, gêne pour la station debout prolongée.",
+    ouvrier: "Imane Zahraoui", site: "Bouskoura", categorie: "EPI", sousCategorie: "Taille EPI", priorite: "Haute",
+    canal: "WhatsApp", responsable: "Service Sécurité", statut: "Nouvelle", date: "21/07/2026", slaEcheance: "24/07/2026", slaRespecte: false,
+    historique: [{ id: "EVR-12", date: "21/07/2026", heure: "07:55", auteur: "Imane Zahraoui", action: "Réclamation créée" }],
+    notesInternes: [],
+  },
+  {
+    id: "REC-2026-064", reference: "REC-2026-064", objet: "Salle de formation surchargée",
+    description: "La salle de formation CBL-08 accueille 45 stagiaires pour 30 places assises.",
+    ouvrier: "Groupe CBL-08", site: "Bouskoura", categorie: "Conditions de travail", sousCategorie: "Infrastructure",
+    priorite: "Normale", canal: "Boîte à idées", responsable: "Coordination formation", assigneA: "Salma Bennis",
+    statut: "Escaladée", date: "19/07/2026", datePriseEnCharge: "19/07/2026", slaEcheance: "22/07/2026", slaRespecte: false,
+    historique: [
+      { id: "EVR-13", date: "19/07/2026", heure: "10:00", auteur: "Délégué de groupe", action: "Réclamation créée" },
+      { id: "EVR-14", date: "19/07/2026", heure: "14:00", auteur: "Salma Bennis", action: "Prise en charge" },
+      { id: "EVR-15", date: "22/07/2026", heure: "16:00", auteur: "Salma Bennis", action: "Escaladée", detail: "SLA dépassé, nécessite un arbitrage sur l'affectation des salles" },
+    ],
+    notesInternes: [
+      { id: "NI-3", date: "22/07/2026", heure: "16:05", auteur: "Salma Bennis", texte: "Escaladée à la Responsable Formation pour arbitrage capacité salles." },
+    ],
+  },
+  {
+    id: "REC-2026-060", reference: "REC-2026-060", objet: "Attestation de formation non reçue",
+    description: "Othmane n'a pas reçu son attestation de fin de formation nécessaire pour son dossier CNSS.",
+    ouvrier: "Othmane Benali", ouvrierId: "LMA-BER-2026-0279", posteOuvrier: "Opérateur assemblage",
+    site: "Berrechid", categorie: "Autre", sousCategorie: "Documents", priorite: "Basse", canal: "Espace ouvrier",
+    responsable: "RH Site", assigneA: "Imane El Fassi", statut: "Clôturée", date: "16/07/2026",
+    datePriseEnCharge: "17/07/2026", dateResolution: "18/07/2026", dateCloture: "19/07/2026",
+    slaEcheance: "23/07/2026", slaRespecte: true, reponseOfficielle: "Attestation transmise par email le 18/07.",
+    resolution: "Attestation transmise par email.",
+    historique: [
+      { id: "EVR-16", date: "16/07/2026", heure: "09:00", auteur: "Othmane Benali", action: "Réclamation créée" },
+      { id: "EVR-17", date: "17/07/2026", heure: "09:30", auteur: "Imane El Fassi", action: "Prise en charge" },
+      { id: "EVR-18", date: "18/07/2026", heure: "14:00", auteur: "Imane El Fassi", action: "Marquée comme résolue" },
+      { id: "EVR-19", date: "19/07/2026", heure: "10:00", auteur: "Othmane Benali", action: "Clôturée par l'ouvrier" },
+    ],
+    satisfaction: { note: 4, commentaire: "Résolu, un peu long.", anonyme: false, date: "19/07/2026" },
+  },
+  {
+    id: "REC-2026-058", reference: "REC-2026-058", objet: "Retards répétés du bus TR-BSK-14",
+    description: "Le bus de la ligne TR-BSK-14 arrive avec 20 à 30 minutes de retard trois fois par semaine.",
+    ouvrier: "Fatima Zahra Idrissi", ouvrierId: "LMA-BOU-2026-0512", posteOuvrier: "Opératrice câblage",
+    site: "Bouskoura", categorie: "Transport", sousCategorie: "Ponctualité navette", priorite: "Haute",
+    canal: "WhatsApp", responsable: "Responsable transport", assigneA: "Responsable transport", statut: "En cours",
+    date: "20/07/2026", datePriseEnCharge: "20/07/2026", slaEcheance: "23/07/2026", slaRespecte: false,
+    historique: [
+      { id: "EVR-20", date: "20/07/2026", heure: "07:10", auteur: "Fatima Zahra Idrissi", action: "Réclamation créée" },
+      { id: "EVR-21", date: "20/07/2026", heure: "10:00", auteur: "Responsable transport", action: "Prise en charge" },
+    ],
+    notesInternes: [{ id: "NI-4", date: "21/07/2026", heure: "08:00", auteur: "Responsable transport", texte: "Révision de l'horaire de passage en cours (action ACS-01)." }],
+    actionsCorrectives: [{ id: "AC-2", titre: "Réviser l'horaire de passage TR-BSK-14", responsable: "Responsable transport", echeance: "10/08/2026", statut: "En cours" }],
+  },
+  {
+    id: "REC-2026-055", reference: "REC-2026-055", objet: "Retard de versement de la prime de transport",
+    description: "La prime de transport du mois de juin n'apparaît pas sur le bulletin de paie.",
+    ouvrier: "Youssra Benkirane", ouvrierId: "LMA-AGA-2026-0091", posteOuvrier: "Opératrice contrôle",
+    site: "Agadir", categorie: "Salaire/Paie", sousCategorie: "Prime", priorite: "Critique", canal: "Entretien RH",
+    responsable: "RH Site", assigneA: "Hanane Tazi", statut: "Rejetée", date: "18/07/2026", datePriseEnCharge: "18/07/2026",
+    dateCloture: "20/07/2026", slaEcheance: "21/07/2026", slaRespecte: true,
+    reponseOfficielle: "Vérification effectuée : la prime a bien été versée sur le bulletin de juillet suite à un décalage de traitement.",
+    historique: [
+      { id: "EVR-22", date: "18/07/2026", heure: "09:00", auteur: "Youssra Benkirane", action: "Réclamation créée" },
+      { id: "EVR-23", date: "18/07/2026", heure: "11:00", auteur: "Hanane Tazi", action: "Prise en charge" },
+      { id: "EVR-24", date: "20/07/2026", heure: "15:00", auteur: "Hanane Tazi", action: "Rejetée", detail: "Prime déjà régularisée sur le bulletin suivant" },
+    ],
+    notesInternes: [{ id: "NI-5", date: "20/07/2026", heure: "14:50", auteur: "Hanane Tazi", texte: "Confirmé avec la paie : décalage d'un mois, aucun montant manquant." }],
+  },
+  {
+    id: "REC-2026-052", reference: "REC-2026-052", objet: "Vestiaires insalubres",
+    description: "Les vestiaires femmes de l'atelier Câblage A ne sont pas nettoyés depuis plusieurs jours.",
+    ouvrier: "Groupe Atelier Câblage A", site: "Bouskoura", categorie: "Hygiène", sousCategorie: "Propreté locaux",
+    priorite: "Haute", canal: "Boîte à idées", responsable: "Services généraux", assigneA: "Rachida Ouazzani",
+    statut: "Résolue", date: "15/07/2026", datePriseEnCharge: "15/07/2026", dateResolution: "16/07/2026",
+    slaEcheance: "17/07/2026", slaRespecte: true,
+    reponseOfficielle: "Prestataire de nettoyage relancé, planning de passage quotidien remis en place.",
+    historique: [
+      { id: "EVR-25", date: "15/07/2026", heure: "08:00", auteur: "Déléguée d'atelier", action: "Réclamation créée" },
+      { id: "EVR-26", date: "15/07/2026", heure: "10:00", auteur: "Rachida Ouazzani", action: "Prise en charge" },
+      { id: "EVR-27", date: "16/07/2026", heure: "09:00", auteur: "Rachida Ouazzani", action: "Marquée comme résolue" },
+    ],
+    satisfaction: { note: 2, commentaire: "Amélioration ponctuelle mais retour à la normale après une semaine.", anonyme: true, date: "24/07/2026" },
+  },
+  {
+    id: "REC-2026-049", reference: "REC-2026-049", objet: "Formateur absent sans remplacement",
+    description: "Le formateur du module Sertissage a été absent deux jours sans remplaçant prévu.",
+    ouvrier: "Groupe CBL-05", site: "Berrechid", categorie: "Formateur", sousCategorie: "Disponibilité formateur",
+    priorite: "Normale", canal: "Espace ouvrier", responsable: "Coordination formation", assigneA: "Nabil Cherkaoui",
+    statut: "En attente ouvrier", date: "14/07/2026", datePriseEnCharge: "15/07/2026", slaEcheance: "18/07/2026", slaRespecte: false,
+    historique: [
+      { id: "EVR-28", date: "14/07/2026", heure: "16:00", auteur: "Délégué de groupe", action: "Réclamation créée" },
+      { id: "EVR-29", date: "15/07/2026", heure: "08:30", auteur: "Nabil Cherkaoui", action: "Prise en charge" },
+      { id: "EVR-30", date: "16/07/2026", heure: "09:00", auteur: "Nabil Cherkaoui", action: "Passage en attente ouvrier", detail: "Proposition de rattrapage soumise au groupe" },
+    ],
+    notesInternes: [],
+  },
 ];
 
 /* ------------------------------------------------------------------ */
