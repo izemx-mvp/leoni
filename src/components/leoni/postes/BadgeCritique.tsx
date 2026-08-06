@@ -51,7 +51,7 @@ export function BadgeCritique({
 export function CartePosteCriticite({ poste, conformite }: { poste?: string; conformite: Conformite }) {
   const p = posteDe(poste);
   return (
-    <Panel titre="Poste & criticité">
+    <Panel title="Poste &amp; criticité">
       <div className="grid gap-3 sm:grid-cols-2">
         <Info label="Poste visé" valeur={p?.nom ?? poste ?? "—"} />
         <Info label="Code poste" valeur={p?.code ?? "—"} />
@@ -86,7 +86,7 @@ export function CarteConformite({
 }) {
   if (!conformite.critique) {
     return (
-      <Panel titre={titre}>
+      <Panel title={titre}>
         <div className="flex flex-wrap items-center gap-3 text-sm">
           <span className="text-muted-foreground">Criticité :</span>
           <Tag ton="neutral">Non critique</Tag>
@@ -101,7 +101,7 @@ export function CarteConformite({
   }
 
   return (
-    <Panel titre={titre} actions={actions}>
+    <Panel title={titre} action={actions}>
       <div className="flex flex-wrap items-center gap-4">
         <div className="min-w-40">
           <p className="text-[11px] uppercase tracking-wide text-muted-foreground">Conformité poste critique</p>
