@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useState } from "react";
 import {
   Area,
   AreaChart,
@@ -84,8 +85,22 @@ function SectionTitre({ code, titre, sousTitre }: { code: string; titre: string;
   );
 }
 
+const SECTIONS = [
+  { code: "Tous", label: "Tous les rapports" },
+  { code: "01", label: "Synthèse générale" },
+  { code: "02", label: "Recrutement" },
+  { code: "03", label: "Formation" },
+  { code: "04", label: "Présence & assiduité" },
+  { code: "05", label: "Risques & réclamations" },
+  { code: "06", label: "Satisfaction & rétention" },
+];
+
 function ReportingPage() {
   const { ouvriers, candidats, reclamations, pousserNotification } = useLeoni();
+  const [vue, setVue] = useState("Tous");
+  const vis = (code: string) => vue === "Tous" || vue === code;
+
+
 
   const scoreMoyenCandidats = Math.round(candidats.reduce((s, c) => s + c.score, 0) / candidats.length);
   const scoreMoyenOuvriers = Math.round(ouvriers.reduce((s, o) => s + o.score, 0) / ouvriers.length);
@@ -114,6 +129,28 @@ function ReportingPage() {
         }
       />
 
+      <div className="mb-4 flex flex-wrap items-center gap-2 rounded-sm border border-border bg-card p-2">
+        <span className="mr-1 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">Rapports</span>
+        {SECTIONS.map((s) => (
+          <button
+            key={s.code}
+            onClick={() => setVue(s.code)}
+            className={
+              vue === s.code
+                ? "rounded-sm border border-[var(--brand)] bg-[var(--selected)] px-3 py-1.5 text-xs font-medium text-[var(--brand)]"
+                : "rounded-sm border border-border px-3 py-1.5 text-xs text-muted-foreground hover:bg-[var(--hover)]"
+            }
+          >
+            {s.code !== "Tous" && <span className="num mr-1.5 opacity-60">{s.code}</span>}
+            {s.label}
+          </button>
+        ))}
+        <span className="ml-auto text-xs text-muted-foreground">
+          {vue === "Tous" ? `${SECTIONS.length - 1} rapports affichés` : "1 rapport affiché"}
+        </span>
+      </div>
+
+      {vis("01") && (<>
       {/* ------------------------------ Synthèse ------------------------------ */}
       <SectionTitre code="01" titre="Synthèse générale" sousTitre="Indicateurs clés de la période — juillet 2026" />
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-6">
@@ -166,7 +203,9 @@ function ReportingPage() {
           </div>
         </Panel>
       </div>
+      </>)}
 
+      {vis("02") && (<>
       {/* ----------------------------- Recrutement ---------------------------- */}
       <SectionTitre code="02" titre="Recrutement" sousTitre="Sourcing, entonnoir, délais, qualité et couverture des besoins" />
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
@@ -291,7 +330,9 @@ function ReportingPage() {
           </ResponsiveContainer>
         </Panel>
       </div>
+      </>)}
 
+      {vis("03") && (<>
       {/* ------------------------------ Formation ----------------------------- */}
       <SectionTitre code="03" titre="Formation" sousTitre="Parcours, modules, progression pédagogique, formateurs et compétences" />
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
@@ -405,7 +446,9 @@ function ReportingPage() {
           </tbody>
         </Table>
       </Panel>
+      </>)}
 
+      {vis("04") && (<>
       {/* ------------------------------ Présence ------------------------------ */}
       <SectionTitre code="04" titre="Présence & assiduité" sousTitre="Taux par site, ponctualité, motifs d'absence" />
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
@@ -474,7 +517,9 @@ function ReportingPage() {
           </Table>
         </div>
       </Panel>
+      </>)}
 
+      {vis("05") && (<>
       {/* -------------------------- Risques & qualité -------------------------- */}
       <SectionTitre code="05" titre="Risques & réclamations" sousTitre="Population exposée, alertes et traitement des réclamations" />
       <div className="grid gap-4 lg:grid-cols-2">
@@ -560,13 +605,16 @@ function ReportingPage() {
           </ResponsiveContainer>
         </Panel>
       </div>
+      </>)}
 
+      {vis("06") && (<>
       <SectionTitre
         code="06"
         titre="Satisfaction, départs & rétention"
         sousTitre="Satisfaction quotidienne, turnover, motifs de départ, cohortes et risque de départ précoce"
       />
       <SatisfactionRetention onExport={exporter} />
+      </>)}
 
       <p className="mt-6 text-[11px] text-muted-foreground">
         Rapports actualisés à chaque action réalisée dans l'application — prototype de démonstration LEONI Maroc.
