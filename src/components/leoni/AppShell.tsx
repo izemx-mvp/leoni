@@ -94,7 +94,10 @@ const NAV: { code: string; titre: string; icone: typeof LayoutGrid; items: NavIt
     code: "07",
     titre: "Reporting",
     icone: FileBarChart,
-    items: [{ label: "Rapports & analyses", to: "/reporting" }],
+    items: [
+      { label: "Rapports & analyses", to: "/reporting" },
+      { label: "KPI & pilotage direction", to: "/kpi" },
+    ],
   },
   {
     code: "08",

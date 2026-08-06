@@ -17,6 +17,8 @@ import {
   Avatar,
 } from "@/components/leoni/kit";
 import { useLeoni } from "@/lib/leoni-store";
+import { estCritique } from "@/data/postes-critiques";
+import { BadgeCritique } from "@/components/leoni/postes/BadgeCritique";
 import { NouvelleCandidature } from "@/components/leoni/recrutement/NouvelleCandidature";
 
 export const Route = createFileRoute("/recrutement/candidatures")({
@@ -38,6 +40,7 @@ const COLONNES = [
   "Référence",
   "Candidat",
   "Poste",
+  "Criticité",
   "Site",
   "Ville",
   "Source",
@@ -57,6 +60,7 @@ function Candidatures() {
   const [q, setQ] = useState("");
   const [site, setSite] = useState("Tous les sites");
   const [statut, setStatut] = useState("Tous les statuts");
+  const [criticite, setCriticite] = useState("Tous");
   const [scoreMin, setScoreMin] = useState(0);
   const [tri, setTri] = useState<{ col: string; asc: boolean }>({ col: "Score IA", asc: false });
   const [page, setPage] = useState(1);
@@ -73,6 +77,9 @@ function Candidatures() {
         `${c.nom} ${c.id} ${c.poste} ${c.ville}`.toLowerCase().includes(q.toLowerCase()) &&
         (site === "Tous les sites" || c.site === site) &&
         (statut === "Tous les statuts" || c.statut === statut) &&
+        (criticite === "Tous" ||
+          (criticite === "Postes critiques" && estCritique(c.poste)) ||
+          (criticite === "Postes non critiques" && !estCritique(c.poste))) &&
         c.score >= scoreMin,
     );
     if (vue === "Présélection IA") l = l.filter((c) => c.score >= 70);
@@ -85,7 +92,7 @@ function Candidatures() {
       if (tri.col === "Site") return a.site.localeCompare(b.site) * dir;
       return a.id.localeCompare(b.id) * dir;
     });
-  }, [candidats, q, site, statut, scoreMin, vue, tri]);
+  }, [candidats, q, site, statut, criticite, scoreMin, vue, tri]);
 
   const pages = Math.max(1, Math.ceil(filtres.length / parPage));
   const visibles = filtres.slice((page - 1) * parPage, page * parPage);
@@ -190,6 +197,7 @@ function Candidatures() {
           className="h-9 w-72 rounded-sm border border-border bg-card px-3 text-sm outline-none focus:ring-2 focus:ring-[var(--ring)]"
         />
         <Select value={site} onChange={setSite} options={["Tous les sites", ...SITES]} />
+        <Select value={criticite} onChange={setCriticite} options={["Tous", "Postes critiques", "Postes non critiques"]} />
         <Select
           value={statut}
           onChange={setStatut}
@@ -289,6 +297,7 @@ function Candidatures() {
                     </Td>
                   )}
                   {affiche("Poste") && <Td className="text-muted-foreground">{c.poste}</Td>}
+                  {affiche("Criticité") && <Td><BadgeCritique poste={c.poste} compact /></Td>}
                   {affiche("Site") && <Td className="text-muted-foreground">{c.site}</Td>}
                   {affiche("Ville") && <Td className="text-muted-foreground">{c.ville}</Td>}
                   {affiche("Source") && <Td className="text-muted-foreground">{c.source}</Td>}
