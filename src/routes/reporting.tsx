@@ -405,7 +405,9 @@ function ReportingPage() {
           </tbody>
         </Table>
       </Panel>
+      </>)}
 
+      {vis("04") && (<>
       {/* ------------------------------ Présence ------------------------------ */}
       <SectionTitre code="04" titre="Présence & assiduité" sousTitre="Taux par site, ponctualité, motifs d'absence" />
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
