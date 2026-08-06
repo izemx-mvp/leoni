@@ -16,7 +16,14 @@ export const Route = createFileRoute("/suivi/reclamations")({
   component: ReclamationsPage,
 });
 
-const TON_PRIORITE = { Critique: "critical", "Élevée": "warning", Normale: "info", Faible: "neutral" } as const;
+const TON_PRIORITE: Record<string, "critical" | "warning" | "info" | "neutral"> = {
+  Critique: "critical",
+  Haute: "critical",
+  "Élevée": "warning",
+  Normale: "info",
+  Faible: "neutral",
+  Basse: "neutral",
+};
 
 function ReclamationsPage() {
   const { reclamations, deplacerReclamation, creerReclamation, pousserNotification } = useLeoni();

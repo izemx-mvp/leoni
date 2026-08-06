@@ -21,6 +21,7 @@ import {
   type EvenementSuivi,
   type Ouvrier,
   type Reclamation,
+  type EvenementReclamation,
   type StatutCandidature,
 } from "@/data/leoni";
 import type { CommunicationOnboarding, DossierOnboarding } from "@/data/onboarding";
@@ -87,6 +88,15 @@ interface Ctx {
   deciderParcours: (ouvrierId: string, decision: string, commentaire: string, motif?: string) => void;
   deplacerReclamation: (id: string, statut: ColonneKanban) => void;
   creerReclamation: (r: Omit<Reclamation, "id" | "date" | "statut">) => void;
+  assignerReclamation: (id: string, assigneA: string) => void;
+  changerStatutReclamation: (id: string, statut: ColonneKanban, commentaire?: string) => void;
+  ajouterNoteReclamation: (id: string, texte: string, auteur?: string) => void;
+  repondreReclamation: (id: string, texte: string) => void;
+  resoudreReclamation: (id: string, reponseOfficielle: string) => void;
+  cloturerReclamation: (id: string) => void;
+  escaladerReclamation: (id: string, motif: string) => void;
+  rejeterReclamation: (id: string, motif: string) => void;
+  enregistrerSatisfactionReclamation: (id: string, note: 1 | 2 | 3 | 4 | 5, commentaire: string, anonyme: boolean) => void;
   creerCandidature: (c: Omit<Candidat, "id" | "date">) => Candidat;
   lancerTalentFit: (candidatId: string) => void;
   preIntegrerCandidat: (
@@ -469,9 +479,10 @@ export function LeoniProvider({ children }: { children: ReactNode }) {
 
   const creerReclamation = useCallback(
     (r: Omit<Reclamation, "id" | "date" | "statut">) => {
-      const { date } = horodatage();
+      const { date, heure } = horodatage();
       const id = `REC-2026-${Math.floor(Math.random() * 900 + 100)}`;
-      setReclamations((prev) => [{ ...r, id, date, statut: "Nouvelle" }, ...prev]);
+      const evt: EvenementReclamation = { id: `EVR-${Date.now()}`, date, heure, auteur: r.ouvrier, action: "Réclamation créée" };
+      setReclamations((prev) => [{ ...r, id, reference: id, date, statut: "Nouvelle", historique: [evt], notesInternes: [] }, ...prev]);
       setAlertes((prev) => [
         {
           id: `ALR-${Math.floor(Math.random() * 900 + 100)}`,
@@ -489,6 +500,160 @@ export function LeoniProvider({ children }: { children: ReactNode }) {
       pousserNotification({ titre: "Réclamation créée", detail: `${id} — ${r.objet}`, ton: r.priorite === "Critique" ? "critical" : "info" });
     },
     [pousserNotification],
+  );
+
+  const journaliserReclamation = useCallback((id: string, auteur: string, action: string, detail?: string) => {
+    const { date, heure } = horodatage();
+    setReclamations((prev) =>
+      prev.map((r) =>
+        r.id === id
+          ? { ...r, historique: [...(r.historique ?? []), { id: `EVR-${Date.now()}`, date, heure, auteur, action, detail }] }
+          : r,
+      ),
+    );
+  }, []);
+
+  const assignerReclamation = useCallback(
+    (id: string, assigneA: string) => {
+      setReclamations((prev) =>
+        prev.map((r) =>
+          r.id === id
+            ? { ...r, assigneA, responsable: assigneA, statut: r.statut === "Nouvelle" ? "Assignée" : r.statut, datePriseEnCharge: r.datePriseEnCharge ?? horodatage().date }
+            : r,
+        ),
+      );
+      journaliserReclamation(id, "Amina Rajouh", "Assignée", `Affectée à ${assigneA}`);
+      pousserNotification({ titre: "Réclamation assignée", detail: `${id} — ${assigneA}`, ton: "info" });
+    },
+    [journaliserReclamation, pousserNotification],
+  );
+
+  const changerStatutReclamation = useCallback(
+    (id: string, statut: ColonneKanban, commentaire?: string) => {
+      const { date } = horodatage();
+      setReclamations((prev) =>
+        prev.map((r) => {
+          if (r.id !== id) return r;
+          const patch: Partial<Reclamation> = { statut };
+          if (statut === "En cours" && !r.datePriseEnCharge) patch.datePriseEnCharge = date;
+          if (statut === "Résolue") patch.dateResolution = date;
+          if (statut === "Clôturée") patch.dateCloture = date;
+          return { ...r, ...patch };
+        }),
+      );
+      journaliserReclamation(id, "Amina Rajouh", `Statut → ${statut}`, commentaire);
+      pousserNotification({ titre: "Statut mis à jour", detail: `${id} → ${statut}`, ton: "info" });
+    },
+    [journaliserReclamation, pousserNotification],
+  );
+
+  const ajouterNoteReclamation = useCallback(
+    (id: string, texte: string, auteur = "Amina Rajouh") => {
+      const { date, heure } = horodatage();
+      setReclamations((prev) =>
+        prev.map((r) =>
+          r.id === id
+            ? { ...r, notesInternes: [...(r.notesInternes ?? []), { id: `NI-${Date.now()}`, date, heure, auteur, texte }] }
+            : r,
+        ),
+      );
+    },
+    [],
+  );
+
+  const repondreReclamation = useCallback(
+    (id: string, texte: string) => {
+      setReclamations((prev) => prev.map((r) => (r.id === id ? { ...r, reponseOfficielle: texte } : r)));
+      journaliserReclamation(id, "Amina Rajouh", "Réponse officielle transmise à l'ouvrier");
+      pousserNotification({ titre: "Réponse envoyée", detail: `${id} — réponse transmise à l'ouvrier`, ton: "success" });
+    },
+    [journaliserReclamation, pousserNotification],
+  );
+
+  const resoudreReclamation = useCallback(
+    (id: string, reponseOfficielle: string) => {
+      const { date } = horodatage();
+      setReclamations((prev) =>
+        prev.map((r) => {
+          if (r.id !== id) return r;
+          let slaRespecte: boolean | undefined = r.slaRespecte;
+          if (r.slaEcheance) {
+            const parse = (d: string) => {
+              const [j, m, a] = d.split("/").map(Number);
+              return new Date(a, m - 1, j).getTime();
+            };
+            try {
+              slaRespecte = parse(date) <= parse(r.slaEcheance);
+            } catch {
+              slaRespecte = undefined;
+            }
+          }
+          return { ...r, statut: "Résolue", dateResolution: date, reponseOfficielle, resolution: reponseOfficielle, slaRespecte };
+        }),
+      );
+      journaliserReclamation(id, "Amina Rajouh", "Marquée comme résolue", reponseOfficielle);
+      pousserNotification({ titre: "Réclamation résolue", detail: `${id}`, ton: "success" });
+    },
+    [journaliserReclamation, pousserNotification],
+  );
+
+  const cloturerReclamation = useCallback(
+    (id: string) => {
+      const { date } = horodatage();
+      setReclamations((prev) => prev.map((r) => (r.id === id ? { ...r, statut: "Clôturée", dateCloture: date } : r)));
+      journaliserReclamation(id, "Amina Rajouh", "Clôturée");
+      pousserNotification({ titre: "Réclamation clôturée", detail: `${id}`, ton: "success" });
+    },
+    [journaliserReclamation, pousserNotification],
+  );
+
+  const escaladerReclamation = useCallback(
+    (id: string, motif: string) => {
+      setReclamations((prev) => prev.map((r) => (r.id === id ? { ...r, statut: "Escaladée" } : r)));
+      journaliserReclamation(id, "Amina Rajouh", "Escaladée", motif);
+      pousserNotification({ titre: "Réclamation escaladée", detail: `${id} — ${motif}`, ton: "warning" });
+    },
+    [journaliserReclamation, pousserNotification],
+  );
+
+  const rejeterReclamation = useCallback(
+    (id: string, motif: string) => {
+      const { date } = horodatage();
+      setReclamations((prev) => prev.map((r) => (r.id === id ? { ...r, statut: "Rejetée", dateCloture: date, reponseOfficielle: motif } : r)));
+      journaliserReclamation(id, "Amina Rajouh", "Rejetée", motif);
+      pousserNotification({ titre: "Réclamation rejetée", detail: `${id} — ${motif}`, ton: "warning" });
+    },
+    [journaliserReclamation, pousserNotification],
+  );
+
+  const enregistrerSatisfactionReclamation = useCallback(
+    (id: string, note: 1 | 2 | 3 | 4 | 5, commentaire: string, anonyme: boolean) => {
+      const { date } = horodatage();
+      setReclamations((prev) =>
+        prev.map((r) =>
+          r.id === id
+            ? {
+                ...r,
+                satisfaction: { note, commentaire, anonyme, date },
+                statut: note <= 2 ? "Escaladée" : r.statut === "Résolue" ? "Clôturée" : r.statut,
+                dateCloture: note > 2 ? date : r.dateCloture,
+              }
+            : r,
+        ),
+      );
+      journaliserReclamation(
+        id,
+        anonyme ? "Ouvrier (anonyme)" : "Ouvrier",
+        note <= 2 ? "Insatisfait — réclamation rouverte" : "Satisfaction enregistrée",
+        commentaire || undefined,
+      );
+      pousserNotification({
+        titre: note <= 2 ? "Insatisfaction déclarée — réouverture" : "Satisfaction enregistrée",
+        detail: `${id} — note ${note}/5`,
+        ton: note <= 2 ? "critical" : "success",
+      });
+    },
+    [journaliserReclamation, pousserNotification],
   );
 
   const creerCandidature = useCallback(
@@ -733,6 +898,15 @@ export function LeoniProvider({ children }: { children: ReactNode }) {
       deciderParcours,
       deplacerReclamation,
       creerReclamation,
+      assignerReclamation,
+      changerStatutReclamation,
+      ajouterNoteReclamation,
+      repondreReclamation,
+      resoudreReclamation,
+      cloturerReclamation,
+      escaladerReclamation,
+      rejeterReclamation,
+      enregistrerSatisfactionReclamation,
       creerCandidature,
       lancerTalentFit,
       preIntegrerCandidat,
@@ -748,7 +922,7 @@ export function LeoniProvider({ children }: { children: ReactNode }) {
       actionsSatisfaction,
       creerActionSatisfaction,
     }),
-    [theme, setTheme, site, langue, candidats, ouvriers, entretiens, reclamations, alertes, notifications, marquerLues, pousserNotification, changerStatutCandidat, planifierEntretien, evaluerEntretien, transformerEnOuvrier, ajouterEvenement, enregistrerPresence, validerJournee, deciderParcours, deplacerReclamation, creerReclamation, creerCandidature, lancerTalentFit, preIntegrerCandidat, majOnboarding, majOuvrier, finaliserAccueil, moods, configSatisfaction, majConfigSatisfaction, enregistrerMood, majStatutMood, alertesSatisfaction, actionsSatisfaction, creerActionSatisfaction],
+    [theme, setTheme, site, langue, candidats, ouvriers, entretiens, reclamations, alertes, notifications, marquerLues, pousserNotification, changerStatutCandidat, planifierEntretien, evaluerEntretien, transformerEnOuvrier, ajouterEvenement, enregistrerPresence, validerJournee, deciderParcours, deplacerReclamation, creerReclamation, assignerReclamation, changerStatutReclamation, ajouterNoteReclamation, repondreReclamation, resoudreReclamation, cloturerReclamation, escaladerReclamation, rejeterReclamation, enregistrerSatisfactionReclamation, creerCandidature, lancerTalentFit, preIntegrerCandidat, majOnboarding, majOuvrier, finaliserAccueil, moods, configSatisfaction, majConfigSatisfaction, enregistrerMood, majStatutMood, alertesSatisfaction, actionsSatisfaction, creerActionSatisfaction],
   );
 
   return <LeoniContext.Provider value={value}>{children}</LeoniContext.Provider>;
