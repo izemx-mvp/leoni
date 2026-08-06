@@ -114,6 +114,28 @@ function ReportingPage() {
         }
       />
 
+      <div className="mb-4 flex flex-wrap items-center gap-2 rounded-sm border border-border bg-card p-2">
+        <span className="mr-1 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">Rapports</span>
+        {SECTIONS.map((s) => (
+          <button
+            key={s.code}
+            onClick={() => setVue(s.code)}
+            className={
+              vue === s.code
+                ? "rounded-sm border border-[var(--brand)] bg-[var(--selected)] px-3 py-1.5 text-xs font-medium text-[var(--brand)]"
+                : "rounded-sm border border-border px-3 py-1.5 text-xs text-muted-foreground hover:bg-[var(--hover)]"
+            }
+          >
+            {s.code !== "Tous" && <span className="num mr-1.5 opacity-60">{s.code}</span>}
+            {s.label}
+          </button>
+        ))}
+        <span className="ml-auto text-xs text-muted-foreground">
+          {vue === "Tous" ? `${SECTIONS.length - 1} rapports affichés` : "1 rapport affiché"}
+        </span>
+      </div>
+
+      {vis("01") && (<>
       {/* ------------------------------ Synthèse ------------------------------ */}
       <SectionTitre code="01" titre="Synthèse générale" sousTitre="Indicateurs clés de la période — juillet 2026" />
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-6">
