@@ -560,13 +560,16 @@ function ReportingPage() {
           </ResponsiveContainer>
         </Panel>
       </div>
+      </>)}
 
+      {vis("06") && (<>
       <SectionTitre
         code="06"
         titre="Satisfaction, départs & rétention"
         sousTitre="Satisfaction quotidienne, turnover, motifs de départ, cohortes et risque de départ précoce"
       />
       <SatisfactionRetention onExport={exporter} />
+      </>)}
 
       <p className="mt-6 text-[11px] text-muted-foreground">
         Rapports actualisés à chaque action réalisée dans l'application — prototype de démonstration LEONI Maroc.
