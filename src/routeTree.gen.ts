@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ReportingRouteImport } from './routes/reporting'
 import { Route as PresencesRouteImport } from './routes/presences'
+import { Route as KpiRouteImport } from './routes/kpi'
 import { Route as EspaceRouteImport } from './routes/espace'
 import { Route as CommunicationRouteImport } from './routes/communication'
 import { Route as AdministrationRouteImport } from './routes/administration'
@@ -51,6 +52,11 @@ const ReportingRoute = ReportingRouteImport.update({
 const PresencesRoute = PresencesRouteImport.update({
   id: '/presences',
   path: '/presences',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const KpiRoute = KpiRouteImport.update({
+  id: '/kpi',
+  path: '/kpi',
   getParentRoute: () => rootRouteImport,
 } as any)
 const EspaceRoute = EspaceRouteImport.update({
@@ -214,6 +220,7 @@ export interface FileRoutesByFullPath {
   '/administration': typeof AdministrationRoute
   '/communication': typeof CommunicationRoute
   '/espace': typeof EspaceRouteWithChildren
+  '/kpi': typeof KpiRoute
   '/presences': typeof PresencesRoute
   '/reporting': typeof ReportingRoute
   '/espace/assistant': typeof EspaceAssistantRoute
@@ -248,6 +255,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/administration': typeof AdministrationRoute
   '/communication': typeof CommunicationRoute
+  '/kpi': typeof KpiRoute
   '/presences': typeof PresencesRoute
   '/reporting': typeof ReportingRoute
   '/espace/assistant': typeof EspaceAssistantRoute
@@ -283,6 +291,7 @@ export interface FileRoutesById {
   '/administration': typeof AdministrationRoute
   '/communication': typeof CommunicationRoute
   '/espace': typeof EspaceRouteWithChildren
+  '/kpi': typeof KpiRoute
   '/presences': typeof PresencesRoute
   '/reporting': typeof ReportingRoute
   '/espace/assistant': typeof EspaceAssistantRoute
@@ -320,6 +329,7 @@ export interface FileRouteTypes {
     | '/administration'
     | '/communication'
     | '/espace'
+    | '/kpi'
     | '/presences'
     | '/reporting'
     | '/espace/assistant'
@@ -354,6 +364,7 @@ export interface FileRouteTypes {
     | '/'
     | '/administration'
     | '/communication'
+    | '/kpi'
     | '/presences'
     | '/reporting'
     | '/espace/assistant'
@@ -388,6 +399,7 @@ export interface FileRouteTypes {
     | '/administration'
     | '/communication'
     | '/espace'
+    | '/kpi'
     | '/presences'
     | '/reporting'
     | '/espace/assistant'
@@ -424,6 +436,7 @@ export interface RootRouteChildren {
   AdministrationRoute: typeof AdministrationRoute
   CommunicationRoute: typeof CommunicationRoute
   EspaceRoute: typeof EspaceRouteWithChildren
+  KpiRoute: typeof KpiRoute
   PresencesRoute: typeof PresencesRoute
   ReportingRoute: typeof ReportingRoute
   FormationParcoursRoute: typeof FormationParcoursRoute
@@ -455,6 +468,13 @@ declare module '@tanstack/react-router' {
       path: '/presences'
       fullPath: '/presences'
       preLoaderRoute: typeof PresencesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/kpi': {
+      id: '/kpi'
+      path: '/kpi'
+      fullPath: '/kpi'
+      preLoaderRoute: typeof KpiRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/espace': {
@@ -729,6 +749,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdministrationRoute: AdministrationRoute,
   CommunicationRoute: CommunicationRoute,
   EspaceRoute: EspaceRouteWithChildren,
+  KpiRoute: KpiRoute,
   PresencesRoute: PresencesRoute,
   ReportingRoute: ReportingRoute,
   FormationParcoursRoute: FormationParcoursRoute,

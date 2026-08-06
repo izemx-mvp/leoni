@@ -26,6 +26,8 @@ import {
   progressionOnboarding,
 } from "@/data/onboarding";
 import { useLeoni } from "@/lib/leoni-store";
+import { conformiteOuvrier, estCritique } from "@/data/postes-critiques";
+import { BadgeCritique } from "@/components/leoni/postes/BadgeCritique";
 
 export const Route = createFileRoute("/ouvriers/")({
   validateSearch: (s: Record<string, unknown>) => ({
@@ -53,6 +55,7 @@ function Ouvriers() {
   const [atelier, setAtelier] = useState("Tous les ateliers");
   const [risque, setRisque] = useState("Tous les risques");
   const [scoreMin, setScoreMin] = useState(0);
+  const [criticite, setCriticite] = useState("Tous");
 
   const liste = useMemo(
     () =>
@@ -63,9 +66,12 @@ function Ouvriers() {
           (site === "Tous les sites" || o.site === site) &&
           (atelier === "Tous les ateliers" || o.atelier === atelier) &&
           (risque === "Tous les risques" || o.risque === risque) &&
+          (criticite === "Tous" ||
+            (criticite === "Postes critiques" && estCritique(o.poste)) ||
+            (criticite === "Postes non critiques" && !estCritique(o.poste))) &&
           o.score >= scoreMin,
       ),
-    [ouvriers, q, statut, site, atelier, risque, scoreMin],
+    [ouvriers, q, statut, site, atelier, risque, criticite, scoreMin],
   );
 
   return (
@@ -114,6 +120,7 @@ function Ouvriers() {
           options={["Tous les ateliers", "Câblage A", "Câblage B", "Ligne B2", "Qualité Q1", "Coupe C1"]}
         />
         <Select value={risque} onChange={setRisque} options={["Tous les risques", "Faible", "Moyen", "Élevé", "Critique"]} />
+        <Select value={criticite} onChange={setCriticite} options={["Tous", "Postes critiques", "Postes non critiques"]} />
         <label className="flex items-center gap-2 rounded-sm border border-border bg-card px-3 py-1.5 text-xs">
           Score ≥ <span className="num w-8 font-semibold">{scoreMin}</span>
           <input type="range" min={0} max={100} step={5} value={scoreMin} onChange={(e) => setScoreMin(Number(e.target.value))} className="w-24 accent-[var(--brand)]" />
@@ -148,14 +155,14 @@ function Ouvriers() {
             <thead>
               {statut === "À intégrer" ? (
                 <tr>
-                  <Th>Ouvrier</Th><Th>Matricule</Th><Th>Site</Th><Th>Poste</Th><Th>Atelier</Th>
+                  <Th>Ouvrier</Th><Th>Matricule</Th><Th>Site</Th><Th>Poste</Th><Th>Criticité</Th><Th>Atelier</Th>
                   <Th>Date d'arrivée</Th><Th>Préparation</Th><Th>Documents</Th><Th>Badge</Th>
                   <Th>EPI</Th><Th>Transport</Th><Th>Blocage principal</Th>
                 </tr>
               ) : (
                 <tr>
-                  <Th>Ouvrier</Th><Th>Matricule</Th><Th>Site</Th><Th>Poste</Th><Th>Atelier</Th><Th>Parcours</Th><Th>Jour</Th>
-                  <Th>Progression</Th><Th>Score</Th><Th>Présence</Th><Th>Risque</Th><Th>Statut</Th><Th>Prochaine action</Th>
+                  <Th>Ouvrier</Th><Th>Matricule</Th><Th>Site</Th><Th>Poste</Th><Th>Criticité</Th><Th>Atelier</Th><Th>Parcours</Th><Th>Jour</Th>
+                  <Th>Progression</Th><Th>Score</Th><Th>Présence</Th><Th>Risque</Th><Th>Conformité</Th><Th>Statut</Th><Th>Prochaine action</Th>
                 </tr>
               )}
             </thead>
@@ -176,6 +183,7 @@ function Ouvriers() {
                   <Td className="num text-xs text-[var(--brand)]">{o.id}</Td>
                   <Td className="text-muted-foreground">{o.site}</Td>
                   <Td className="text-muted-foreground">{o.poste}</Td>
+                  <Td><BadgeCritique poste={o.poste} compact /></Td>
                   <Td className="text-muted-foreground">{o.atelier}</Td>
                   {statut === "À intégrer" ? (
                     <>
@@ -199,6 +207,21 @@ function Ouvriers() {
                       <Td className="num font-medium">{o.score} %</Td>
                       <Td className="num">{o.presence} %</Td>
                       <Td><RisqueBadge valeur={o.risque} /></Td>
+                      <Td>
+                        {estCritique(o.poste) ? (
+                          (() => {
+                            const conf = conformiteOuvrier(o);
+                            return (
+                              <div className="flex items-center gap-1.5">
+                                <span className="num text-xs font-medium">{conf.score} %</span>
+                                <Tag ton={conf.score >= 90 ? "success" : conf.score >= 60 ? "warning" : "critical"}>{conf.statut}</Tag>
+                              </div>
+                            );
+                          })()
+                        ) : (
+                          <Tag ton="neutral">Standard</Tag>
+                        )}
+                      </Td>
                       <Td><StatutBadge valeur={o.statut} /></Td>
                       <Td className="max-w-56 truncate text-xs text-muted-foreground">{o.prochaineAction}</Td>
                     </>

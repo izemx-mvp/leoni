@@ -12,6 +12,21 @@ import {
 } from "lucide-react";
 import { CRITERES_ENTRETIEN } from "@/data/leoni";
 import {
+  conformiteCandidat,
+  estCritique,
+  exigencesDe,
+  posteDe,
+} from "@/data/postes-critiques";
+import {
+  BadgeCritique,
+  CarteConformite,
+  CartePosteCriticite,
+} from "@/components/leoni/postes/BadgeCritique";
+import {
+  ModaleAffectationBloquee,
+  type Derogation,
+} from "@/components/leoni/postes/ModaleAffectationBloquee";
+import {
   Avatar,
   Barre,
   Btn,
@@ -48,6 +63,7 @@ const SECTIONS = [
   "04 Entretien",
   "05 Communication",
   "06 Décision",
+  "07 Conformité poste critique",
 ];
 
 function FicheCandidat() {
@@ -73,6 +89,8 @@ function FicheCandidat() {
   const [notes, setNotes] = useState<Record<string, number>>(
     Object.fromEntries(CRITERES_ENTRETIEN.map((c) => [c, 4])),
   );
+  const [affectationBloquee, setAffectationBloquee] = useState(false);
+  const [derogations, setDerogations] = useState<Derogation[]>([]);
 
   if (!candidat) {
     return <p className="text-sm text-muted-foreground">Candidature introuvable.</p>;
@@ -82,10 +100,38 @@ function FicheCandidat() {
   const moyenne =
     Object.values(notes).reduce((a, b) => a + b, 0) / Object.values(notes).length;
 
+  const conformite = conformiteCandidat(candidat);
+  const posteCritique = estCritique(candidat.poste);
+  const exigences = exigencesDe(candidat.poste);
+
+  const demanderRetenir = () => {
+    if (conformite.critique && conformite.blocages.length > 0) {
+      setAffectationBloquee(true);
+      return;
+    }
+    setPreIntegration(true);
+  };
+
+  const enregistrerDerogation = (d: Omit<Derogation, "id" | "date">) => {
+    const derogation: Derogation = {
+      ...d,
+      id: `DER-${Date.now()}`,
+      date: new Date().toLocaleDateString("fr-FR"),
+    };
+    setDerogations((prev) => [...prev, derogation]);
+    pousserNotification({
+      titre: "Dérogation encadrée enregistrée",
+      detail: `${candidat.nom} — affectation autorisée sous dérogation (${derogation.niveauApprobation})`,
+      ton: "warning",
+    });
+    setAffectationBloquee(false);
+    setPreIntegration(true);
+  };
+
   const valider = () => {
     if (decision === "Retenu") {
       setModale(null);
-      setPreIntegration(true);
+      demanderRetenir();
       return;
     }
     changerStatutCandidat(candidat.id, decision === "Refusé" ? "Refusé" : "Vivier", motif);
@@ -115,6 +161,7 @@ function FicheCandidat() {
             </p>
             <div className="mt-1.5 flex flex-wrap gap-1.5">
               <StatutBadge valeur={candidat.statut} />
+              <BadgeCritique poste={candidat.poste} compact />
               <Tag ton={candidat.score >= 80 ? "success" : candidat.score >= 60 ? "warning" : "critical"}>
                 Talent Fit AI {candidat.score} %
               </Tag>
@@ -147,7 +194,7 @@ function FicheCandidat() {
             <Btn variant="secondary" onClick={() => changerStatutCandidat(candidat.id, "Vivier")}>
               <UserPlus className="size-3.5" /> Ajouter au vivier
             </Btn>
-            <Btn variant="primary" onClick={() => setPreIntegration(true)}>
+            <Btn variant="primary" onClick={demanderRetenir}>
               <Check className="size-3.5" /> Retenir
             </Btn>
             <Btn variant="danger" onClick={() => { setDecision("Refusé"); setModale("decision"); }}>
@@ -268,6 +315,61 @@ function FicheCandidat() {
             </div>
             <IAWarning texte="Cette analyse constitue une aide à la décision. La décision finale appartient aux équipes RH." />
           </Panel>
+
+          {posteCritique && exigences && (
+            <Panel title="Pondération renforcée — poste critique" className="lg:col-span-3">
+              <p className="text-xs text-muted-foreground">
+                Ce poste étant critique, l'analyse Talent Fit AI renforce le poids de l'expérience secteur,
+                des compétences bloquantes et des documents obligatoires (dont le casier judiciaire et
+                l'aptitude médicale).
+              </p>
+              <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+                {[
+                  { l: "Expérience secteur requise", v: exigences.experience.secteur },
+                  { l: "Compétences bloquantes", v: `${exigences.competences.filter((c) => c.bloquante).length}` },
+                  { l: "Documents obligatoires", v: `${exigences.documents.filter((d) => d.bloquant).length}` },
+                  { l: "Score requis (candidat)", v: `${exigences.seuils.scoreCandidat} %` },
+                ].map((k) => (
+                  <div key={k.l} className="rounded-sm border border-border p-2.5">
+                    <p className="label-xs">{k.l}</p>
+                    <p className="num mt-1 text-sm font-semibold">{k.v}</p>
+                  </div>
+                ))}
+              </div>
+
+              {conformite.blocages.length > 0 ? (
+                <div className="mt-3 rounded-sm border border-[color-mix(in_oklab,var(--critical)_40%,transparent)] bg-[color-mix(in_oklab,var(--critical)_8%,transparent)] p-3">
+                  <p className="text-xs font-semibold text-[var(--critical)]">Exigences manquantes</p>
+                  <ul className="mt-1.5 space-y-1 text-xs">
+                    {conformite.blocages.map((b) => (
+                      <li key={b.categorie + b.libelle}>
+                        • {b.libelle} — attendu {b.attendu}, constaté : {b.constate}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ) : (
+                <p className="mt-3 text-xs text-[var(--success)]">Aucune exigence bloquante manquante à ce stade.</p>
+              )}
+
+              <div className="mt-3 rounded-sm border border-border bg-[var(--brand-soft)] p-3 text-sm">
+                <p className="label-xs">Recommandation explicite</p>
+                <p className="mt-1 font-semibold">
+                  {conformite.blocages.length === 0
+                    ? "Retenir"
+                    : conformite.blocages.length <= 2 && conformite.score >= 50
+                      ? "Retenir sous réserve — compléter les exigences manquantes avant affectation définitive"
+                      : "Ne pas retenir pour ce poste critique"}
+                </p>
+                {conformite.blocages.length > 2 && (
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    Postes alternatifs non critiques suggérés : Opérateur / Opératrice câblage, Opérateur / Opératrice
+                    assemblage, Opérateur coupe.
+                  </p>
+                )}
+              </div>
+            </Panel>
+          )}
           <Panel title="Lecture IA du dossier">
             <p className="label-xs">Points forts</p>
             <ul className="mt-2 space-y-1.5 text-sm">
@@ -403,7 +505,7 @@ function FicheCandidat() {
               <Field label="Statut actuel" value={<StatutBadge valeur={candidat.statut} />} />
             </div>
             <div className="mt-5 flex flex-wrap gap-2">
-              <Btn variant="primary" onClick={() => setPreIntegration(true)}>
+              <Btn variant="primary" onClick={demanderRetenir}>
                 Retenir et créer la fiche ouvrier <ArrowRight className="size-3.5" />
               </Btn>
               <Btn variant="secondary" onClick={() => { setDecision("Vivier"); setModale("decision"); }}>
@@ -433,6 +535,34 @@ function FicheCandidat() {
               ))}
             </ol>
           </Panel>
+        </div>
+      )}
+
+      {section === SECTIONS[6] && (
+        <div className="grid gap-4">
+          {posteCritique ? (
+            <>
+              <CartePosteCriticite poste={candidat.poste} conformite={conformite} />
+              <CarteConformite conformite={conformite} titre="Conformité au poste critique" />
+              {derogations.length > 0 && (
+                <Panel title="Dérogations enregistrées">
+                  <ul className="space-y-1.5 text-xs">
+                    {derogations.map((d) => (
+                      <li key={d.id} className="border-b border-border pb-1.5">
+                        {d.date} — {d.contexte} · validateur {d.validateur} ({d.niveauApprobation}) : {d.motif}
+                      </li>
+                    ))}
+                  </ul>
+                </Panel>
+              )}
+            </>
+          ) : (
+            <Panel title="Conformité au poste">
+              <p className="text-sm text-muted-foreground">
+                Poste non critique — contrôle standard d'affectation.
+              </p>
+            </Panel>
+          )}
         </div>
       )}
 
@@ -593,6 +723,18 @@ function FicheCandidat() {
       )}
 
       {preIntegration && <DecisionRetenu candidat={candidat} onClose={() => setPreIntegration(false)} />}
+
+      {affectationBloquee && (
+        <ModaleAffectationBloquee
+          sujet={candidat.nom}
+          poste={candidat.poste}
+          contexte="La décision « Retenir » vers ce poste critique"
+          conformite={conformite}
+          onClose={() => setAffectationBloquee(false)}
+          onCorrigerDabord={() => setAffectationBloquee(false)}
+          onDeroger={enregistrerDerogation}
+        />
+      )}
     </>
   );
 }
