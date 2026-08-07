@@ -321,7 +321,7 @@ function construire(index: number, statut: StatutRec, n: number): Rec {
     historique.push({ id: `${id}-H3`, date, heure: hR, auteur: assigneA ?? UTILISATEUR_COURANT, texte: `Réclamation traitée — ${sol.type}` });
     if (rnd() > 0.32) {
       const r0 = rnd();
-      const note = r0 > 0.5 ? 5 : r0 > 0.22 ? 4 : r0 > 0.1 ? 3 : r0 > 0.04 ? 2 : 1;
+      const note = r0 > 0.42 ? 5 : r0 > 0.12 ? 4 : r0 > 0.06 ? 3 : 2;
       satisfaction = {
         resolution: note >= 4 ? "Oui" : note === 3 ? "Partiellement" : "Non",
         note,
