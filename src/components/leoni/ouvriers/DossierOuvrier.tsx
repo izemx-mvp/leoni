@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { AlertTriangle, Check, ChevronRight, Send } from "lucide-react";
+import { useRec } from "@/lib/reclamations-store";
+import { BadgeStatut } from "@/components/leoni/reclamations/kit";
 import type { Candidat, Ouvrier } from "@/data/leoni";
 import {
   Barre,
