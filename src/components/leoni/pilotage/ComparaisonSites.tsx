@@ -14,7 +14,7 @@ const INDICATEURS: { cle: keyof FicheSite; label: string; unite: string; inverse
   { cle: "conformitePostesCritiques", label: "Conformité postes critiques", unite: "%", objectif: 95 },
   { cle: "satisfaction", label: "Satisfaction", unite: "/5", objectif: 4 },
   { cle: "absenteisme", label: "Absentéisme", unite: "%", inverse: true, objectif: 5 },
-  { cle: "presence", label: "Présence", unite: "%", objectif: 95 },
+  { cle: "departs30", label: "Départs < 30 j", unite: "", inverse: true, objectif: 6 },
   { cle: "reclamationsPour1000", label: "Réclamations / 1 000", unite: "", inverse: true, objectif: 9 },
 ];
 
