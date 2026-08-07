@@ -92,12 +92,15 @@ const NAV: { code: string; titre: string; icone: typeof LayoutGrid; items: NavIt
   },
   {
     code: "07",
+    titre: "Pilotage Direction",
+    icone: Gauge,
+    items: [{ label: "Cockpit Direction", to: "/kpi" }],
+  },
+  {
+    code: "08",
     titre: "Reporting",
     icone: FileBarChart,
-    items: [
-      { label: "Rapports & analyses", to: "/reporting" },
-      { label: "KPI & pilotage direction", to: "/kpi" },
-    ],
+    items: [{ label: "Rapports & analyses", to: "/reporting" }],
   },
   {
     code: "08",
