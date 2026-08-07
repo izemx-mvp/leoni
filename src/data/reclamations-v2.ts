@@ -366,7 +366,7 @@ function construire(index: number, statut: StatutRec, n: number): Rec {
 
 function genererJeu(): Rec[] {
   const liste: Rec[] = [];
-  let n = 100;
+  let n = 200;
   for (let i = 0; i < 12; i++) liste.push(construire(i, "new", n--));
   for (let i = 0; i < 18; i++) liste.push(construire(i + 12, "in_progress", n--));
   for (let i = 0; i < 30; i++) liste.push(construire(i + 30, "resolved", n--));
@@ -564,7 +564,7 @@ const VEDETTES: Rec[] = [
   },
 ];
 
-export const RECLAMATIONS_V2: Rec[] = [...VEDETTES, ...GENERES.slice(5)];
+export const RECLAMATIONS_V2: Rec[] = [...VEDETTES, ...GENERES];
 
 /* ----------------------------- Séries analytiques ----------------------------- */
 
