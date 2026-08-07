@@ -232,7 +232,7 @@ function RechercheGlobale({ onClose }: { onClose: () => void }) {
       .forEach((c) => r.push({ type: "Candidature", titre: c.nom, detail: `${c.id} · ${c.poste} · ${c.site}`, to: "/recrutement/candidat/$id", params: { id: c.id } }));
     reclamations
       .filter((x) => `${x.id} ${x.objet} ${x.ouvrier}`.toLowerCase().includes(t))
-      .forEach((x) => r.push({ type: "Réclamation", titre: x.objet, detail: `${x.id} · ${x.ouvrier}`, to: "/reclamations", search: { onglet: "Boîte de traitement" } }));
+      .forEach((x) => r.push({ type: "Réclamation", titre: x.objet, detail: `${x.id} · ${x.ouvrier}`, to: "/reclamations" }));
     return r.slice(0, 12);
   }, [q, candidats, ouvriers, reclamations]);
 
