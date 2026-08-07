@@ -100,6 +100,9 @@ export function DossierOuvrier({ o, candidat }: { o: Ouvrier; candidat?: Candida
     <>
       <Onglets valeurs={SOUS_ONGLETS} actif={tab} onChange={setTab} />
 
+      {tab === "Identité" && <SyntheseReclamations nom={o.nom} />}
+
+
       {tab === "Identité" && (
         <div className="grid gap-4 lg:grid-cols-2">
           <Panel title="Identité">
