@@ -104,7 +104,7 @@ const NAV: { code: string; titre: string; icone: typeof LayoutGrid; items: NavIt
     items: [{ label: "Rapports & analyses", to: "/reporting" }],
   },
   {
-    code: "08",
+    code: "09",
     titre: "Administration",
     icone: Cog,
     items: [
