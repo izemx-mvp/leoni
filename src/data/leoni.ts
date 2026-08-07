@@ -1173,7 +1173,7 @@ export const ALERTES: Alerte[] = [
   { id: "ALR-504", type: "4 ouvriers avec score < 50 %", personne: "Khadija Rami +3", site: "Bouskoura", priorite: "Critique", date: "27/07/2026", proprietaire: "Salma Bennis", cta: "Ouvrir les dossiers", lien: "/ouvriers" },
   { id: "ALR-505", type: "3 ouvriers avec 2 absences consécutives", personne: "Ayoub Najjar +2", site: "Bouznika", priorite: "Élevée", date: "27/07/2026", proprietaire: "Otmane Rifi", cta: "Planifier rattrapage", lien: "/presences" },
   { id: "ALR-506", type: "2 formations sécurité non validées", personne: "Khadija Rami, Ayoub Najjar", site: "Bouskoura", priorite: "Critique", date: "26/07/2026", proprietaire: "Karim Sebti", cta: "Programmer rattrapage", lien: "/formation/qcm" },
-  { id: "ALR-507", type: "2 réclamations EPI critiques", personne: "Khadija Rami", site: "Bouskoura", priorite: "Critique", date: "26/07/2026", proprietaire: "Service Sécurité", cta: "Ouvrir la réclamation", lien: "/suivi/reclamations" },
+  { id: "ALR-507", type: "2 réclamations EPI critiques", personne: "Khadija Rami", site: "Bouskoura", priorite: "Critique", date: "26/07/2026", proprietaire: "Service Sécurité", cta: "Ouvrir la réclamation", lien: "/reclamations" },
   { id: "ALR-508", type: "1 parcours avec recommandation IA d'arrêt", personne: "Ayoub Najjar", site: "Bouznika", priorite: "Critique", date: "25/07/2026", proprietaire: "Amina Rajouh", cta: "Décision RH", lien: "/ouvriers" },
 ];
 

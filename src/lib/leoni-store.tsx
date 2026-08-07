@@ -493,7 +493,7 @@ export function LeoniProvider({ children }: { children: ReactNode }) {
           date,
           proprietaire: r.responsable,
           cta: "Ouvrir la réclamation",
-          lien: "/suivi/reclamations",
+          lien: "/reclamations",
         },
         ...prev,
       ]);

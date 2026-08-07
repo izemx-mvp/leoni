@@ -19,7 +19,6 @@ import { Route as AdministrationRouteImport } from './routes/administration'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as OuvriersIndexRouteImport } from './routes/ouvriers.index'
 import { Route as EspaceIndexRouteImport } from './routes/espace.index'
-import { Route as SuiviReclamationsRouteImport } from './routes/suivi.reclamations'
 import { Route as RecrutementEntretiensRouteImport } from './routes/recrutement.entretiens'
 import { Route as RecrutementCandidaturesRouteImport } from './routes/recrutement.candidatures'
 import { Route as RecrutementCampagnesRouteImport } from './routes/recrutement.campagnes'
@@ -94,11 +93,6 @@ const EspaceIndexRoute = EspaceIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => EspaceRoute,
-} as any)
-const SuiviReclamationsRoute = SuiviReclamationsRouteImport.update({
-  id: '/suivi/reclamations',
-  path: '/suivi/reclamations',
-  getParentRoute: () => rootRouteImport,
 } as any)
 const RecrutementEntretiensRoute = RecrutementEntretiensRouteImport.update({
   id: '/recrutement/entretiens',
@@ -249,7 +243,6 @@ export interface FileRoutesByFullPath {
   '/recrutement/campagnes': typeof RecrutementCampagnesRoute
   '/recrutement/candidatures': typeof RecrutementCandidaturesRoute
   '/recrutement/entretiens': typeof RecrutementEntretiensRoute
-  '/suivi/reclamations': typeof SuiviReclamationsRoute
   '/espace/': typeof EspaceIndexRoute
   '/ouvriers/': typeof OuvriersIndexRoute
   '/espace/evaluation/$id': typeof EspaceEvaluationIdRoute
@@ -284,7 +277,6 @@ export interface FileRoutesByTo {
   '/recrutement/campagnes': typeof RecrutementCampagnesRoute
   '/recrutement/candidatures': typeof RecrutementCandidaturesRoute
   '/recrutement/entretiens': typeof RecrutementEntretiensRoute
-  '/suivi/reclamations': typeof SuiviReclamationsRoute
   '/espace': typeof EspaceIndexRoute
   '/ouvriers': typeof OuvriersIndexRoute
   '/espace/evaluation/$id': typeof EspaceEvaluationIdRoute
@@ -322,7 +314,6 @@ export interface FileRoutesById {
   '/recrutement/campagnes': typeof RecrutementCampagnesRoute
   '/recrutement/candidatures': typeof RecrutementCandidaturesRoute
   '/recrutement/entretiens': typeof RecrutementEntretiensRoute
-  '/suivi/reclamations': typeof SuiviReclamationsRoute
   '/espace/': typeof EspaceIndexRoute
   '/ouvriers/': typeof OuvriersIndexRoute
   '/espace/evaluation/$id': typeof EspaceEvaluationIdRoute
@@ -361,7 +352,6 @@ export interface FileRouteTypes {
     | '/recrutement/campagnes'
     | '/recrutement/candidatures'
     | '/recrutement/entretiens'
-    | '/suivi/reclamations'
     | '/espace/'
     | '/ouvriers/'
     | '/espace/evaluation/$id'
@@ -396,7 +386,6 @@ export interface FileRouteTypes {
     | '/recrutement/campagnes'
     | '/recrutement/candidatures'
     | '/recrutement/entretiens'
-    | '/suivi/reclamations'
     | '/espace'
     | '/ouvriers'
     | '/espace/evaluation/$id'
@@ -433,7 +422,6 @@ export interface FileRouteTypes {
     | '/recrutement/campagnes'
     | '/recrutement/candidatures'
     | '/recrutement/entretiens'
-    | '/suivi/reclamations'
     | '/espace/'
     | '/ouvriers/'
     | '/espace/evaluation/$id'
@@ -462,7 +450,6 @@ export interface RootRouteChildren {
   RecrutementCampagnesRoute: typeof RecrutementCampagnesRoute
   RecrutementCandidaturesRoute: typeof RecrutementCandidaturesRoute
   RecrutementEntretiensRoute: typeof RecrutementEntretiensRoute
-  SuiviReclamationsRoute: typeof SuiviReclamationsRoute
   OuvriersIndexRoute: typeof OuvriersIndexRoute
   RecrutementCandidatIdRoute: typeof RecrutementCandidatIdRoute
 }
@@ -538,13 +525,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/espace/'
       preLoaderRoute: typeof EspaceIndexRouteImport
       parentRoute: typeof EspaceRoute
-    }
-    '/suivi/reclamations': {
-      id: '/suivi/reclamations'
-      path: '/suivi/reclamations'
-      fullPath: '/suivi/reclamations'
-      preLoaderRoute: typeof SuiviReclamationsRouteImport
-      parentRoute: typeof rootRouteImport
     }
     '/recrutement/entretiens': {
       id: '/recrutement/entretiens'
@@ -783,7 +763,6 @@ const rootRouteChildren: RootRouteChildren = {
   RecrutementCampagnesRoute: RecrutementCampagnesRoute,
   RecrutementCandidaturesRoute: RecrutementCandidaturesRoute,
   RecrutementEntretiensRoute: RecrutementEntretiensRoute,
-  SuiviReclamationsRoute: SuiviReclamationsRoute,
   OuvriersIndexRoute: OuvriersIndexRoute,
   RecrutementCandidatIdRoute: RecrutementCandidatIdRoute,
 }
