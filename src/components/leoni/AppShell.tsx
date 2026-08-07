@@ -10,6 +10,7 @@ import {
   ClipboardList,
   Cog,
   FileBarChart,
+  Gauge,
   GraduationCap,
   LayoutGrid,
   Lightbulb,
