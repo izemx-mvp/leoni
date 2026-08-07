@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ReportingRouteImport } from './routes/reporting'
+import { Route as ReclamationsRouteImport } from './routes/reclamations'
 import { Route as PresencesRouteImport } from './routes/presences'
 import { Route as KpiRouteImport } from './routes/kpi'
 import { Route as EspaceRouteImport } from './routes/espace'
@@ -47,6 +48,11 @@ import { Route as EspaceEvaluationIdRouteImport } from './routes/espace.evaluati
 const ReportingRoute = ReportingRouteImport.update({
   id: '/reporting',
   path: '/reporting',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReclamationsRoute = ReclamationsRouteImport.update({
+  id: '/reclamations',
+  path: '/reclamations',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PresencesRoute = PresencesRouteImport.update({
@@ -222,6 +228,7 @@ export interface FileRoutesByFullPath {
   '/espace': typeof EspaceRouteWithChildren
   '/kpi': typeof KpiRoute
   '/presences': typeof PresencesRoute
+  '/reclamations': typeof ReclamationsRoute
   '/reporting': typeof ReportingRoute
   '/espace/assistant': typeof EspaceAssistantRoute
   '/espace/demandes': typeof EspaceDemandesRoute
@@ -257,6 +264,7 @@ export interface FileRoutesByTo {
   '/communication': typeof CommunicationRoute
   '/kpi': typeof KpiRoute
   '/presences': typeof PresencesRoute
+  '/reclamations': typeof ReclamationsRoute
   '/reporting': typeof ReportingRoute
   '/espace/assistant': typeof EspaceAssistantRoute
   '/espace/demandes': typeof EspaceDemandesRoute
@@ -293,6 +301,7 @@ export interface FileRoutesById {
   '/espace': typeof EspaceRouteWithChildren
   '/kpi': typeof KpiRoute
   '/presences': typeof PresencesRoute
+  '/reclamations': typeof ReclamationsRoute
   '/reporting': typeof ReportingRoute
   '/espace/assistant': typeof EspaceAssistantRoute
   '/espace/demandes': typeof EspaceDemandesRoute
@@ -331,6 +340,7 @@ export interface FileRouteTypes {
     | '/espace'
     | '/kpi'
     | '/presences'
+    | '/reclamations'
     | '/reporting'
     | '/espace/assistant'
     | '/espace/demandes'
@@ -366,6 +376,7 @@ export interface FileRouteTypes {
     | '/communication'
     | '/kpi'
     | '/presences'
+    | '/reclamations'
     | '/reporting'
     | '/espace/assistant'
     | '/espace/demandes'
@@ -401,6 +412,7 @@ export interface FileRouteTypes {
     | '/espace'
     | '/kpi'
     | '/presences'
+    | '/reclamations'
     | '/reporting'
     | '/espace/assistant'
     | '/espace/demandes'
@@ -438,6 +450,7 @@ export interface RootRouteChildren {
   EspaceRoute: typeof EspaceRouteWithChildren
   KpiRoute: typeof KpiRoute
   PresencesRoute: typeof PresencesRoute
+  ReclamationsRoute: typeof ReclamationsRoute
   ReportingRoute: typeof ReportingRoute
   FormationParcoursRoute: typeof FormationParcoursRoute
   FormationPlanningRoute: typeof FormationPlanningRoute
@@ -461,6 +474,13 @@ declare module '@tanstack/react-router' {
       path: '/reporting'
       fullPath: '/reporting'
       preLoaderRoute: typeof ReportingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reclamations': {
+      id: '/reclamations'
+      path: '/reclamations'
+      fullPath: '/reclamations'
+      preLoaderRoute: typeof ReclamationsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/presences': {
@@ -751,6 +771,7 @@ const rootRouteChildren: RootRouteChildren = {
   EspaceRoute: EspaceRouteWithChildren,
   KpiRoute: KpiRoute,
   PresencesRoute: PresencesRoute,
+  ReclamationsRoute: ReclamationsRoute,
   ReportingRoute: ReportingRoute,
   FormationParcoursRoute: FormationParcoursRoute,
   FormationPlanningRoute: FormationPlanningRoute,
