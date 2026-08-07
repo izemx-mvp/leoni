@@ -320,7 +320,8 @@ function construire(index: number, statut: StatutRec, n: number): Rec {
     messages.push({ id: `${id}-M5`, auteur: "Système", role: "system", date, heure: hR, texte: "Statut changé : En cours de traitement → Traité" });
     historique.push({ id: `${id}-H3`, date, heure: hR, auteur: assigneA ?? UTILISATEUR_COURANT, texte: `Réclamation traitée — ${sol.type}` });
     if (rnd() > 0.32) {
-      const note = Math.max(1, Math.min(5, Math.round(rnd() * 4) + 1));
+      const r0 = rnd();
+      const note = r0 > 0.5 ? 5 : r0 > 0.22 ? 4 : r0 > 0.1 ? 3 : r0 > 0.04 ? 2 : 1;
       satisfaction = {
         resolution: note >= 4 ? "Oui" : note === 3 ? "Partiellement" : "Non",
         note,
