@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ReportingRouteImport } from './routes/reporting'
+import { Route as ReclamationsRouteImport } from './routes/reclamations'
 import { Route as PresencesRouteImport } from './routes/presences'
 import { Route as KpiRouteImport } from './routes/kpi'
 import { Route as EspaceRouteImport } from './routes/espace'
@@ -18,7 +19,6 @@ import { Route as AdministrationRouteImport } from './routes/administration'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as OuvriersIndexRouteImport } from './routes/ouvriers.index'
 import { Route as EspaceIndexRouteImport } from './routes/espace.index'
-import { Route as SuiviReclamationsRouteImport } from './routes/suivi.reclamations'
 import { Route as RecrutementEntretiensRouteImport } from './routes/recrutement.entretiens'
 import { Route as RecrutementCandidaturesRouteImport } from './routes/recrutement.candidatures'
 import { Route as RecrutementCampagnesRouteImport } from './routes/recrutement.campagnes'
@@ -47,6 +47,11 @@ import { Route as EspaceEvaluationIdRouteImport } from './routes/espace.evaluati
 const ReportingRoute = ReportingRouteImport.update({
   id: '/reporting',
   path: '/reporting',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReclamationsRoute = ReclamationsRouteImport.update({
+  id: '/reclamations',
+  path: '/reclamations',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PresencesRoute = PresencesRouteImport.update({
@@ -88,11 +93,6 @@ const EspaceIndexRoute = EspaceIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => EspaceRoute,
-} as any)
-const SuiviReclamationsRoute = SuiviReclamationsRouteImport.update({
-  id: '/suivi/reclamations',
-  path: '/suivi/reclamations',
-  getParentRoute: () => rootRouteImport,
 } as any)
 const RecrutementEntretiensRoute = RecrutementEntretiensRouteImport.update({
   id: '/recrutement/entretiens',
@@ -222,6 +222,7 @@ export interface FileRoutesByFullPath {
   '/espace': typeof EspaceRouteWithChildren
   '/kpi': typeof KpiRoute
   '/presences': typeof PresencesRoute
+  '/reclamations': typeof ReclamationsRoute
   '/reporting': typeof ReportingRoute
   '/espace/assistant': typeof EspaceAssistantRoute
   '/espace/demandes': typeof EspaceDemandesRoute
@@ -242,7 +243,6 @@ export interface FileRoutesByFullPath {
   '/recrutement/campagnes': typeof RecrutementCampagnesRoute
   '/recrutement/candidatures': typeof RecrutementCandidaturesRoute
   '/recrutement/entretiens': typeof RecrutementEntretiensRoute
-  '/suivi/reclamations': typeof SuiviReclamationsRoute
   '/espace/': typeof EspaceIndexRoute
   '/ouvriers/': typeof OuvriersIndexRoute
   '/espace/evaluation/$id': typeof EspaceEvaluationIdRoute
@@ -257,6 +257,7 @@ export interface FileRoutesByTo {
   '/communication': typeof CommunicationRoute
   '/kpi': typeof KpiRoute
   '/presences': typeof PresencesRoute
+  '/reclamations': typeof ReclamationsRoute
   '/reporting': typeof ReportingRoute
   '/espace/assistant': typeof EspaceAssistantRoute
   '/espace/demandes': typeof EspaceDemandesRoute
@@ -276,7 +277,6 @@ export interface FileRoutesByTo {
   '/recrutement/campagnes': typeof RecrutementCampagnesRoute
   '/recrutement/candidatures': typeof RecrutementCandidaturesRoute
   '/recrutement/entretiens': typeof RecrutementEntretiensRoute
-  '/suivi/reclamations': typeof SuiviReclamationsRoute
   '/espace': typeof EspaceIndexRoute
   '/ouvriers': typeof OuvriersIndexRoute
   '/espace/evaluation/$id': typeof EspaceEvaluationIdRoute
@@ -293,6 +293,7 @@ export interface FileRoutesById {
   '/espace': typeof EspaceRouteWithChildren
   '/kpi': typeof KpiRoute
   '/presences': typeof PresencesRoute
+  '/reclamations': typeof ReclamationsRoute
   '/reporting': typeof ReportingRoute
   '/espace/assistant': typeof EspaceAssistantRoute
   '/espace/demandes': typeof EspaceDemandesRoute
@@ -313,7 +314,6 @@ export interface FileRoutesById {
   '/recrutement/campagnes': typeof RecrutementCampagnesRoute
   '/recrutement/candidatures': typeof RecrutementCandidaturesRoute
   '/recrutement/entretiens': typeof RecrutementEntretiensRoute
-  '/suivi/reclamations': typeof SuiviReclamationsRoute
   '/espace/': typeof EspaceIndexRoute
   '/ouvriers/': typeof OuvriersIndexRoute
   '/espace/evaluation/$id': typeof EspaceEvaluationIdRoute
@@ -331,6 +331,7 @@ export interface FileRouteTypes {
     | '/espace'
     | '/kpi'
     | '/presences'
+    | '/reclamations'
     | '/reporting'
     | '/espace/assistant'
     | '/espace/demandes'
@@ -351,7 +352,6 @@ export interface FileRouteTypes {
     | '/recrutement/campagnes'
     | '/recrutement/candidatures'
     | '/recrutement/entretiens'
-    | '/suivi/reclamations'
     | '/espace/'
     | '/ouvriers/'
     | '/espace/evaluation/$id'
@@ -366,6 +366,7 @@ export interface FileRouteTypes {
     | '/communication'
     | '/kpi'
     | '/presences'
+    | '/reclamations'
     | '/reporting'
     | '/espace/assistant'
     | '/espace/demandes'
@@ -385,7 +386,6 @@ export interface FileRouteTypes {
     | '/recrutement/campagnes'
     | '/recrutement/candidatures'
     | '/recrutement/entretiens'
-    | '/suivi/reclamations'
     | '/espace'
     | '/ouvriers'
     | '/espace/evaluation/$id'
@@ -401,6 +401,7 @@ export interface FileRouteTypes {
     | '/espace'
     | '/kpi'
     | '/presences'
+    | '/reclamations'
     | '/reporting'
     | '/espace/assistant'
     | '/espace/demandes'
@@ -421,7 +422,6 @@ export interface FileRouteTypes {
     | '/recrutement/campagnes'
     | '/recrutement/candidatures'
     | '/recrutement/entretiens'
-    | '/suivi/reclamations'
     | '/espace/'
     | '/ouvriers/'
     | '/espace/evaluation/$id'
@@ -438,6 +438,7 @@ export interface RootRouteChildren {
   EspaceRoute: typeof EspaceRouteWithChildren
   KpiRoute: typeof KpiRoute
   PresencesRoute: typeof PresencesRoute
+  ReclamationsRoute: typeof ReclamationsRoute
   ReportingRoute: typeof ReportingRoute
   FormationParcoursRoute: typeof FormationParcoursRoute
   FormationPlanningRoute: typeof FormationPlanningRoute
@@ -449,7 +450,6 @@ export interface RootRouteChildren {
   RecrutementCampagnesRoute: typeof RecrutementCampagnesRoute
   RecrutementCandidaturesRoute: typeof RecrutementCandidaturesRoute
   RecrutementEntretiensRoute: typeof RecrutementEntretiensRoute
-  SuiviReclamationsRoute: typeof SuiviReclamationsRoute
   OuvriersIndexRoute: typeof OuvriersIndexRoute
   RecrutementCandidatIdRoute: typeof RecrutementCandidatIdRoute
 }
@@ -461,6 +461,13 @@ declare module '@tanstack/react-router' {
       path: '/reporting'
       fullPath: '/reporting'
       preLoaderRoute: typeof ReportingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reclamations': {
+      id: '/reclamations'
+      path: '/reclamations'
+      fullPath: '/reclamations'
+      preLoaderRoute: typeof ReclamationsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/presences': {
@@ -518,13 +525,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/espace/'
       preLoaderRoute: typeof EspaceIndexRouteImport
       parentRoute: typeof EspaceRoute
-    }
-    '/suivi/reclamations': {
-      id: '/suivi/reclamations'
-      path: '/suivi/reclamations'
-      fullPath: '/suivi/reclamations'
-      preLoaderRoute: typeof SuiviReclamationsRouteImport
-      parentRoute: typeof rootRouteImport
     }
     '/recrutement/entretiens': {
       id: '/recrutement/entretiens'
@@ -751,6 +751,7 @@ const rootRouteChildren: RootRouteChildren = {
   EspaceRoute: EspaceRouteWithChildren,
   KpiRoute: KpiRoute,
   PresencesRoute: PresencesRoute,
+  ReclamationsRoute: ReclamationsRoute,
   ReportingRoute: ReportingRoute,
   FormationParcoursRoute: FormationParcoursRoute,
   FormationPlanningRoute: FormationPlanningRoute,
@@ -762,7 +763,6 @@ const rootRouteChildren: RootRouteChildren = {
   RecrutementCampagnesRoute: RecrutementCampagnesRoute,
   RecrutementCandidaturesRoute: RecrutementCandidaturesRoute,
   RecrutementEntretiensRoute: RecrutementEntretiensRoute,
-  SuiviReclamationsRoute: SuiviReclamationsRoute,
   OuvriersIndexRoute: OuvriersIndexRoute,
   RecrutementCandidatIdRoute: RecrutementCandidatIdRoute,
 }

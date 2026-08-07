@@ -15,6 +15,7 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { LeoniProvider } from "@/lib/leoni-store";
 import { AppShell } from "@/components/leoni/AppShell";
+import { ReclamationsProvider } from "@/lib/reclamations-store";
 
 function NotFoundComponent() {
   return (
@@ -124,14 +125,16 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <LeoniProvider>
-        {espace ? (
-          <Outlet />
-        ) : (
-          <AppShell>
-            {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
+        <ReclamationsProvider>
+          {espace ? (
             <Outlet />
-          </AppShell>
-        )}
+          ) : (
+            <AppShell>
+              {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
+              <Outlet />
+            </AppShell>
+          )}
+        </ReclamationsProvider>
       </LeoniProvider>
     </QueryClientProvider>
   );

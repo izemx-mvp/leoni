@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { AlertTriangle, Check, ChevronRight, Send } from "lucide-react";
+import { useRec } from "@/lib/reclamations-store";
+import { BadgeStatut } from "@/components/leoni/reclamations/kit";
 import type { Candidat, Ouvrier } from "@/data/leoni";
 import {
   Barre,
@@ -99,6 +101,9 @@ export function DossierOuvrier({ o, candidat }: { o: Ouvrier; candidat?: Candida
   return (
     <>
       <Onglets valeurs={SOUS_ONGLETS} actif={tab} onChange={setTab} />
+
+      {tab === "Identité" && <SyntheseReclamations nom={o.nom} />}
+
 
       {tab === "Identité" && (
         <div className="grid gap-4 lg:grid-cols-2">
@@ -799,5 +804,44 @@ export function DossierOuvrier({ o, candidat }: { o: Ouvrier; candidat?: Candida
           vide("Aucune information transport de pré-intégration."))
         )}
     </>
+  );
+}
+
+/** Synthèse compacte des réclamations de l'ouvrier (module Réclamations). */
+function SyntheseReclamations({ nom }: { nom: string }) {
+  const { reclamations } = useRec();
+  const miennes = reclamations.filter((r) => r.ouvrier === nom);
+  if (miennes.length === 0) return null;
+
+  const enCours = miennes.filter((r) => r.statut !== "resolved").length;
+  const traitees = miennes.length - enCours;
+  const notes = miennes.map((r) => r.satisfaction?.note).filter((n): n is number => typeof n === "number");
+  const moyenne = notes.length ? Math.round((notes.reduce((s, n) => s + n, 0) / notes.length) * 10) / 10 : null;
+
+  return (
+    <Panel title="Réclamations">
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+        <Field label="Total" value={String(miennes.length)} />
+        <Field label="En cours" value={String(enCours)} />
+        <Field label="Traitées" value={String(traitees)} />
+        <Field label="Satisfaction moyenne" value={moyenne ? `${moyenne} / 5` : "—"} />
+      </div>
+      <div className="mt-4 divide-y divide-border border-t border-border">
+        {miennes.slice(0, 5).map((r) => (
+          <Link
+            key={r.id}
+            to="/reclamations"
+            search={{ onglet: "Boîte de traitement" as const }}
+            className="flex flex-wrap items-center gap-x-3 gap-y-1 py-2 text-xs transition-colors hover:bg-[var(--hover)]"
+          >
+            <span className="num text-[var(--brand)]">{r.id}</span>
+            <span className="min-w-0 flex-1 truncate">{r.objet}</span>
+            <span className="text-muted-foreground">{r.categorie}</span>
+            <BadgeStatut statut={r.statut} compact />
+            {r.satisfaction && <span className="num text-muted-foreground">{r.satisfaction.note}/5</span>}
+          </Link>
+        ))}
+      </div>
+    </Panel>
   );
 }

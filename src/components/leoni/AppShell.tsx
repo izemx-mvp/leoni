@@ -83,7 +83,7 @@ const NAV: { code: string; titre: string; icone: typeof LayoutGrid; items: NavIt
     code: "05",
     titre: "Réclamations",
     icone: AlertTriangle,
-    items: [{ label: "Réclamations", to: "/suivi/reclamations" }],
+    items: [{ label: "Réclamations", to: "/reclamations", search: { onglet: "Vue d'ensemble" } }],
   },
   {
     code: "06",
@@ -232,7 +232,7 @@ function RechercheGlobale({ onClose }: { onClose: () => void }) {
       .forEach((c) => r.push({ type: "Candidature", titre: c.nom, detail: `${c.id} · ${c.poste} · ${c.site}`, to: "/recrutement/candidat/$id", params: { id: c.id } }));
     reclamations
       .filter((x) => `${x.id} ${x.objet} ${x.ouvrier}`.toLowerCase().includes(t))
-      .forEach((x) => r.push({ type: "Réclamation", titre: x.objet, detail: `${x.id} · ${x.ouvrier}`, to: "/suivi/reclamations" }));
+      .forEach((x) => r.push({ type: "Réclamation", titre: x.objet, detail: `${x.id} · ${x.ouvrier}`, to: "/reclamations" }));
     return r.slice(0, 12);
   }, [q, candidats, ouvriers, reclamations]);
 
