@@ -103,6 +103,13 @@ export function EspaceShell({ children }: { children: ReactNode }) {
             <p className="truncate text-base font-bold tracking-tight">Bonjour {prenom}</p>
             <p className="truncate text-[11px] text-muted-foreground">{AUJOURDHUI_LIBELLE}</p>
           </div>
+          <a
+            href="/portail"
+            className="flex h-11 items-center gap-1.5 rounded-xl border border-border px-3 text-xs font-semibold text-muted-foreground hover:bg-[var(--hover)]"
+          >
+            <LayoutGrid className="size-4" />
+            <span className="hidden sm:block">Portail</span>
+          </a>
           <Link
             to="/espace/notifications"
             className="relative flex size-11 items-center justify-center rounded-xl border border-border hover:bg-[var(--hover)]"
