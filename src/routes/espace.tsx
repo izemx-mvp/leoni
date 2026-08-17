@@ -121,8 +121,8 @@ function Connexion() {
           </p>
         </div>
 
-        <a href="/" className="mt-4 block text-center text-xs text-muted-foreground underline">
-          Retour au Backoffice RH
+        <a href="/portail" className="mt-4 block text-center text-xs text-muted-foreground underline">
+          Retour au portail LEONI
         </a>
       </div>
     </div>
