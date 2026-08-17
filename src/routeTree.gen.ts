@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as ReportingRouteImport } from './routes/reporting'
 import { Route as ReclamationsRouteImport } from './routes/reclamations'
 import { Route as PresencesRouteImport } from './routes/presences'
+import { Route as PortailRouteImport } from './routes/portail'
 import { Route as KpiRouteImport } from './routes/kpi'
 import { Route as EspaceRouteImport } from './routes/espace'
 import { Route as CommunicationRouteImport } from './routes/communication'
@@ -57,6 +58,11 @@ const ReclamationsRoute = ReclamationsRouteImport.update({
 const PresencesRoute = PresencesRouteImport.update({
   id: '/presences',
   path: '/presences',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PortailRoute = PortailRouteImport.update({
+  id: '/portail',
+  path: '/portail',
   getParentRoute: () => rootRouteImport,
 } as any)
 const KpiRoute = KpiRouteImport.update({
@@ -221,6 +227,7 @@ export interface FileRoutesByFullPath {
   '/communication': typeof CommunicationRoute
   '/espace': typeof EspaceRouteWithChildren
   '/kpi': typeof KpiRoute
+  '/portail': typeof PortailRoute
   '/presences': typeof PresencesRoute
   '/reclamations': typeof ReclamationsRoute
   '/reporting': typeof ReportingRoute
@@ -256,6 +263,7 @@ export interface FileRoutesByTo {
   '/administration': typeof AdministrationRoute
   '/communication': typeof CommunicationRoute
   '/kpi': typeof KpiRoute
+  '/portail': typeof PortailRoute
   '/presences': typeof PresencesRoute
   '/reclamations': typeof ReclamationsRoute
   '/reporting': typeof ReportingRoute
@@ -292,6 +300,7 @@ export interface FileRoutesById {
   '/communication': typeof CommunicationRoute
   '/espace': typeof EspaceRouteWithChildren
   '/kpi': typeof KpiRoute
+  '/portail': typeof PortailRoute
   '/presences': typeof PresencesRoute
   '/reclamations': typeof ReclamationsRoute
   '/reporting': typeof ReportingRoute
@@ -330,6 +339,7 @@ export interface FileRouteTypes {
     | '/communication'
     | '/espace'
     | '/kpi'
+    | '/portail'
     | '/presences'
     | '/reclamations'
     | '/reporting'
@@ -365,6 +375,7 @@ export interface FileRouteTypes {
     | '/administration'
     | '/communication'
     | '/kpi'
+    | '/portail'
     | '/presences'
     | '/reclamations'
     | '/reporting'
@@ -400,6 +411,7 @@ export interface FileRouteTypes {
     | '/communication'
     | '/espace'
     | '/kpi'
+    | '/portail'
     | '/presences'
     | '/reclamations'
     | '/reporting'
@@ -437,6 +449,7 @@ export interface RootRouteChildren {
   CommunicationRoute: typeof CommunicationRoute
   EspaceRoute: typeof EspaceRouteWithChildren
   KpiRoute: typeof KpiRoute
+  PortailRoute: typeof PortailRoute
   PresencesRoute: typeof PresencesRoute
   ReclamationsRoute: typeof ReclamationsRoute
   ReportingRoute: typeof ReportingRoute
@@ -475,6 +488,13 @@ declare module '@tanstack/react-router' {
       path: '/presences'
       fullPath: '/presences'
       preLoaderRoute: typeof PresencesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/portail': {
+      id: '/portail'
+      path: '/portail'
+      fullPath: '/portail'
+      preLoaderRoute: typeof PortailRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/kpi': {
@@ -750,6 +770,7 @@ const rootRouteChildren: RootRouteChildren = {
   CommunicationRoute: CommunicationRoute,
   EspaceRoute: EspaceRouteWithChildren,
   KpiRoute: KpiRoute,
+  PortailRoute: PortailRoute,
   PresencesRoute: PresencesRoute,
   ReclamationsRoute: ReclamationsRoute,
   ReportingRoute: ReportingRoute,
@@ -769,3 +790,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}

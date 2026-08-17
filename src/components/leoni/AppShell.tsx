@@ -318,6 +318,14 @@ function Header() {
       </button>
 
       <div className="ml-auto flex items-center gap-1.5">
+        <a
+          href="/portail"
+          className="flex h-9 items-center gap-2 rounded-sm border border-border px-2.5 text-xs font-medium hover:bg-[var(--hover)]"
+          title="Revenir au portail LEONI"
+        >
+          <Smartphone className="size-3.5 text-[var(--brand)]" />
+          <span className="hidden sm:block">Portail</span>
+        </a>
         <div className="relative">
           <button
             onClick={() => setPanneau(panneau === "site" ? null : "site")}
