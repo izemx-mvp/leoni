@@ -92,8 +92,8 @@ export function EspaceShell({ children }: { children: ReactNode }) {
         {modeDemo && (
           <div className="flex items-center justify-between gap-3 bg-[var(--brand)] px-4 py-2 text-[11px] font-semibold text-[var(--brand-foreground)]">
             <span className="truncate">MODE DÉMO — vue « {ouvrier?.nom} »</span>
-            <a href="/" className="shrink-0 rounded-full bg-black/20 px-3 py-1">
-              Retour Backoffice
+            <a href="/portail" className="shrink-0 rounded-full bg-black/20 px-3 py-1">
+              Retour au portail
             </a>
           </div>
         )}
